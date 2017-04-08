@@ -1,64 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="bagarrao.financialdroid.MainActivity"
     tools:showIn="@layout/activity_main">
 
     <Button
         android:id="@+id/expensesButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="33dp"
-        android:layout_marginStart="33dp"
-        android:layout_marginTop="58dp"
-        android:text="Expenses"
-        tools:layout_editor_absoluteX="54dp"
-        tools:layout_editor_absoluteY="37dp" />
-
-    <Button
-        android:id="@+id/archiveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/addExpenseButton"
-        android:layout_alignRight="@+id/addExpenseButton"
-        android:layout_below="@+id/addExpenseButton"
-        android:layout_marginTop="165dp"
-        android:text="Archive"
-        tools:layout_editor_absoluteX="54dp"
-        tools:layout_editor_absoluteY="186dp" />
-
-    <Button
-        android:id="@+id/analyticsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/archiveButton"
-        android:layout_alignBottom="@+id/archiveButton"
-        android:layout_alignLeft="@+id/expensesButton"
-        android:layout_alignStart="@+id/expensesButton"
-        android:text="Analytics"
-        tools:layout_editor_absoluteX="232dp"
-        tools:layout_editor_absoluteY="186dp" />
+        android:text="Expenses" />
 
     <Button
         android:id="@+id/addExpenseButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/expensesButton"
-        android:layout_alignBottom="@+id/expensesButton"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
-        android:text="Add Expense"
-        tools:layout_editor_absoluteX="224dp"
-        tools:layout_editor_absoluteY="37dp" />
+        android:text="Add Expense" />
 
+    <Button
+        android:id="@+id/archiveButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Archive" />
 
-</RelativeLayout>
+    <Button
+        android:id="@+id/analyticsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Analytics" />
+
+</LinearLayout>
