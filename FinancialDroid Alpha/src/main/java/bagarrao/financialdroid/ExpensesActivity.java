@@ -35,7 +35,7 @@ public class ExpensesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_expenses);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        init();
     }
 
     /**
@@ -43,8 +43,8 @@ public class ExpensesActivity extends AppCompatActivity {
      */
     public void init() {
         //        init DB
-//        this.dataSource = new ExpenseDataSource(this);
-//        this.dataSource.open();
+        this.dataSource = new ExpenseDataSource(this);
+        this.dataSource.open();
 
         //layout
         this.expenseListView = (ListView) findViewById(R.id.expensesListView);
@@ -60,7 +60,7 @@ public class ExpensesActivity extends AppCompatActivity {
         expenseListView.setAdapter(expenseListAdapter);
 
         //        dbReader
-//        readDB();
+        readDB();
     }
 
     /**
@@ -79,14 +79,14 @@ public class ExpensesActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-//        dataSource.open();
-//        readDB();
+        dataSource.open();
+        readDB();
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-//        dataSource.close();
+        dataSource.close();
         super.onPause();
     }
 

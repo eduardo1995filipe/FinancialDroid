@@ -10,7 +10,10 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.Date;
+
 import bagarrao.financialdroid.database.ExpenseDataSource;
+import bagarrao.financialdroid.utils.ExpenseType;
 
 public class AddExpenseActivity extends AppCompatActivity {
 
@@ -29,10 +32,16 @@ public class AddExpenseActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         init();
+
         addExpenseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Expense expense = new Expense(Double.parseDouble(priceEditText.getText().toString()),
+                        ExpenseType.strToExpenseType(expenseTypeSpinner.getSelectedItem().toString().toUpperCase()), descriptionEditText.getText().toString(),
+                        new Date());
+                dataSource.createExpense(expense);
                 Toast.makeText(getApplicationContext(), "Expense sucessefully registered!", Toast.LENGTH_SHORT).show();
+                finish();
             }
         });
 
