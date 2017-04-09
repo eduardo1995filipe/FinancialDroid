@@ -6,6 +6,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
+
+import bagarrao.financialdroid.database.ExpenseDataSource;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     //functional
     private Button expensesButton;
     private Button addExpenseButton;
+    private Button backupButton; //to extract expenses into a CSV file
     //not on alpha phase
 //    private Button archiveButton;
 //    private Button analyticsButton;
@@ -39,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 //        In the future try to make the toolbar programatically
 //        easier to make it functional
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Main Menu");
         setSupportActionBar(toolbar);
 //functional
         this.expensesIntent = new Intent(this, ExpensesActivity.class);
@@ -50,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
 //functional
         this.expensesButton = (Button) findViewById(R.id.expensesButton);
         this.addExpenseButton = (Button) findViewById(R.id.addExpenseButton);
+        this.backupButton = (Button) findViewById(R.id.backupButton);
         //not on alpha phase
 //        this.analyticsButton = (Button) findViewById(R.id.analyticsButton);
 //        this.archiveButton = (Button) findViewById(R.id.archiveButton);
@@ -77,6 +89,14 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
+        backupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                backupToCSV();
+                Toast.makeText(getApplicationContext(), "Backup is successfully done! Please enjoy :D", Toast.LENGTH_SHORT).show();
+            }
+        });
+
 //        analyticsButton.setOnClickListener(
 //                new View.OnClickListener() {
 //                    @Override
@@ -93,4 +113,30 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
     }
+
+    /**
+     * backups all expenses to a CSV file
+     */
+    public void backupToCSV() {
+        try {
+            File file = new File(this.getApplicationContext().getFilesDir(), "backup.csv");
+            if (!file.exists())
+                file.createNewFile();
+            BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+            ExpenseDataSource dataSource = new ExpenseDataSource(this.getApplicationContext());
+            dataSource.open();
+            List<Expense> list = dataSource.getAllExpenses();
+            for (Expense e : list) {
+                bw.write(e.toString() + "\n");
+            }
+            dataSource.close();
+            bw.flush();
+            bw.close();
+        } catch (IOException io) {
+            io.getStackTrace();
+        }
+
+
+    }
+
 }

@@ -30,6 +30,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_expense);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Add a new expense");
         setSupportActionBar(toolbar);
         init();
 

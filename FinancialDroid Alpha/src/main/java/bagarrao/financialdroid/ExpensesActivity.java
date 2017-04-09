@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class ExpensesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expenses);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Expense Viewer");
         setSupportActionBar(toolbar);
         init();
     }
@@ -55,9 +57,10 @@ public class ExpensesActivity extends AppCompatActivity {
                 R.layout.support_simple_spinner_dropdown_item);
         spinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         orderSpinner.setAdapter(spinnerAdapter);
-        this.expenseListAdapter = new ArrayAdapter<String>(this.getApplicationContext(),
+        this.expenseListAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, expenseListString);
         expenseListView.setAdapter(expenseListAdapter);
+
 
         //        dbReader
         readDB();
@@ -72,7 +75,10 @@ public class ExpensesActivity extends AppCompatActivity {
             expenseList = new ArrayList<>();
         expenseListString.clear();
         for (Expense e : expenseList) {
-            expenseListString.add(e.toString());
+            SimpleDateFormat df = new SimpleDateFormat("dd-M-yyyy");
+            String stringData = df.format(e.getDate());
+            String stringExpense = e.getDescription() + " | " + e.getValue() + "€ | " + stringData + " | " + e.getType().toString();
+            expenseListString.add(stringExpense);
         }
         expenseListAdapter.notifyDataSetChanged();
     }
