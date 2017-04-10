@@ -6,8 +6,9 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import bagarrao.financialdroid.Expense;
@@ -118,8 +119,13 @@ public class ArchiveDataSource {
         long id = cursor.getLong(0);
 //        arranjar forma de mudar uma string para uma data som a classe simple date format[classe precisa de alteracoes]
         String newDate = cursor.getString(4);
-        Expense expense = new Expense(cursor.getDouble(1), ExpenseType.strToExpenseType(cursor.getString(2)),
-                cursor.getString(3), new Date()/*por enquanto sera a new date por razoes experimentair*/);
+        Expense expense = null;
+        try {
+            expense = new Expense(cursor.getDouble(1), ExpenseType.valueOf(cursor.getString(2).toUpperCase()),
+                    cursor.getString(3), new SimpleDateFormat("dd-M-yyyy").parse(cursor.getString(4)));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         expense.setId(id);
         return expense;
     }

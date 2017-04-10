@@ -77,6 +77,10 @@ public class Expense {
         this.id = id;
     }
 
+    public String getDateFormatted() {
+        return new SimpleDateFormat("dd-M-yyyy").format(date);
+    }
+
     @Override
     public boolean equals(Object obj) {
         Expense other = (Expense) obj;
@@ -88,9 +92,7 @@ public class Expense {
 
     @Override
     public String toString() {
-        SimpleDateFormat df = new SimpleDateFormat("dd-M-yyyy");
-        String stringData = df.format(date);
-        return value + ";" + type.toString() + ";" + description + ";" + stringData;
+        return value + ";" + type.toString() + ";" + description + ";" + getDateFormatted();
     }
 
 }

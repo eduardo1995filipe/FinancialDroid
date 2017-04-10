@@ -6,8 +6,9 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import bagarrao.financialdroid.Expense;
@@ -57,11 +58,12 @@ public class ExpenseDataSource {
      * @return returns the Expense created
      */
     public Expense createExpense(Expense expense) {
+
         ContentValues values = new ContentValues();
         values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_PRICE, expense.getValue());
         values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_TYPE, expense.getType().toString());
         values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_DESCRIPTION, expense.getDescription());
-        values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_DATE, expense.getDate().toString());
+        values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_DATE, expense.getDateFormatted());
 
         long insertId = database.insert(DataSQLiteOpenHelper.EXPENSE_TABLE, null,
                 values);
@@ -73,6 +75,7 @@ public class ExpenseDataSource {
         Expense newExpense = cursorToExpense(cursor);
         cursor.close();
         return newExpense;
+
     }
 
     /**
@@ -92,6 +95,7 @@ public class ExpenseDataSource {
      * @return a List with all Expenses
      */
     public List<Expense> getAllExpenses() {
+
         List<Expense> expenses = new ArrayList<Expense>();
 
         Cursor cursor = database.query(DataSQLiteOpenHelper.EXPENSE_TABLE,
@@ -118,8 +122,13 @@ public class ExpenseDataSource {
         long id = cursor.getLong(0);
 //        arranjar forma de mudar uma string para uma data som a classe simple date format[classe precisa de alteracoes]
         String newDate = cursor.getString(4);
-        Expense expense = new Expense(cursor.getDouble(1), ExpenseType.strToExpenseType(cursor.getString(2)),
-                cursor.getString(3), new Date()/*por enquanto sera a new date por razoes experimentair*/);
+        Expense expense = null;
+        try {
+            expense = new Expense(cursor.getDouble(1), ExpenseType.valueOf(cursor.getString(2).toUpperCase()),
+                    cursor.getString(3), new SimpleDateFormat("dd-M-yyyy").parse(cursor.getString(4)));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         expense.setId(id);
         return expense;
     }
