@@ -1,11 +1,17 @@
 package bagarrao.financialdroid;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,6 +36,8 @@ public class ExpensesActivity extends AppCompatActivity {
     private ArrayAdapter<CharSequence> spinnerAdapter;
     private ArrayAdapter<String> expenseListAdapter;
 
+    private Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,13 +45,62 @@ public class ExpensesActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Expense Viewer");
         setSupportActionBar(toolbar);
+        this.context = this;
         init();
+
+        expenseListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                showDeleteDialog(context, position);
+            }
+        });
+
+    }
+
+    public void showDeleteDialog(final Context context, final int index) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage("Are you sure you want to delete this expense?");
+        builder.setTitle("Delete Expense");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                removeExpense(index);
+                Toast.makeText(context, "Expense removed successfully!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton("No", null);
+        builder.show();
+
+    }
+
+    /**
+     * @param index
+     */
+    public void removeExpense(int index) {
+        this.expenseList = dataSource.getAllExpenses();
+        if (expenseList == null)
+            expenseList = new ArrayList<>();
+        else if (expenseList.size() - 1 >= index) {
+            Expense e = expenseList.get(index);
+            dataSource.deleteExpense(e);
+            expenseList.remove(index);
+        }
+        expenseListString.clear();
+        for (Expense e : expenseList) {
+            SimpleDateFormat df = new SimpleDateFormat("dd-M-yyyy");
+            String stringData = df.format(e.getDate());
+            String stringExpense = e.getDescription() + " | " + e.getValue() + "€ | " + stringData + " | " + e.getType().toString();
+            expenseListString.add(stringExpense);
+        }
+        expenseListAdapter.notifyDataSetChanged();
+//        System.out.println("ESTOU NO REMOVEEXPENSE()");
     }
 
     /**
      * initializes all the elements
      */
     public void init() {
+
         //        init DB
         this.dataSource = new ExpenseDataSource(this);
         this.dataSource.open();

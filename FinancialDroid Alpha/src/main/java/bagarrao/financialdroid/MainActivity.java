@@ -12,6 +12,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import bagarrao.financialdroid.database.ExpenseDataSource;
@@ -92,8 +93,9 @@ public class MainActivity extends AppCompatActivity {
         backupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                backupToCSV();
-                Toast.makeText(getApplicationContext(), "Backup is successfully done! Please enjoy :D", Toast.LENGTH_SHORT).show();
+                String filePath = backupToCSV();
+                Toast.makeText(getApplicationContext(), "Backup is successfully done! Please enjoy :D\n" +
+                        "File directory: " + filePath, Toast.LENGTH_LONG).show();
             }
         });
 
@@ -117,11 +119,20 @@ public class MainActivity extends AppCompatActivity {
     /**
      * backups all expenses to a CSV file
      */
-    public void backupToCSV() {
+    public String backupToCSV() {
+        String filePath = "";
+        Date date = new Date();
         try {
             File file = new File(this.getApplicationContext().getFilesDir(), "backup.csv");
             if (!file.exists())
                 file.createNewFile();
+            else {
+                for (int i = 0; ; i++) {
+                    file = new File(this.getApplicationContext().getFilesDir(), "backup(" + i + ").csv");
+                    if (!file.exists())
+                        break;
+                }
+            }
             BufferedWriter bw = new BufferedWriter(new FileWriter(file));
             ExpenseDataSource dataSource = new ExpenseDataSource(this.getApplicationContext());
             dataSource.open();
@@ -129,14 +140,14 @@ public class MainActivity extends AppCompatActivity {
             for (Expense e : list) {
                 bw.write(e.toString() + "\n");
             }
+            filePath = file.getAbsolutePath();
             dataSource.close();
             bw.flush();
             bw.close();
         } catch (IOException io) {
             io.getStackTrace();
         }
-
-
+        return filePath;
     }
 
 }
