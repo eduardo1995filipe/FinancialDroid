@@ -2,7 +2,7 @@ package bagarrao.financialdroid;
 
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedList;
+import java.util.List;
 
 import bagarrao.financialdroid.utils.DateForCompare;
 import bagarrao.financialdroid.utils.ExpenseType;
@@ -17,7 +17,7 @@ public class Sorter {
      * @param a List to sort by Date in a decreasing way
      * @return List sorted
      */
-    public static LinkedList<Expense> sorterByDateDec(LinkedList<Expense> a) {
+    public static List<Expense> sorterByDateDec(List<Expense> a) {
         Collections.sort(a, new ExternalDateComparatorDec());
         return a;
     }
@@ -26,7 +26,7 @@ public class Sorter {
      * @param a List to sort by Date in a ascending way
      * @return List sorted
      */
-    public static LinkedList<Expense> sorterByDateCre(LinkedList<Expense> a) {
+    public static List<Expense> sorterByDateCre(List<Expense> a) {
         Collections.sort(a, new ExternalDateComparatorCre());
         return a;
     }
@@ -35,7 +35,7 @@ public class Sorter {
      * @param a List to sort by Cost in a decreasing way
      * @return List sorted
      */
-    public static LinkedList<Expense> sorterByCostDec(LinkedList<Expense> a) {
+    public static List<Expense> sorterByCostDec(List<Expense> a) {
         Collections.sort(a, new ExternalCostComparatorDec());
         return a;
     }
@@ -44,7 +44,7 @@ public class Sorter {
      * @param a List to sort by Cost in a ascending way
      * @return List sorted
      */
-    public static LinkedList<Expense> sorterByCostCre(LinkedList<Expense> a) {
+    public static List<Expense> sorterByCostCre(List<Expense> a) {
         Collections.sort(a, new ExternalCostComparatorCre());
         return a;
     }
@@ -53,7 +53,7 @@ public class Sorter {
      * @param tipo
      * @return
      */
-    public static LinkedList<Expense> getListByType(ExpenseType tipo) {
+    public static List<Expense> getListByType(ExpenseType tipo) {
         // return GestorDespesa.getInstance().getMapa_despesas().get(tipo);
         return null;
     }

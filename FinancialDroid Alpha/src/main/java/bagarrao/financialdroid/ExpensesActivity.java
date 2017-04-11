@@ -21,6 +21,7 @@ import bagarrao.financialdroid.database.ExpenseDataSource;
 
 public class ExpensesActivity extends AppCompatActivity {
 
+    private ExpenseOrder currentOrder;
     private ListView expenseListView;
     private Spinner orderSpinner;
 
@@ -100,7 +101,7 @@ public class ExpensesActivity extends AppCompatActivity {
      * initializes all the elements
      */
     public void init() {
-
+        this.currentOrder = ExpenseOrder.DATE_ASCENDING;
         //        init DB
         this.dataSource = new ExpenseDataSource(this);
         this.dataSource.open();
@@ -117,10 +118,36 @@ public class ExpensesActivity extends AppCompatActivity {
         this.expenseListAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, expenseListString);
         expenseListView.setAdapter(expenseListAdapter);
-
-
         //        dbReader
         readDB();
+
+        orderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        currentOrder = ExpenseOrder.DATE_ASCENDING;
+                        break;
+                    case 1:
+                        currentOrder = ExpenseOrder.DATE_DESCENDING;
+                        break;
+                    case 2:
+                        currentOrder = ExpenseOrder.PRICE_ASCENDING;
+                        break;
+                    case 3:
+                        currentOrder = ExpenseOrder.PRICE_DESCENDING;
+                        break;
+                    default:
+                }
+                readDB();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
     }
 
     /**
@@ -131,6 +158,7 @@ public class ExpensesActivity extends AppCompatActivity {
         if (expenseList == null)
             expenseList = new ArrayList<>();
         expenseListString.clear();
+        currentOrder.sortByOrder(expenseList);
         for (Expense e : expenseList) {
             SimpleDateFormat df = new SimpleDateFormat("dd-M-yyyy");
             String stringData = df.format(e.getDate());
