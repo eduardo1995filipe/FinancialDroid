@@ -21,6 +21,7 @@
             android:text="Backup data whenever FinancialDroid starts:" />
 
         <Switch
+            android:id="@+id/autoBackupSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -37,14 +38,29 @@
         android:orientation="horizontal">
 
         <ListView
+            android:id="@+id/backupListListview"
             android:layout_width="200dp"
             android:layout_height="300dp"></ListView>
 
-        <TextView
-            android:id="@+id/backupInfoTextView"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="text" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/backupInfoTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="text" />
+
+            <Button
+                android:id="@+id/deleteBackupButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="delete backup" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <Button
@@ -54,7 +70,7 @@
         android:text="Erase all backups" />
 
     <Button
-        android:id="@+id/newBackupFilesButton"
+        android:id="@+id/newBackupFileButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Do a new backup" />
