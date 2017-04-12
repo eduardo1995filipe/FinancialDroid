@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+/**
+ * @author Eduardo Bagarrao
+ */
 public class SplashScreenActivity extends AppCompatActivity {
 
     private Intent intent;
@@ -15,6 +18,4 @@ public class SplashScreenActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
-
 }

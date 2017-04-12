@@ -7,18 +7,17 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import bagarrao.financialdroid.Expense;
-import bagarrao.financialdroid.utils.ExpenseType;
+import bagarrao.financialdroid.Expense.Expense;
+import bagarrao.financialdroid.Expense.ExpenseType;
+import bagarrao.financialdroid.utils.DateForCompare;
 
 
 /**
- * Created by eduar on 24/01/2017.
+ * @author Eduardo Bagarrao
  */
-
 public class ExpenseDataSource {
     private SQLiteDatabase database;
     private DataSQLiteOpenHelper dbHelper;
@@ -28,7 +27,6 @@ public class ExpenseDataSource {
 
     /**
      * creates de DataSource object
-     *
      * @param context context of the current activity where the DataSouce object is created
      */
     public ExpenseDataSource(Context context) {
@@ -37,7 +35,6 @@ public class ExpenseDataSource {
 
     /**
      * opens the database in "WRITE" mode
-     *
      * @throws SQLException if some problem occurs while access the database
      */
     public void open() throws SQLException {
@@ -53,7 +50,6 @@ public class ExpenseDataSource {
 
     /**
      * add an Expense to the database
-     *
      * @param expense to be added in the database
      * @return returns the Expense created
      */
@@ -63,7 +59,7 @@ public class ExpenseDataSource {
         values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_PRICE, expense.getValue());
         values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_TYPE, expense.getType().toString());
         values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_DESCRIPTION, expense.getDescription());
-        values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_DATE, expense.getDateFormatted());
+        values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_DATE, DateForCompare.DATE_FORMATTED.format(expense.getDate()));
 
         long insertId = database.insert(DataSQLiteOpenHelper.EXPENSE_TABLE, null,
                 values);
@@ -75,12 +71,10 @@ public class ExpenseDataSource {
         Expense newExpense = cursorToExpense(cursor);
         cursor.close();
         return newExpense;
-
     }
 
     /**
      * remove an Expense form the database
-     *
      * @param expense Expense to be removed
      */
     public void deleteExpense(Expense expense) {
@@ -91,7 +85,6 @@ public class ExpenseDataSource {
 
     /**
      * gets all Expenses from the database
-     *
      * @return a List with all Expenses
      */
     public List<Expense> getAllExpenses() {
@@ -107,25 +100,21 @@ public class ExpenseDataSource {
             expenses.add(expense);
             cursor.moveToNext();
         }
-        // Fechar o cursor
         cursor.close();
         return expenses;
     }
 
     /**
      * converts the Cursor on the respective Expense
-     *
      * @param cursor Cursor to be converted to Expense
      * @return Expense converted
      */
     private Expense cursorToExpense(Cursor cursor) {
         long id = cursor.getLong(0);
-//        arranjar forma de mudar uma string para uma data som a classe simple date format[classe precisa de alteracoes]
-        String newDate = cursor.getString(4);
         Expense expense = null;
         try {
             expense = new Expense(cursor.getDouble(1), ExpenseType.valueOf(cursor.getString(2).toUpperCase()),
-                    cursor.getString(3), new SimpleDateFormat("dd-M-yyyy").parse(cursor.getString(4)));
+                    cursor.getString(3), DateForCompare.DATE_FORMATTED.parse(cursor.getString(4)));
         } catch (ParseException e) {
             e.printStackTrace();
         }

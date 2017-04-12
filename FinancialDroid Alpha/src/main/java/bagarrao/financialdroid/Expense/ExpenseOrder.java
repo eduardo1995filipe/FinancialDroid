@@ -1,15 +1,24 @@
-package bagarrao.financialdroid;
+package bagarrao.financialdroid.Expense;
+
+import android.util.Log;
 
 import java.util.List;
 
-/**
- * Created by eduar on 11/04/2017.
- */
+import bagarrao.financialdroid.utils.Sorter;
 
+/**
+ * @author Eduardo Bagarrao
+ */
 public enum ExpenseOrder {
 
     DATE_DESCENDING, DATE_ASCENDING, PRICE_DESCENDING, PRICE_ASCENDING;
 
+    /**
+     * Sort the list in a way that depends of the current enum that is
+     *
+     * @param listToSort List to be sorted
+     * @return Sorted list
+     */
     public List<Expense> sortByOrder(List<Expense> listToSort) {
         switch (this) {
             case DATE_ASCENDING:
@@ -25,10 +34,9 @@ public enum ExpenseOrder {
                 listToSort = Sorter.sorterByCostDec(listToSort);
                 break;
             default:
-                System.out.println("ERRO DESCONHECIDO DE ORDENACAO DA LISTA");
+                Log.e("ExpenseOrder", "Unknown error while sorting the list. List returned unsorted");
                 break;
         }
         return listToSort;
     }
-
 }

@@ -3,7 +3,6 @@ package bagarrao.financialdroid;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -16,9 +15,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import bagarrao.financialdroid.Expense.Expense;
+import bagarrao.financialdroid.Expense.ExpenseType;
 import bagarrao.financialdroid.database.ExpenseDataSource;
-import bagarrao.financialdroid.utils.ExpenseType;
 
+/**
+ * @author Eduardo Bagarrao
+ */
 public class AddExpenseActivity extends AppCompatActivity {
 
     private Button addExpenseButton;
@@ -30,47 +33,12 @@ public class AddExpenseActivity extends AppCompatActivity {
     private CalendarView dateCalendarView;
     private Date expenseDate;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_expense);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Add a new expense");
-        setSupportActionBar(toolbar);
         init();
-
-        dateCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                String myDate = dayOfMonth + "-" + month + "-" + year;
-                try {
-                    expenseDate = new SimpleDateFormat("dd-M-yyyy").parse(myDate);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });
-
-        addExpenseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String price = priceEditText.getText().toString();
-                String description = descriptionEditText.getText().toString();
-                boolean noNullFields = !price.trim().equals("") && !description.trim().equals("");
-                if (noNullFields) {
-                Expense expense = new Expense(Double.parseDouble(priceEditText.getText().toString()),
-                        ExpenseType.valueOf(expenseTypeSpinner.getSelectedItem().toString().toUpperCase()), descriptionEditText.getText().toString(),
-                        expenseDate);
-                dataSource.createExpense(expense);
-                Toast.makeText(getApplicationContext(), "Expense sucessefully registered!", Toast.LENGTH_SHORT).show();
-                    finish();
-                } else
-                    Toast.makeText(getApplicationContext(), "Fill the fields that are null before register your new Expense!!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
+        setListeners();
     }
 
     @Override
@@ -100,10 +68,42 @@ public class AddExpenseActivity extends AppCompatActivity {
         this.spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.expense_type_kind, R.layout.support_simple_spinner_dropdown_item);
         spinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         expenseTypeSpinner.setAdapter(spinnerAdapter);
-//        db init
         this.dataSource = new ExpenseDataSource(this);
         this.expenseDate = new Date();
     }
 
+    /**
+     * sets the listeners of the views
+     */
+    public void setListeners() {
+        dateCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+                String myDate = dayOfMonth + "-" + month + "-" + year;
+                try {
+                    expenseDate = new SimpleDateFormat("dd-M-yyyy").parse(myDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
+        addExpenseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String price = priceEditText.getText().toString();
+                String description = descriptionEditText.getText().toString();
+                boolean noNullFields = !price.trim().equals("") && !description.trim().equals("");
+                if (noNullFields) {
+                    Expense expense = new Expense(Double.parseDouble(priceEditText.getText().toString()),
+                            ExpenseType.valueOf(expenseTypeSpinner.getSelectedItem().toString().toUpperCase()), descriptionEditText.getText().toString(),
+                            expenseDate);
+                    dataSource.createExpense(expense);
+                    Toast.makeText(getApplicationContext(), "Expense sucessefully registered!", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else
+                    Toast.makeText(getApplicationContext(), "Fill the fields that are null before register your new Expense!!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

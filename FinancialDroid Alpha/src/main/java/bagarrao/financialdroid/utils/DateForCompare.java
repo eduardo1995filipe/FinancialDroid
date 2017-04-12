@@ -1,5 +1,6 @@
 package bagarrao.financialdroid.utils;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -7,6 +8,16 @@ import java.util.Date;
  * @author Eduardo
  */
 public class DateForCompare {
+
+    /**
+     * Defines the default format for dates in FinancialDroid
+     */
+    public static final String SIMPLE_DATE_FORMAT = "dd-M-yyyy";
+
+    /**
+     * Default SimpleDateFormat used in FinancialDroid
+     */
+    public static final SimpleDateFormat DATE_FORMATTED = new SimpleDateFormat(SIMPLE_DATE_FORMAT);
 
     private Calendar cal = Calendar.getInstance();
     private Date date;
@@ -16,7 +27,6 @@ public class DateForCompare {
 
     /**
      * Constructor to convert a Date to a date that can be easilyCompared
-     *
      * @param date Date to convert
      */
     public DateForCompare(Date date) {
@@ -29,7 +39,6 @@ public class DateForCompare {
 
     /**
      * Getter for the Date
-     *
      * @return returns the Date
      */
     public Date getDate() {
@@ -38,7 +47,6 @@ public class DateForCompare {
 
     /**
      * Getter for the year
-     *
      * @return Date's year
      */
     public int getYear() {
@@ -47,7 +55,6 @@ public class DateForCompare {
 
     /**
      * Getter for the month
-     *
      * @return Date's month
      */
     public int getMonth() {
@@ -56,7 +63,6 @@ public class DateForCompare {
 
     /**
      * Getter for the day
-     *
      * @return Date's day
      */
     public int getDay() {

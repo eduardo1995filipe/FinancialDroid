@@ -6,9 +6,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 /**
- * Created by eduar on 24/01/2017.
+ * @author Eduardo Bagarrao
  */
-
 public class DataSQLiteOpenHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
@@ -26,7 +25,7 @@ public class DataSQLiteOpenHelper extends SQLiteOpenHelper {
     public static final String ACCESS_COLUMN_NAME_DATE = "date";
 
     /**
-     * query to create tables
+     * queries to create tables
      */
     private static final String EXPENSE_TABLE_CREATE = "create table " + EXPENSE_TABLE +
             "(" + EXPENSE_COLUMN_ID + " integer primary key autoincrement, " + EXPENSE_COLUMN_NAME_PRICE +
@@ -42,7 +41,6 @@ public class DataSQLiteOpenHelper extends SQLiteOpenHelper {
 
     /**
      * Initializes the SQLiteOpenHelper
-     *
      * @param context context of activity to initialize the SQLiteOpenHelper
      */
     public DataSQLiteOpenHelper(Context context) {

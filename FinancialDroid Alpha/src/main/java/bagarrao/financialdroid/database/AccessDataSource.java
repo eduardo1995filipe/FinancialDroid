@@ -7,16 +7,16 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import bagarrao.financialdroid.utils.AccessDate;
+import bagarrao.financialdroid.utils.DateForCompare;
 
 /**
- * Created by eduar on 31/01/2017.
+ * @author Eduardo Bagarrao
  */
-
 public class AccessDataSource {
     private SQLiteDatabase database;
     private DataSQLiteOpenHelper dbHelper;
@@ -25,7 +25,6 @@ public class AccessDataSource {
 
     /**
      * creates de DataSource object
-     *
      * @param context context of the current activity where the DataSouce object is created
      */
     public AccessDataSource(Context context) {
@@ -34,7 +33,6 @@ public class AccessDataSource {
 
     /**
      * opens the database in "WRITE" mode
-     *
      * @throws SQLException if some problem occurs while access the database
      */
     public void open() throws SQLException {
@@ -50,7 +48,6 @@ public class AccessDataSource {
 
     /**
      * add an Expense to the database
-     *
      * @param date to be added in the database
      * @return returns the Expense created
      */
@@ -72,7 +69,6 @@ public class AccessDataSource {
 
     /**
      * remove an Expense form the database
-     *
      * @param date Expense to be removed
      */
     public void deleteAccessDate(AccessDate date) {
@@ -83,7 +79,6 @@ public class AccessDataSource {
 
     /**
      * gets all Expenses from the database
-     *
      * @return a List with all Expenses
      */
     public List<AccessDate> getAllAccessDates() {
@@ -98,23 +93,23 @@ public class AccessDataSource {
             accessDates.add(date);
             cursor.moveToNext();
         }
-        // Fechar o cursor
         cursor.close();
         return accessDates;
     }
 
     /**
      * converts the Cursor on the respective Expense
-     *
      * @param cursor Cursor to be converted to Expense
      * @return Expense converted
      */
     private AccessDate cursorToAccessDate(Cursor cursor) {
         long id = cursor.getLong(0);
-//        arranjar forma de mudar uma string para uma data som a classe simple date format[classe precisa de alteracoes]
-        String newDate = cursor.getString(1);
-//        por razoes de teste vai ser com new date
-        AccessDate date = new AccessDate(new Date());
+        AccessDate date = null;
+        try {
+            date = new AccessDate(DateForCompare.DATE_FORMATTED.parse(cursor.getString(1)));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         date.setId(id);
         return date;
     }
