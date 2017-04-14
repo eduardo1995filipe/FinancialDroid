@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Switch;
@@ -29,15 +30,18 @@ public class BackupActivity extends AppCompatActivity {
     private Button backupButton;
     private Button deleteBackupButton;
     private Button resetButton;
+    private Button restoreButton;
 
-    private List<File> backupFilesList;
+    //    private List<File> backupFilesList;
     private List<String> backupFilesListString;
+    private ArrayAdapter<String> backupFilesAdapter;
     private File backupFileSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_backup);
+        init();
     }
 
     /**
@@ -50,12 +54,28 @@ public class BackupActivity extends AppCompatActivity {
         this.backupButton = (Button) findViewById(R.id.newBackupFileButton);
         this.deleteBackupButton = (Button) findViewById(R.id.deleteBackupButton);
         this.resetButton = (Button) findViewById(R.id.resetBackupFilesButton);
+        this.restoreButton = (Button) findViewById(R.id.restoreBackupButton);
+
+        //mudar para metodo depois
+//        criar lista e passar todos os ficheiros de backup para la
+        List<File> list = bm.getAllBackupFiles();
+//        passar para a lista de strings
+        backupFilesListString.clear();
+        for (File f : list) {
+            backupFilesListString.add(f.getName());
+        }
+//
+        this.backupFilesAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, backupFilesListString);
+        backupListView.setAdapter(backupFilesAdapter);
 
         this.backupFileSelected = null;
 
         this.bm.setContext(this);
         this.autoBackupEnabled = autoBackupSwitch.isEnabled();
-        this.backupFilesList = bm.getAllBackupFiles();
+//        this.backupFilesList = bm.getAllBackupFiles();
+
+
     }
 
     /**
@@ -71,9 +91,11 @@ public class BackupActivity extends AppCompatActivity {
         });
 
         backupListView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            List<File> list = bm.getAllBackupFiles();
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                for (File f : backupFilesList) {
+
+                for (File f : list) {
                     if (f.getName().equals(backupFilesListString.get(position)))
                         backupFileSelected = f;
                 }
@@ -81,7 +103,7 @@ public class BackupActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                backupFileSelected = backupFilesList.get(0);
+                backupFileSelected = list.get(0);
             }
         });
 
@@ -99,6 +121,8 @@ public class BackupActivity extends AppCompatActivity {
                     Log.e("BackupActivity", "Problem to remove backup file");
                 }
 //                notificar as alteracoes
+                backupFilesAdapter.notifyDataSetChanged();
+
             }
         });
 
@@ -107,6 +131,16 @@ public class BackupActivity extends AppCompatActivity {
             public void onClick(View v) {
                 bm.createBackup();
 //                adicionar o backup ao listview
+
+                //passar para funcao
+                List<File> list = bm.getAllBackupFiles();
+//        passar para a lista de strings
+                backupFilesListString.clear();
+                for (File f : list) {
+                    backupFilesListString.add(f.getName());
+                }
+
+                backupFilesAdapter.notifyDataSetChanged();
             }
         });
 
@@ -114,9 +148,26 @@ public class BackupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 bm.resetBackups();
+
+                //passar para funcao
+                List<File> list = bm.getAllBackupFiles();
+//        passar para a lista de strings
+                backupFilesListString.clear();
+                for (File f : list) {
+                    backupFilesListString.add(f.getName());
+                }
+
 //                eliminat todos os backups e notificar a listview
+                backupFilesAdapter.notifyDataSetChanged();
+            }
+        });
+
+
+        restoreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //fica para ultimo... muito extenso
             }
         });
     }
-
 }
