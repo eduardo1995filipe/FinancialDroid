@@ -2,6 +2,7 @@ package bagarrao.financialdroid;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -9,7 +10,9 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import bagarrao.financialdroid.backup.Backup;
+import java.io.File;
+import java.util.List;
+
 import bagarrao.financialdroid.backup.BackupManager;
 
 /**
@@ -19,6 +22,7 @@ public class BackupActivity extends AppCompatActivity {
 
     public static boolean autoBackupEnabled;
     private BackupManager bm = BackupManager.getInstance();
+
     private Switch autoBackupSwitch;
     private ListView backupListView;
     private TextView infoTextview;
@@ -26,7 +30,9 @@ public class BackupActivity extends AppCompatActivity {
     private Button deleteBackupButton;
     private Button resetButton;
 
-    private Backup backupSelected;
+    private List<File> backupFilesList;
+    private List<String> backupFilesListString;
+    private File backupFileSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +51,11 @@ public class BackupActivity extends AppCompatActivity {
         this.deleteBackupButton = (Button) findViewById(R.id.deleteBackupButton);
         this.resetButton = (Button) findViewById(R.id.resetBackupFilesButton);
 
-        this.backupSelected = null;
+        this.backupFileSelected = null;
 
         this.bm.setContext(this);
         this.autoBackupEnabled = autoBackupSwitch.isEnabled();
+        this.backupFilesList = bm.getAllBackupFiles();
     }
 
     /**
@@ -66,19 +73,31 @@ public class BackupActivity extends AppCompatActivity {
         backupListView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+                for (File f : backupFilesList) {
+                    if (f.getName().equals(backupFilesListString.get(position)))
+                        backupFileSelected = f;
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                backupFileSelected = backupFilesList.get(0);
             }
         });
 
         deleteBackupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bm.deleteBackup(backupSelected);
+                Boolean removeSuccessfull = false;
+                try {
+                    removeSuccessfull = bm.deleteBackup(backupFileSelected);
+                } catch (NullPointerException e) {
+                    Log.e("BackupActivity", "No backup is selected");
+                    e.getStackTrace();
+                }
+                if (!removeSuccessfull) {
+                    Log.e("BackupActivity", "Problem to remove backup file");
+                }
 //                notificar as alteracoes
             }
         });

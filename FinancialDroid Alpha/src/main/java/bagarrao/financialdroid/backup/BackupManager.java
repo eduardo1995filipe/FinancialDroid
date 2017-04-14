@@ -2,6 +2,7 @@ package bagarrao.financialdroid.backup;
 
 import android.content.Context;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,17 +16,16 @@ public class BackupManager {
     private static final BackupManager INSTANCE = new BackupManager();
     private Context context;
     private boolean autoBackupEnabled;
-    private LinkedList<Backup> backupList;
+//    private LinkedList<Backup> backupList;
 
     /**
      *
      */
     private BackupManager() {
-        this.backupList = new LinkedList<>();
+//        this.backupList = new LinkedList<>();
     }
 
     /**
-     *
      * @return
      */
     public static BackupManager getInstance() {
@@ -58,17 +58,29 @@ public class BackupManager {
     /**
      * @return
      */
-    public List<Backup> getBackups() {
-        return backupList;
+    public List<File> getAllBackupFiles() {
+        LinkedList<File> backupFilesList = new LinkedList<>();
+        File file = new File(FILE_NAME + FILE_EXTENSION);
+        if (file.exists())
+            backupFilesList.add(file);
+        for (int i = 1; ; i++) {
+            File nextFile = new File(FILE_NAME + "(" + i + ")" + FILE_EXTENSION);
+            if (nextFile.exists())
+                backupFilesList.add(nextFile);
+            else
+                break;
+        }
+        return backupFilesList;
     }
 
     /**
      * @return
      */
-    public boolean deleteBackup(Backup toRemove) {
-        for (Backup backup : backupList) {
-            if (backup.getBackupName().equals(toRemove.getBackupName())) {
-                backupList.remove(backup);
+    public boolean deleteBackup(File toRemove) {
+        List<File> list = getAllBackupFiles();
+        for (File f : list) {
+            if (f.getName().equals(toRemove.getName())) {
+                list.remove(f);
                 return true;
             }
         }
@@ -81,17 +93,15 @@ public class BackupManager {
     public void createBackup() {
         Backup backup = new Backup(context);
         backup.go();
-        saveBackup(backup);
     }
 
     /**
-     * @param toSave
+     *
      */
-    private void saveBackup(Backup toSave) {
-        backupList.add(toSave);
-    }
-
     public void resetBackups() {
-        backupList.clear();
+        List<File> list = getAllBackupFiles();
+        for (File f : list) {
+            f.delete();
+        }
     }
 }
