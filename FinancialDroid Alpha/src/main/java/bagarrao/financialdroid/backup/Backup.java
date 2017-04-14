@@ -13,13 +13,9 @@ import bagarrao.financialdroid.Expense.Expense;
 import bagarrao.financialdroid.database.ExpenseDataSource;
 
 /**
- * Created by eduar on 12/04/2017.
+ * @author Eduardo Bagarrao
  */
-
 public class Backup {
-
-    public static final String FILE_NAME = "backup";
-    public static final String FILE_EXTENSION = ".csv";
 
     private Context context;
     private BufferedWriter bw;
@@ -43,14 +39,22 @@ public class Backup {
      * @return
      */
     public String getAbsPath() {
-        return absPath;
+        return this.absPath;
     }
 
     /**
      * @return
      */
     public String getBackupName() {
-        return backupName;
+        return this.backupName;
+    }
+
+
+    /**
+     * @return
+     */
+    public File getFile() {
+        return this.file;
     }
 
     /**
@@ -59,7 +63,7 @@ public class Backup {
     private void init() {
         this.date = new Date();
         this.dataSource = new ExpenseDataSource(context);
-        this.file = new File(context.getFilesDir(), (FILE_NAME + FILE_EXTENSION));
+        this.file = new File(context.getFilesDir(), (BackupManager.FILE_NAME + BackupManager.FILE_EXTENSION));
         if (!file.exists())
             try {
                 file.createNewFile();
@@ -68,7 +72,7 @@ public class Backup {
             }
         else {
             for (int i = 1; ; i++) {
-                file = new File(context.getFilesDir(), FILE_NAME + "(" + i + ")" + FILE_EXTENSION);
+                file = new File(context.getFilesDir(), BackupManager.FILE_NAME + "(" + i + ")" + BackupManager.FILE_EXTENSION);
                 if (!file.exists())
                     break;
             }
@@ -117,5 +121,10 @@ public class Backup {
             }
         }
         close();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this.getBackupName().equals(((Backup) obj).getBackupName());
     }
 }

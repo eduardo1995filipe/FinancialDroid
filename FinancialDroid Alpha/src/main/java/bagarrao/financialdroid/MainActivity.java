@@ -7,16 +7,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-
-import bagarrao.financialdroid.Expense.Expense;
-import bagarrao.financialdroid.database.ExpenseDataSource;
-
 /**
  * @author Eduardo Bagarrao
  */
@@ -140,39 +130,39 @@ public class MainActivity extends AppCompatActivity {
 //        });
     }
 
-    /**
-     * backups all expenses to a CSV file
-     */
-    public String backupToCSV() {
-        String filePath = "";
-        Date date = new Date();
-        BufferedWriter bw;
-        ExpenseDataSource dataSource;
-        try {
-            File file = new File(this.getApplicationContext().getFilesDir(), "backup.csv");
-            if (!file.exists())
-                file.createNewFile();
-            else {
-                for (int i = 0; ; i++) {
-                    file = new File(this.getApplicationContext().getFilesDir(), "backup(" + i + ").csv");
-                    if (!file.exists())
-                        break;
-                }
-            }
-            bw = new BufferedWriter(new FileWriter(file));
-            dataSource = new ExpenseDataSource(this.getApplicationContext());
-            dataSource.open();
-            List<Expense> list = dataSource.getAllExpenses();
-            for (Expense e : list) {
-                bw.write(e.toString() + "\n");
-            }
-            filePath = file.getAbsolutePath();
-            dataSource.close();
-            bw.flush();
-            bw.close();
-        } catch (IOException io) {
-            io.getStackTrace();
-        }
-        return filePath;
-    }
+//    /**
+//     * backups all expenses to a CSV file
+//     */
+//    public String backupToCSV() {
+//        String filePath = "";
+//        Date date = new Date();
+//        BufferedWriter bw;
+//        ExpenseDataSource dataSource;
+//        try {
+//            File file = new File(this.getApplicationContext().getFilesDir(), "backup.csv");
+//            if (!file.exists())
+//                file.createNewFile();
+//            else {
+//                for (int i = 0; ; i++) {
+//                    file = new File(this.getApplicationContext().getFilesDir(), "backup(" + i + ").csv");
+//                    if (!file.exists())
+//                        break;
+//                }
+//            }
+//            bw = new BufferedWriter(new FileWriter(file));
+//            dataSource = new ExpenseDataSource(this.getApplicationContext());
+//            dataSource.open();
+//            List<Expense> list = dataSource.getAllExpenses();
+//            for (Expense e : list) {
+//                bw.write(e.toString() + "\n");
+//            }
+//            filePath = file.getAbsolutePath();
+//            dataSource.close();
+//            bw.flush();
+//            bw.close();
+//        } catch (IOException io) {
+//            io.getStackTrace();
+//        }
+//        return filePath;
+//    }
 }
