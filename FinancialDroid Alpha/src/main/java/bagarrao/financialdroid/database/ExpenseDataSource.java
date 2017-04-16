@@ -84,6 +84,16 @@ public class ExpenseDataSource {
     }
 
     /**
+     *
+     */
+    public void deleteAllExpenses() {
+        List<Expense> list = getAllExpenses();
+        for (Expense e : list) {
+            deleteExpense(e);
+        }
+    }
+
+    /**
      * gets all Expenses from the database
      * @return a List with all Expenses
      */

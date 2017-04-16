@@ -67,12 +67,14 @@ public class BackupManager {
         } else
             return backupFilesList;
 
-        for (int i = 1; ; i++) {
+        for (int i = 1, index = 0; ; i++) {
             File nextFile = new File(context.getFilesDir(), FILE_NAME + "(" + i + ")" + FILE_EXTENSION);
             if (nextFile.exists())
                 backupFilesList.add(nextFile);
-            else
+            else if (index > 10)
                 break;
+            else
+                index++;
         }
         return backupFilesList;
     }
@@ -95,7 +97,6 @@ public class BackupManager {
     public void createBackup() {
         Backup backup = new Backup(context);
         backup.go();
-        backup = null;
     }
 
     /**

@@ -65,18 +65,40 @@ public class Backup {
         this.date = new Date();
         this.dataSource = new ExpenseDataSource(context);
         this.file = new File(context.getFilesDir(), (BackupManager.FILE_NAME + BackupManager.FILE_EXTENSION));
-        if (!file.exists())
+        if (!file.exists()) {
             try {
                 file.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            return;
+        }
         else {
-            for (int i = 1; ; i++) {
+            int lastOne = -1;
+            for (int i = 1, index = 0; ; i++) {
                 file = new File(context.getFilesDir(), BackupManager.FILE_NAME + "(" + i + ")" + BackupManager.FILE_EXTENSION);
-                if (!file.exists())
-                    break;
+                if (!file.exists()) {
+                    if (lastOne == -1) {
+                        lastOne = i;
+                    }
+                    if (index > 10)
+                        break;
+                    else {
+                        index++;
+                    }
+                } else {
+                    index = 0;
+                    lastOne = -1;
+                }
             }
+
+            file = new File(context.getFilesDir(), BackupManager.FILE_NAME + "(" + lastOne + ")" + BackupManager.FILE_EXTENSION);
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
         this.backupName = file.getName();
         this.absPath = file.getAbsolutePath();
