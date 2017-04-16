@@ -1,6 +1,7 @@
 package bagarrao.financialdroid.backup;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -112,19 +113,38 @@ public class Backup {
      */
     public void go() {
         open();
+        expenseList = dataSource.getAllExpenses();
         for (Expense e : expenseList) {
             try {
-                expenseList = dataSource.getAllExpenses();
                 bw.write(e.toString() + "\n");
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
         }
         close();
+        Toast.makeText(context, "Backup created successfully\n\n File name: " + file.getName() +
+                "\n\n File Path: " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public boolean equals(Object obj) {
         return this.getBackupName().equals(((Backup) obj).getBackupName());
     }
+
+//    @Override
+//    public void run() {
+//        super.run();
+//        open();
+//        expenseList = dataSource.getAllExpenses();
+//        for (Expense e : expenseList) {
+//            try {
+//                bw.write(e.toString() + "\n");
+//            } catch (IOException e1) {
+//                e1.printStackTrace();
+//            }
+//        }
+//        close();
+//        Toast.makeText(context, "Backup created successfully\n\n File name: " + file.getName() +
+//                "\n\n File Path: " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+//    }
 }

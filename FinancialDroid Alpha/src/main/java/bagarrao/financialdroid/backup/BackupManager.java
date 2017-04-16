@@ -3,6 +3,8 @@ package bagarrao.financialdroid.backup;
 import android.content.Context;
 
 import java.io.File;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,7 +18,8 @@ public class BackupManager {
     private static final BackupManager INSTANCE = new BackupManager();
     private Context context;
     private boolean autoBackupEnabled;
-//    private LinkedList<Backup> backupList;
+    private HashMap<String, Date> fileDateMap; // TODO list of date of all backup files
+
 
     /**
      *
@@ -40,7 +43,6 @@ public class BackupManager {
     }
 
     /**
-     *
      * @param autoBackupEnabled
      */
     public void setAutoBackupEnabled(boolean autoBackupEnabled) {
@@ -48,7 +50,6 @@ public class BackupManager {
     }
 
     /**
-     *
      * @param context
      */
     public void setContext(Context context) {
@@ -60,11 +61,14 @@ public class BackupManager {
      */
     public List<File> getAllBackupFiles() {
         LinkedList<File> backupFilesList = new LinkedList<>();
-        File file = new File(FILE_NAME + FILE_EXTENSION);
-        if (file.exists())
+        File file = new File(context.getFilesDir(), FILE_NAME + FILE_EXTENSION);
+        if (file.exists()) {
             backupFilesList.add(file);
+        } else
+            return backupFilesList;
+
         for (int i = 1; ; i++) {
-            File nextFile = new File(FILE_NAME + "(" + i + ")" + FILE_EXTENSION);
+            File nextFile = new File(context.getFilesDir(), FILE_NAME + "(" + i + ")" + FILE_EXTENSION);
             if (nextFile.exists())
                 backupFilesList.add(nextFile);
             else
@@ -77,12 +81,10 @@ public class BackupManager {
      * @return
      */
     public boolean deleteBackup(File toRemove) {
-        List<File> list = getAllBackupFiles();
-        for (File f : list) {
-            if (f.getName().equals(toRemove.getName())) {
-                list.remove(f);
-                return true;
-            }
+        File file = new File(context.getFilesDir(), toRemove.getName());
+        if (file.exists()) {
+            file.delete();
+            return true;
         }
         return false;
     }
@@ -93,6 +95,7 @@ public class BackupManager {
     public void createBackup() {
         Backup backup = new Backup(context);
         backup.go();
+        backup = null;
     }
 
     /**

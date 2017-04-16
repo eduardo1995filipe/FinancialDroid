@@ -1,5 +1,6 @@
 package bagarrao.financialdroid;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 import bagarrao.financialdroid.backup.BackupManager;
@@ -42,6 +44,7 @@ public class BackupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_backup);
         init();
+        setListeners();
     }
 
     /**
@@ -50,24 +53,21 @@ public class BackupActivity extends AppCompatActivity {
     public void init() {
         this.autoBackupSwitch = (Switch) findViewById(R.id.autoBackupSwitch);
         this.backupListView = (ListView) findViewById(R.id.backupListListview);
-        this.infoTextview = (TextView) findViewById(R.id.autoBackupTextView);
+        this.infoTextview = (TextView) findViewById(R.id.backupInfoTextView);
         this.backupButton = (Button) findViewById(R.id.newBackupFileButton);
         this.deleteBackupButton = (Button) findViewById(R.id.deleteBackupButton);
         this.resetButton = (Button) findViewById(R.id.resetBackupFilesButton);
         this.restoreButton = (Button) findViewById(R.id.restoreBackupButton);
-
-        //mudar para metodo depois
-//        criar lista e passar todos os ficheiros de backup para la
-        List<File> list = bm.getAllBackupFiles();
-//        passar para a lista de strings
-        backupFilesListString.clear();
-        for (File f : list) {
-            backupFilesListString.add(f.getName());
-        }
-//
+        this.backupFilesListString = new LinkedList<>();
         this.backupFilesAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, backupFilesListString);
         backupListView.setAdapter(backupFilesAdapter);
+
+        this.infoTextview.setText("");
+
+        this.backupListView.setBackgroundColor(Color.LTGRAY);
+
+        refreshBackups();
 
         this.backupFileSelected = null;
 
@@ -90,22 +90,22 @@ public class BackupActivity extends AppCompatActivity {
             }
         });
 
-        backupListView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            List<File> list = bm.getAllBackupFiles();
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        backupListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                List<File> list = bm.getAllBackupFiles();
+                String string = backupFilesListString.get(position).trim().toUpperCase();
                 for (File f : list) {
-                    if (f.getName().equals(backupFilesListString.get(position)))
+                    String fileName = f.getName().trim().toUpperCase();
+                    if (string.equals(fileName)) {
                         backupFileSelected = f;
+                        infoTextview.setText("File name: " + f.getName() + " \n Backup date: " + "info exemplo \n info exemplo \n info exemplo");
+                    }
                 }
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                backupFileSelected = list.get(0);
-            }
         });
+
 
         deleteBackupButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,9 +119,11 @@ public class BackupActivity extends AppCompatActivity {
                 }
                 if (!removeSuccessfull) {
                     Log.e("BackupActivity", "Problem to remove backup file");
+                } else {
+                    refreshBackups();
+                    backupFileSelected = null;
+                    infoTextview.setText("");
                 }
-//                notificar as alteracoes
-                backupFilesAdapter.notifyDataSetChanged();
 
             }
         });
@@ -130,17 +132,7 @@ public class BackupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 bm.createBackup();
-//                adicionar o backup ao listview
-
-                //passar para funcao
-                List<File> list = bm.getAllBackupFiles();
-//        passar para a lista de strings
-                backupFilesListString.clear();
-                for (File f : list) {
-                    backupFilesListString.add(f.getName());
-                }
-
-                backupFilesAdapter.notifyDataSetChanged();
+                refreshBackups();
             }
         });
 
@@ -148,17 +140,9 @@ public class BackupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 bm.resetBackups();
-
-                //passar para funcao
-                List<File> list = bm.getAllBackupFiles();
-//        passar para a lista de strings
-                backupFilesListString.clear();
-                for (File f : list) {
-                    backupFilesListString.add(f.getName());
-                }
-
-//                eliminat todos os backups e notificar a listview
-                backupFilesAdapter.notifyDataSetChanged();
+                refreshBackups();
+                backupFileSelected = null;
+                infoTextview.setText("");
             }
         });
 
@@ -166,8 +150,26 @@ public class BackupActivity extends AppCompatActivity {
         restoreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //fica para ultimo... muito extenso
+                // TODO for last
             }
         });
     }
+
+    public void refreshBackups() {
+        List<File> list = bm.getAllBackupFiles();
+        if (list == null)
+            list = new LinkedList<>();
+        backupFilesListString.clear();
+        for (File f : list) {
+            backupFilesListString.add(f.getName());
+        }
+        backupFilesAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onResume() {
+        refreshBackups();
+        super.onResume();
+    }
+
 }
