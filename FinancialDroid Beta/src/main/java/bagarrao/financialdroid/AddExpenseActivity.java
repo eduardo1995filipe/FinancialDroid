@@ -104,7 +104,8 @@ public class AddExpenseActivity extends AppCompatActivity {
                     DateForCompare expenseDFC = new DateForCompare(expense.getDate());
                     DateForCompare currentDFC = new DateForCompare(new Date());
 
-                    if (expenseDFC.getMonth() < currentDFC.getMonth() || expenseDFC.getYear() < currentDFC.getYear()) {
+                    if ((expenseDFC.getMonth() < currentDFC.getMonth() && expenseDFC.getYear() == currentDFC.getYear()) ||
+                            (expenseDFC.getYear() < currentDFC.getYear())) {
                         ArchiveDataSource archiveDataSource = new ArchiveDataSource(getApplicationContext());
                         archiveDataSource.open();
                         archiveDataSource.createExpense(expense);

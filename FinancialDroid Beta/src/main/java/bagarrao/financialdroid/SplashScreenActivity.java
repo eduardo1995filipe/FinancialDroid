@@ -65,7 +65,8 @@ public class SplashScreenActivity extends AppCompatActivity {
 //                Toast.makeText(this, "mes atual --> " + currentForCompare.getMonth()  + "\n" +
 //                        "mes anterior --> " + lastForCompare.getMonth(), Toast.LENGTH_SHORT).show();
 
-                if (currentForCompare.getMonth() > lastForCompare.getMonth()) {
+                if ((lastForCompare.getMonth() < currentForCompare.getMonth() && lastForCompare.getYear() == currentForCompare.getYear()) ||
+                        (lastForCompare.getYear() < currentForCompare.getYear())) {
                     putNewDate(currentDate);
 //                    Toast.makeText(this, "Vou devolver true porque mudou o mês", Toast.LENGTH_SHORT).show();
                     return true;
