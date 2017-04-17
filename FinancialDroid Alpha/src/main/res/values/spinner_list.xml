@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string-array name="order_kind">
-        <item>Date(descending)</item>
-        <item>Date(ascending)</item>
-        <item>Price(descending)</item>
-        <item>Price(ascending)</item>
-    </string-array>
-</resources>

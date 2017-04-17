@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="bagarrao.financialdroid.MainActivity"
+    tools:showIn="@layout/activity_main">
+
+    <Button
+        android:id="@+id/expensesButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Expenses" />
+
+    <Button
+        android:id="@+id/addExpenseButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Expense" />
+
+    <Button
+        android:id="@+id/archiveButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Archive" />
+
+    <Button
+        android:id="@+id/analyticsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Analytics" />
+
+    <Button
+        android:id="@+id/infoButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="About FinancialDroid" />
+
+</LinearLayout>

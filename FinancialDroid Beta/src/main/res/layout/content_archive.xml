@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="bagarrao.financialdroid.ArchiveActivity"
+    tools:showIn="@layout/activity_archive">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Expense type: " />
+
+        <Spinner
+            android:id="@+id/archiveExpensesSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></Spinner>
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/archiveExpensesListView"
+        android:layout_width="match_parent"
+        android:layout_height="439dp"
+        android:layout_weight="0.93">
+
+    </ListView>
+
+    <Button
+        android:id="@+id/resetArchiveButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:foregroundGravity="bottom"
+        android:text="Reset Archive" />
+
+</LinearLayout>

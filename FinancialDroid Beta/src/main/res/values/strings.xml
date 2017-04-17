@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">FinancialDroid</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_expenses">ExpensesActivity</string>
+    <string name="title_activity_add_expense">AddExpenseActivity</string>
+    <string name="title_activity_info">InfoActivity</string>
+    <string name="title_activity_backup">BackupActivity</string>
+    <string name="title_activity_archive">ArchiveActivity</string>
+</resources>
