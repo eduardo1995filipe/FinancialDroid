@@ -34,10 +34,6 @@
             android:name=".InfoActivity"
             android:label="@string/title_activity_info"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".BackupActivity"
-            android:label="@string/title_activity_backup"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

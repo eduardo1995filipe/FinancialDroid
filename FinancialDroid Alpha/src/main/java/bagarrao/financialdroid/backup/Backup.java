@@ -1,7 +1,6 @@
 package bagarrao.financialdroid.backup;
 
 import android.content.Context;
-import android.widget.Toast;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -18,16 +17,21 @@ import bagarrao.financialdroid.database.ExpenseDataSource;
  */
 public class Backup {
 
-    private Context context;
+    public static final String FILE_NAME = "backup.csv";
+
+    private static Context context;
+
     private BufferedWriter bw;
     private File file;
-    private Date date;
     private ExpenseDataSource dataSource;
     private String absPath;
     private String backupName;
     private List<Expense> expenseList;
+    private Date date;
 
     /**
+     * Constructor that is only used for the first time that a Backup object is created.
+     * ATENTION: It is mandatory to use this contructor for the first time, or it could origin some undesired crashes!!!!
      * @param context
      */
     public Backup(Context context) {
@@ -36,76 +40,33 @@ public class Backup {
     }
 
     /**
-     *
-     * @return
+     * Secondary constructor. Used when you already setted the context.
      */
-    public String getAbsPath() {
-        return this.absPath;
+    public Backup() {
+        if (context != null)
+            init();
     }
 
     /**
-     * @return
-     */
-    public String getBackupName() {
-        return this.backupName;
-    }
-
-
-    /**
-     * @return
-     */
-    public File getFile() {
-        return this.file;
-    }
-
-    /**
-     *
+     * initiates all objects
      */
     private void init() {
         this.date = new Date();
         this.dataSource = new ExpenseDataSource(context);
-        this.file = new File(context.getFilesDir(), (BackupManager.FILE_NAME + BackupManager.FILE_EXTENSION));
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return;
-        }
-        else {
-            int lastOne = -1;
-            for (int i = 1, index = 0; ; i++) {
-                file = new File(context.getFilesDir(), BackupManager.FILE_NAME + "(" + i + ")" + BackupManager.FILE_EXTENSION);
-                if (!file.exists()) {
-                    if (lastOne == -1) {
-                        lastOne = i;
-                    }
-                    if (index > 10)
-                        break;
-                    else {
-                        index++;
-                    }
-                } else {
-                    index = 0;
-                    lastOne = -1;
-                }
-            }
-
-            file = new File(context.getFilesDir(), BackupManager.FILE_NAME + "(" + lastOne + ")" + BackupManager.FILE_EXTENSION);
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+        this.file = new File(context.getFilesDir(), (FILE_NAME));
+        if (file.exists())
+            file.delete();
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         this.backupName = file.getName();
         this.absPath = file.getAbsolutePath();
     }
 
     /**
-     *
+     * Inits BufferedWriter and opens the database
      */
     public void open() {
         try {
@@ -118,7 +79,7 @@ public class Backup {
     }
 
     /**
-     *
+     * flushes and closes BufferedWriter and closes the database
      */
     public void close() {
         try {
@@ -131,7 +92,7 @@ public class Backup {
     }
 
     /**
-     *
+     *  writes all current Expenses on database into a .csv file
      */
     public void go() {
         open();
@@ -144,29 +105,5 @@ public class Backup {
             }
         }
         close();
-        Toast.makeText(context, "Backup created successfully\n\n File name: " + file.getName() +
-                "\n\n File Path: " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        return this.getBackupName().equals(((Backup) obj).getBackupName());
-    }
-
-//    @Override
-//    public void run() {
-//        super.run();
-//        open();
-//        expenseList = dataSource.getAllExpenses();
-//        for (Expense e : expenseList) {
-//            try {
-//                bw.write(e.toString() + "\n");
-//            } catch (IOException e1) {
-//                e1.printStackTrace();
-//            }
-//        }
-//        close();
-//        Toast.makeText(context, "Backup created successfully\n\n File name: " + file.getName() +
-//                "\n\n File Path: " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
-//    }
 }

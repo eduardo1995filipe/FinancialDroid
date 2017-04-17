@@ -34,12 +34,6 @@
         android:text="Analytics" />
 
     <Button
-        android:id="@+id/backupButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Backup Manager(Alpha)" />
-
-    <Button
         android:id="@+id/infoButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

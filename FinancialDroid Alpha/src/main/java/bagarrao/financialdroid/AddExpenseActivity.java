@@ -17,6 +17,7 @@ import java.util.Date;
 
 import bagarrao.financialdroid.Expense.Expense;
 import bagarrao.financialdroid.Expense.ExpenseType;
+import bagarrao.financialdroid.backup.Backup;
 import bagarrao.financialdroid.database.ExpenseDataSource;
 
 /**
@@ -99,6 +100,7 @@ public class AddExpenseActivity extends AppCompatActivity {
                             ExpenseType.valueOf(expenseTypeSpinner.getSelectedItem().toString().toUpperCase()), descriptionEditText.getText().toString(),
                             expenseDate);
                     dataSource.createExpense(expense);
+                    new Backup().go();
                     Toast.makeText(getApplicationContext(), "Expense sucessefully registered!", Toast.LENGTH_SHORT).show();
                     finish();
                 } else

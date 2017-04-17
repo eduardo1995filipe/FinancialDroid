@@ -18,6 +18,7 @@ import java.util.List;
 
 import bagarrao.financialdroid.Expense.Expense;
 import bagarrao.financialdroid.Expense.ExpenseOrder;
+import bagarrao.financialdroid.backup.Backup;
 import bagarrao.financialdroid.database.ExpenseDataSource;
 import bagarrao.financialdroid.utils.DateForCompare;
 
@@ -139,6 +140,7 @@ public class ExpensesActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 removeExpense(index);
+                new Backup().go();
                 Toast.makeText(context, "Expense removed successfully!", Toast.LENGTH_SHORT).show();
             }
         });
