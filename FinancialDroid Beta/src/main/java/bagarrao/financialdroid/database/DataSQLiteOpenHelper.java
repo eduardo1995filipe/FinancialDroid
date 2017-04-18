@@ -15,14 +15,12 @@ public class DataSQLiteOpenHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "DataReader.db";
     public static final String EXPENSE_TABLE = "expenses";
     public static final String ARCHIVE_TABLE = "archive";
-    //    public static final String ACCESS_TABLE = "accesses";
     public static final String EXPENSE_COLUMN_ID = "_id";
     public static final String EXPENSE_COLUMN_NAME_PRICE = "price";
     public static final String EXPENSE_COLUMN_NAME_TYPE = "type";
     public static final String EXPENSE_COLUMN_NAME_DESCRIPTION = "description";
     public static final String EXPENSE_COLUMN_NAME_DATE = "date";
-//    public static final String ACCESS_COLUMN_ID = "_id";
-//    public static final String ACCESS_COLUMN_NAME_DATE = "date";
+
 
     /**
      * queries to create tables
@@ -35,9 +33,7 @@ public class DataSQLiteOpenHelper extends SQLiteOpenHelper {
             "(" + EXPENSE_COLUMN_ID + " integer primary key autoincrement, " + EXPENSE_COLUMN_NAME_PRICE +
             " real not null, " + EXPENSE_COLUMN_NAME_TYPE + " text not null, " + EXPENSE_COLUMN_NAME_DESCRIPTION +
             " text not null, " + EXPENSE_COLUMN_NAME_DATE + " text not null);";
-//    private static final String ACCESS_TABLE_CREATE = "create table " + ACCESS_TABLE +
-//            "(" + ACCESS_COLUMN_ID + " integer primary key autoincrement, " + ACCESS_COLUMN_NAME_DATE +
-//            " text not null);";
+
 
     /**
      * Initializes the SQLiteOpenHelper
@@ -51,7 +47,6 @@ public class DataSQLiteOpenHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(EXPENSE_TABLE_CREATE);
         db.execSQL(ARCHIVE_TABLE_CREATE);
-//        db.execSQL(ACCESS_TABLE_CREATE);
     }
 
     @Override
@@ -61,7 +56,6 @@ public class DataSQLiteOpenHelper extends SQLiteOpenHelper {
                         + newVersion + ", which will destroy all old data");
         db.execSQL("DROP TABLE IF EXISTS " + EXPENSE_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + ARCHIVE_TABLE);
-//        db.execSQL("DROP TABLE IF EXISTS " + ACCESS_TABLE);
         onCreate(db);
     }
 }

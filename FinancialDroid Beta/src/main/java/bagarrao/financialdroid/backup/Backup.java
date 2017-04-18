@@ -18,8 +18,7 @@ import bagarrao.financialdroid.expense.Expense;
 public class Backup {
 
     public static final String FILE_NAME = "backup.csv";
-
-    private static Context context;
+	private static Context context;
 
     private BufferedWriter bw;
     private File file;
@@ -31,7 +30,7 @@ public class Backup {
     /**
      * Constructor that is only used for the first time that a Backup object is created.
      * ATENTION: It is mandatory to use this contructor for the first time, or it could origin some undesired crashes!!!!
-     * @param context
+     * @param context Context of the activity when first time Backup object is created
      */
     public Backup(Context context) {
         this.context = context;
