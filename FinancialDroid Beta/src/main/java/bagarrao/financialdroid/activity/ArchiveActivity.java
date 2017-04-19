@@ -1,4 +1,4 @@
-package bagarrao.financialdroid;
+package bagarrao.financialdroid.activity;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,6 +17,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import bagarrao.financialdroid.R;
 import bagarrao.financialdroid.backup.Backup;
 import bagarrao.financialdroid.database.ArchiveDataSource;
 import bagarrao.financialdroid.expense.Expense;
@@ -95,6 +96,7 @@ public class ArchiveActivity extends AppCompatActivity {
                 showDeleteDialog(context, position);
             }
         });
+
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

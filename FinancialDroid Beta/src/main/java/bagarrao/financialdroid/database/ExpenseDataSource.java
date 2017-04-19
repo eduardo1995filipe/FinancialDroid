@@ -27,7 +27,7 @@ public class ExpenseDataSource {
     private boolean open;
 
     /**
-     * creates de DataSource object
+     * creates de ExpenseDataSource object
      * @param context context of the current activity where the DataSouce object is created
      */
     public ExpenseDataSource(Context context) {
@@ -35,6 +35,11 @@ public class ExpenseDataSource {
         this.open = false;
     }
 
+    /**
+     * returns the value if the the database is already open
+     *
+     * @return the boolean value that shows that is open or not
+     */
     public boolean isOpen() {
         return open;
     }
@@ -111,6 +116,9 @@ public class ExpenseDataSource {
         return expenses;
     }
 
+    /**
+     * removes all the expenses from the database
+     */
     public void deleteAllExpenses() {
         List<Expense> list = getAllExpenses();
         for (Expense e : list) {

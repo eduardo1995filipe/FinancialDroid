@@ -24,13 +24,23 @@ public class ArchiveDataSource {
     private String[] allColumns = {DataSQLiteOpenHelper.EXPENSE_COLUMN_ID,
             DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_PRICE, DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_TYPE,
             DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_DESCRIPTION, DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_DATE};
+    private boolean open;
 
     /**
-     * creates de DataSource object
+     * creates de ArchiveDataSource object
      * @param context context of the current activity where the DataSouce object is created
      */
     public ArchiveDataSource(Context context) {
         dbHelper = new DataSQLiteOpenHelper(context);
+        this.open = false;
+    }
+
+    /**
+     * returns the value if the the database is already open
+     * @return the boolean value that shows that is open or not
+     */
+    public boolean isOpen() {
+        return open;
     }
 
     /**
@@ -39,6 +49,7 @@ public class ArchiveDataSource {
      */
     public void open() throws SQLException {
         database = dbHelper.getWritableDatabase();
+        open = true;
     }
 
     /**
@@ -46,6 +57,7 @@ public class ArchiveDataSource {
      */
     public void close() {
         dbHelper.close();
+        open = false;
     }
 
     /**
@@ -80,7 +92,7 @@ public class ArchiveDataSource {
     }
 
     /**
-     *
+     * removes all the expenses from the database
      */
     public void deleteAllExpenses() {
         List<Expense> list = getAllExpenses();

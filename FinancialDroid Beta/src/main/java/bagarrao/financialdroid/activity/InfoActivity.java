@@ -1,4 +1,4 @@
-package bagarrao.financialdroid;
+package bagarrao.financialdroid.activity;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
+
+import bagarrao.financialdroid.R;
 
 /**
  * @author Eduardo Bagarrao

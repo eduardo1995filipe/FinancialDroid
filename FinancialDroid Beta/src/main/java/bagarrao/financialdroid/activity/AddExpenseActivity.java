@@ -1,6 +1,5 @@
-package bagarrao.financialdroid;
+package bagarrao.financialdroid.activity;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -13,13 +12,13 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import bagarrao.financialdroid.backup.Backup;
+import bagarrao.financialdroid.R;
 import bagarrao.financialdroid.database.ArchiveDataSource;
 import bagarrao.financialdroid.database.ExpenseDataSource;
 import bagarrao.financialdroid.expense.Expense;
+import bagarrao.financialdroid.expense.ExpenseDistributor;
 import bagarrao.financialdroid.expense.ExpenseType;
 import bagarrao.financialdroid.utils.DateForCompare;
 
@@ -36,31 +35,6 @@ public class AddExpenseActivity extends AppCompatActivity {
     private ExpenseDataSource dataSource;
     private CalendarView dateCalendarView;
     private Date expenseDate;
-
-    /**
-     * @param expense
-     */
-    public static void addNewExpense(Expense expense, Context context, ExpenseDataSource dataSource) {
-        DateForCompare expenseDFC = new DateForCompare(expense.getDate());
-        DateForCompare currentDFC = new DateForCompare(new Date());
-
-        if ((expenseDFC.getMonth() < currentDFC.getMonth() && expenseDFC.getYear() == currentDFC.getYear()) ||
-                (expenseDFC.getYear() < currentDFC.getYear())) {
-            ArchiveDataSource archiveDataSource = new ArchiveDataSource(context);
-            archiveDataSource.open();
-            archiveDataSource.createExpense(expense);
-            archiveDataSource.close();
-        } else {
-            if (dataSource.isOpen())
-                dataSource.createExpense(expense);
-            else {
-                dataSource.open();
-                dataSource.createExpense(expense);
-            }
-            dataSource.close();
-        }
-        new Backup().go();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,16 +63,20 @@ public class AddExpenseActivity extends AppCompatActivity {
      * initializes all the elements
      */
     public void init() {
+
         this.addExpenseButton = (Button) findViewById(R.id.addExpenseButton);
         this.priceEditText = (EditText) findViewById(R.id.priceEditText);
         this.descriptionEditText = (EditText) findViewById(R.id.descriptionEditText);
         this.expenseTypeSpinner = (Spinner) findViewById(R.id.expenseTypeSpinner);
         this.dateCalendarView = (CalendarView) findViewById(R.id.dateCalendarView);
+
         this.spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.expense_type_kind, R.layout.support_simple_spinner_dropdown_item);
         spinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         expenseTypeSpinner.setAdapter(spinnerAdapter);
+
         this.dataSource = new ExpenseDataSource(this);
         this.expenseDate = new Date();
+
     }
 
     /**
@@ -110,7 +88,7 @@ public class AddExpenseActivity extends AppCompatActivity {
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 String myDate = dayOfMonth + "-" + (month + 1) + "-" + year;
                 try {
-                    expenseDate = new SimpleDateFormat("dd-M-yyyy").parse(myDate);
+                    expenseDate = DateForCompare.DATE_FORMATTED.parse(myDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -127,7 +105,7 @@ public class AddExpenseActivity extends AppCompatActivity {
                     Expense expense = new Expense(Double.parseDouble(priceEditText.getText().toString()),
                             ExpenseType.valueOf(expenseTypeSpinner.getSelectedItem().toString().toUpperCase()), descriptionEditText.getText().toString(),
                             expenseDate);
-                    addNewExpense(expense, getApplicationContext(), dataSource);
+                    ExpenseDistributor.addNewExpense(expense, getApplicationContext(), dataSource, new ArchiveDataSource(getApplicationContext()));
                     Toast.makeText(getApplicationContext(), "Expense sucessefully registered!", Toast.LENGTH_SHORT).show();
                     finish();
                 } else
@@ -135,5 +113,4 @@ public class AddExpenseActivity extends AppCompatActivity {
             }
         });
     }
-
 }

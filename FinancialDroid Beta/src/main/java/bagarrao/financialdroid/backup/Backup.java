@@ -13,10 +13,10 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
-import bagarrao.financialdroid.AddExpenseActivity;
 import bagarrao.financialdroid.database.ArchiveDataSource;
 import bagarrao.financialdroid.database.ExpenseDataSource;
 import bagarrao.financialdroid.expense.Expense;
+import bagarrao.financialdroid.expense.ExpenseDistributor;
 import bagarrao.financialdroid.expense.ExpenseType;
 import bagarrao.financialdroid.utils.DateForCompare;
 
@@ -37,7 +37,7 @@ public class Backup {
 
     /**
      * Constructor that is only used for the first time that a Backup object is created.
-     * ATENTION: It is mandatory to use this contructor for the first time, or it could origin some undesired crashes!!!!
+     * @ATENTION: It is mandatory to use this contructor for the first time, or it could origin some undesired crashes!!!!
      * @param context Context of the activity when first time Backup object is created
      */
     public Backup(Context context) {
@@ -53,6 +53,11 @@ public class Backup {
             init();
     }
 
+    /**
+     * Restores the last backup file saved
+     *
+     * @return boolean value that shows if the restore was successfull or if it failed
+     */
     public static boolean restorer() {
         try {
             File file = new File(FILE_NAME);
@@ -74,8 +79,9 @@ public class Backup {
             while ((text = br.readLine()) != null) {
                 String[] nExp = text.split(";");
                 Expense e = new Expense(Double.parseDouble(nExp[0]), ExpenseType.valueOf(nExp[1]), nExp[2], DateForCompare.DATE_FORMATTED.parse(nExp[3]));
-                AddExpenseActivity.addNewExpense(e, context, expenseDataSource);
-                //TODO need to test
+                ExpenseDistributor.addNewExpense(e, context, expenseDataSource, archiveDataSource);
+                expenseDataSource.close();
+                archiveDataSource.close();
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -84,7 +90,7 @@ public class Backup {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return false;
+        return true;
     }
 
     /**

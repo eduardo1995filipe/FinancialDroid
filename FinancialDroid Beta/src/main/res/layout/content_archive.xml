@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:weightSum="1"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="bagarrao.financialdroid.ArchiveActivity"
+    tools:context="bagarrao.financialdroid.activity.ArchiveActivity"
     tools:showIn="@layout/activity_archive">
 
     <LinearLayout

@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
-            android:name=".SplashScreenActivity"
+            android:name=".activity.SplashScreenActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,24 +19,28 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ExpensesActivity"
+            android:name=".activity.ExpensesActivity"
             android:label="@string/title_activity_expenses"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".AddExpenseActivity"
+            android:name=".activity.AddExpenseActivity"
             android:label="@string/title_activity_add_expense"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".InfoActivity"
+            android:name=".activity.InfoActivity"
             android:label="@string/title_activity_info"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ArchiveActivity"
+            android:name=".activity.ArchiveActivity"
             android:label="@string/title_activity_archive"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.AnalyticsActivity"
+            android:label="@string/title_activity_analytics"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

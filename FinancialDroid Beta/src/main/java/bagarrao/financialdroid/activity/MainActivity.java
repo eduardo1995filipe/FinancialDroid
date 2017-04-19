@@ -1,4 +1,4 @@
-package bagarrao.financialdroid;
+package bagarrao.financialdroid.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 
+import bagarrao.financialdroid.R;
+
 /**
  * @author Eduardo Bagarrao
  */
@@ -14,21 +16,18 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String ACTIVITY_TITLE = "FinancialDroid";
 
-    //    functional
     private Intent expensesIntent;
     private Intent addExpenseIntent;
     private Intent infoIntent;
-    //    not on alpha phase
-//    private Intent analyticsIntent;
+    private Intent analyticsIntent;
     private Intent archiveIntent;
 
     //    functional
-    private Button expensesButton;  //to check your expenses
-    private Button addExpenseButton;    //to register a new Expense
-    private Button infoButton;  //to show info about the app
-//    not on alpha phase
-private Button archiveButton;
-//    private Button analyticsButton; //TODO analytics functionality
+    private Button expensesButton;
+    private Button addExpenseButton;
+    private Button infoButton;
+    private Button archiveButton;
+    private Button analyticsButton; //TODO analytics functionality
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,20 +45,18 @@ private Button archiveButton;
      */
     public void init() {
 
-//        functional
+
         this.expensesIntent = new Intent(this, ExpensesActivity.class);
         this.addExpenseIntent = new Intent(this, AddExpenseActivity.class);
         this.infoIntent = new Intent(this, InfoActivity.class);
-//        not on alpha phase
-//        this.analyticsIntent = new Intent(this,AnalyticsActivity.class);
+        this.analyticsIntent = new Intent(this, AnalyticsActivity.class);
         this.archiveIntent = new Intent(this, ArchiveActivity.class);
 
-//        functional
+
         this.expensesButton = (Button) findViewById(R.id.expensesButton);
         this.addExpenseButton = (Button) findViewById(R.id.addExpenseButton);
         this.infoButton = (Button) findViewById(R.id.infoButton);
-//        not on alpha phase
-//        this.analyticsButton = (Button) findViewById(R.id.analyticsButton);
+        this.analyticsButton = (Button) findViewById(R.id.analyticsButton);
         this.archiveButton = (Button) findViewById(R.id.archiveButton);
     }
 
@@ -94,14 +91,14 @@ private Button archiveButton;
                 }
         );
 
-//        analyticsButton.setOnClickListener(
-//                new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        startActivity(analyticsIntent);
-//                    }
-//                }
-//        );
+        analyticsButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startActivity(analyticsIntent);
+                    }
+                }
+        );
 
         archiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
