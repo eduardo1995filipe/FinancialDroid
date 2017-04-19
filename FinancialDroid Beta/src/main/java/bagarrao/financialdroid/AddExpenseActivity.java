@@ -1,5 +1,6 @@
 package bagarrao.financialdroid;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -35,6 +36,31 @@ public class AddExpenseActivity extends AppCompatActivity {
     private ExpenseDataSource dataSource;
     private CalendarView dateCalendarView;
     private Date expenseDate;
+
+    /**
+     * @param expense
+     */
+    public static void addNewExpense(Expense expense, Context context, ExpenseDataSource dataSource) {
+        DateForCompare expenseDFC = new DateForCompare(expense.getDate());
+        DateForCompare currentDFC = new DateForCompare(new Date());
+
+        if ((expenseDFC.getMonth() < currentDFC.getMonth() && expenseDFC.getYear() == currentDFC.getYear()) ||
+                (expenseDFC.getYear() < currentDFC.getYear())) {
+            ArchiveDataSource archiveDataSource = new ArchiveDataSource(context);
+            archiveDataSource.open();
+            archiveDataSource.createExpense(expense);
+            archiveDataSource.close();
+        } else {
+            if (dataSource.isOpen())
+                dataSource.createExpense(expense);
+            else {
+                dataSource.open();
+                dataSource.createExpense(expense);
+            }
+            dataSource.close();
+        }
+        new Backup().go();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,18 +127,7 @@ public class AddExpenseActivity extends AppCompatActivity {
                     Expense expense = new Expense(Double.parseDouble(priceEditText.getText().toString()),
                             ExpenseType.valueOf(expenseTypeSpinner.getSelectedItem().toString().toUpperCase()), descriptionEditText.getText().toString(),
                             expenseDate);
-                    DateForCompare expenseDFC = new DateForCompare(expense.getDate());
-                    DateForCompare currentDFC = new DateForCompare(new Date());
-
-                    if ((expenseDFC.getMonth() < currentDFC.getMonth() && expenseDFC.getYear() == currentDFC.getYear()) ||
-                            (expenseDFC.getYear() < currentDFC.getYear())) {
-                        ArchiveDataSource archiveDataSource = new ArchiveDataSource(getApplicationContext());
-                        archiveDataSource.open();
-                        archiveDataSource.createExpense(expense);
-                        archiveDataSource.close();
-                    } else
-                        dataSource.createExpense(expense);
-                    new Backup().go();
+                    addNewExpense(expense, getApplicationContext(), dataSource);
                     Toast.makeText(getApplicationContext(), "Expense sucessefully registered!", Toast.LENGTH_SHORT).show();
                     finish();
                 } else
@@ -120,4 +135,5 @@ public class AddExpenseActivity extends AppCompatActivity {
             }
         });
     }
+
 }
