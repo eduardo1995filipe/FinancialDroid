@@ -18,14 +18,30 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Expense type: " />
+            android:text="Order by: " />
 
         <Spinner
-            android:id="@+id/archiveExpensesSpinner"
+            android:id="@+id/archiveOrderBySpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"></Spinner>
-
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Show by type: " />
+
+        <Spinner
+            android:id="@+id/archiveShowByExpensesSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></Spinner>
+    </LinearLayout>
+
 
     <ListView
         android:id="@+id/archiveExpensesListView"

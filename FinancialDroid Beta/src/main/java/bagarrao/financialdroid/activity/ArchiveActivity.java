@@ -57,7 +57,7 @@ public class ArchiveActivity extends AppCompatActivity {
         this.dataSource = new ArchiveDataSource(this);
         this.dataSource.open();
         this.archiveListView = (ListView) findViewById(R.id.archiveExpensesListView);
-        this.orderSpinner = (Spinner) findViewById(R.id.archiveExpensesSpinner);
+        this.orderSpinner = (Spinner) findViewById(R.id.archiveOrderBySpinner);
         this.resetButton = (Button) findViewById(R.id.resetArchiveButton);
         this.spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.order_kind,
                 R.layout.support_simple_spinner_dropdown_item);

@@ -6,4 +6,12 @@
         <item>Price(descending)</item>
         <item>Price(ascending)</item>
     </string-array>
+    <string-array name="show_by_type">
+        <item>All</item>
+        <item>Feeding</item>
+        <item>Transports</item>
+        <item>Clothing</item>
+        <item>School</item>
+        <item>Others</item>
+    </string-array>
 </resources>
