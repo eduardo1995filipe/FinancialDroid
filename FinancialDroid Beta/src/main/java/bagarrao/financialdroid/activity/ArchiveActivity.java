@@ -22,21 +22,32 @@ import bagarrao.financialdroid.backup.Backup;
 import bagarrao.financialdroid.database.ArchiveDataSource;
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.expense.ExpenseOrder;
+import bagarrao.financialdroid.expense.ExpenseType;
 import bagarrao.financialdroid.utils.DateForCompare;
+import bagarrao.financialdroid.utils.Filter;
 
 public class ArchiveActivity extends AppCompatActivity {
 
     public static final ExpenseOrder DEFAULT_ORDER = ExpenseOrder.DATE_DESCENDING;
+    public static final ExpenseType DEFAULT_EXPENSE_TYPE = null;
 
     private ExpenseOrder currentOrder;
-    private ListView archiveListView;
+    private ExpenseType currentType;
+
     private Spinner orderSpinner;
+    private Spinner typeSpinner;
+
+    private ArrayAdapter<CharSequence> spinnerOrderAdapter;
+    private ArrayAdapter<CharSequence> spinnerTypeAdapter;
+
+    private ListView archiveListView;
     private List<Expense> archiveList;
     private ArrayList<String> archiveListString;
     private ArchiveDataSource dataSource;
-    private ArrayAdapter<CharSequence> spinnerAdapter;
     private ArrayAdapter<String> archiveListAdapter;
+
     private Context context;
+
     private Button resetButton;
 
     @Override
@@ -44,6 +55,7 @@ public class ArchiveActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_archive);
         init();
+        readDB();
         setListeners();
     }
 
@@ -52,27 +64,46 @@ public class ArchiveActivity extends AppCompatActivity {
      */
     public void init() {
         this.context = this;
+
         this.currentOrder = DEFAULT_ORDER;
+        this.currentType = DEFAULT_EXPENSE_TYPE;
+
         this.archiveListString = new ArrayList<>();
         this.dataSource = new ArchiveDataSource(this);
         this.dataSource.open();
         this.archiveListView = (ListView) findViewById(R.id.archiveExpensesListView);
-        this.orderSpinner = (Spinner) findViewById(R.id.archiveOrderBySpinner);
+
         this.resetButton = (Button) findViewById(R.id.resetArchiveButton);
-        this.spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.order_kind,
+
+        this.orderSpinner = (Spinner) findViewById(R.id.archiveOrderBySpinner);
+        this.spinnerOrderAdapter = ArrayAdapter.createFromResource(this, R.array.order_kind,
                 R.layout.support_simple_spinner_dropdown_item);
-        spinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        orderSpinner.setAdapter(spinnerAdapter);
+        spinnerOrderAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        orderSpinner.setAdapter(spinnerOrderAdapter);
+
+        this.typeSpinner = (Spinner) findViewById(R.id.typeSpinner);
+        this.spinnerTypeAdapter = ArrayAdapter.createFromResource(this, R.array.filter_expense_type,
+                R.layout.support_simple_spinner_dropdown_item);
+        spinnerTypeAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        typeSpinner.setAdapter(spinnerTypeAdapter);
+
         this.archiveListAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, archiveListString);
         archiveListView.setAdapter(archiveListAdapter);
-        readDB();
     }
 
     /**
      * Creates the necessary listeners to the activity
      */
     public void setListeners() {
+
+        archiveListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                showDeleteDialog(context, position);
+            }
+        });
+
         orderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -90,10 +121,20 @@ public class ArchiveActivity extends AppCompatActivity {
             }
         });
 
-        archiveListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                showDeleteDialog(context, position);
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                try {
+                    currentType = Filter.getTypeByIndex(position);
+                } catch (NullPointerException e) {
+                    currentType = DEFAULT_EXPENSE_TYPE;
+                } finally {
+                    readDB();
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 
@@ -205,6 +246,7 @@ public class ArchiveActivity extends AppCompatActivity {
             archiveList = new ArrayList<>();
         archiveListString.clear();
         currentOrder.sortByOrder(archiveList);
+        archiveList = Filter.getExpensesByType(archiveList,currentType);
         for (Expense e : archiveList) {
             String stringExpense = e.getDescription() + " | " + e.getValue() + "€ | " + DateForCompare.DATE_FORMATTED.format(e.getDate()) + " | " + e.getType().toString();
             archiveListString.add(stringExpense);

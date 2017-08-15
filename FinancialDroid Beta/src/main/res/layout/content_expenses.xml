@@ -36,7 +36,7 @@
             android:text="Show by type: " />
 
         <Spinner
-            android:id="@+id/expenseShowByExpensesSpinner"
+            android:id="@+id/typeSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"></Spinner>
     </LinearLayout>

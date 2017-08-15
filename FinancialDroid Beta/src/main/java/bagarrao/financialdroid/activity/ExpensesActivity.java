@@ -14,7 +14,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import bagarrao.financialdroid.R;
@@ -24,7 +23,7 @@ import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.expense.ExpenseOrder;
 import bagarrao.financialdroid.expense.ExpenseType;
 import bagarrao.financialdroid.utils.DateForCompare;
-import bagarrao.financialdroid.utils.ShowBy;
+import bagarrao.financialdroid.utils.Filter;
 
 /**
  * @author Eduardo Bagarrao
@@ -32,42 +31,44 @@ import bagarrao.financialdroid.utils.ShowBy;
 public class ExpensesActivity extends AppCompatActivity {
 
     public static final ExpenseOrder DEFAULT_ORDER = ExpenseOrder.DATE_DESCENDING;
-    public static final ShowBy DEFAULT_SHOW_BY = ShowBy.ALL;
+    public static final ExpenseType DEFAULT_EXPENSE_TYPE = null;
 
     private ExpenseOrder currentOrder;
-    private ShowBy currentShowBy;
-    private ListView expenseListView;
+    private ExpenseType currentType;
+
     private Spinner orderBySpinner;
-    private Spinner showByTypeSpinner;
+    private Spinner typeSpinner;
+
+    private ArrayAdapter<CharSequence> spinnerOrderByAdapter;
+    private ArrayAdapter<CharSequence> spinnerTypeAdapter;
+
+    private ListView expenseListView;
     private List<Expense> expenseList;
     private ArrayList<String> expenseListString;
     private ExpenseDataSource dataSource;
-    private ArrayAdapter<CharSequence> spinnerOrderByAdapter;
-    private ArrayAdapter<CharSequence> spinnerShowByTypeAdapter;
     private ArrayAdapter<String> expenseListAdapter;
-    private Context context;
 
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expenses);
         init();
-        expenseListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                showDeleteDialog(context, position);
-            }
-        });
+        readDB();
+        setListeners();
     }
 
     /**
      * initializes all the elements
      */
     public void init() {
+
         this.context = this;
+
         this.currentOrder = DEFAULT_ORDER;
-        this.currentShowBy = DEFAULT_SHOW_BY;
+        this.currentType = DEFAULT_EXPENSE_TYPE;
+
         this.expenseListString = new ArrayList<>();
         this.dataSource = new ExpenseDataSource(this);
         this.dataSource.open();
@@ -79,23 +80,30 @@ public class ExpensesActivity extends AppCompatActivity {
         spinnerOrderByAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         orderBySpinner.setAdapter(spinnerOrderByAdapter);
 
-        this.showByTypeSpinner = (Spinner) findViewById(R.id.expenseShowByExpensesSpinner);
-        this.spinnerShowByTypeAdapter = ArrayAdapter.createFromResource(this, R.array.show_by_type,
+        this.typeSpinner = (Spinner) findViewById(R.id.typeSpinner);
+        this.spinnerTypeAdapter = ArrayAdapter.createFromResource(this, R.array.filter_expense_type,
                 R.layout.support_simple_spinner_dropdown_item);
-        spinnerShowByTypeAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        showByTypeSpinner.setAdapter(spinnerShowByTypeAdapter);
+        spinnerTypeAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        typeSpinner.setAdapter(spinnerTypeAdapter);
 
-        this.expenseListAdapter = new ArrayAdapter<String>(this,
+        this.expenseListAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, expenseListString);
         expenseListView.setAdapter(expenseListAdapter);
-        readDB();
-        setListeners();
+
     }
 
     /**
      * Creates the necessary listeners to the activity
      */
     public void setListeners() {
+
+        expenseListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                showDeleteDialog(context, position);
+            }
+        });
+
         orderBySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
@@ -114,14 +122,14 @@ public class ExpensesActivity extends AppCompatActivity {
             }
         });
 
-        showByTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 try {
-                    currentShowBy = getShowBy(position);
+                    currentType = Filter.getTypeByIndex(position);
                 } catch (NullPointerException e) {
-                    currentShowBy = DEFAULT_SHOW_BY;
+                    currentType = DEFAULT_EXPENSE_TYPE;
                 } finally {
                     readDB();
                 }
@@ -159,30 +167,6 @@ public class ExpensesActivity extends AppCompatActivity {
                 throw new NullPointerException();
         }
         return expenseOrder;
-    }
-
-    public ShowBy getShowBy(int index) {
-        ShowBy showBy = null;
-        switch (index) {
-            case 0:
-                showBy = ShowBy.ALL;
-                break;
-            case 1:
-                showBy = ShowBy.FEEDING;
-                break;
-            case 2:
-                showBy = ShowBy.TRANSPORTS;
-                break;
-            case 3:
-                showBy = ShowBy.CLOTHING;
-                break;
-            case 4:
-                showBy = ShowBy.OTHERS;
-                break;
-            default:
-                Log.e("ExpensesActivity", "expenseOrder returned NULL");
-        }
-        return showBy;
     }
 
     /**
@@ -238,8 +222,7 @@ public class ExpensesActivity extends AppCompatActivity {
             expenseList = new ArrayList<>();
         expenseListString.clear();
         currentOrder.sortByOrder(expenseList);
-        if(currentShowBy != ShowBy.ALL)
-            expenseList = getExpensesByType(expenseList,ExpenseType.valueOf(currentShowBy.toString()));
+        expenseList = Filter.getExpensesByType(expenseList,currentType);
         for (Expense e : expenseList) {
             String stringExpense = e.getDescription() + " | " + e.getValue() + "€ | " + DateForCompare.DATE_FORMATTED.format(e.getDate()) + " | " + e.getType().toString();
             expenseListString.add(stringExpense);
@@ -259,16 +242,4 @@ public class ExpensesActivity extends AppCompatActivity {
         dataSource.close();
         super.onPause();
     }
-
-    //ERRO --> A CORRIGIR DOIS SPINNERS
-
-    public static List<Expense> getExpensesByType(List<Expense> list,ExpenseType type){
-        LinkedList<Expense> expenseListFiltered = new LinkedList<>();
-        for(Expense e : list){
-            if(e.getType() == type)
-                expenseListFiltered.add(e);
-        }
-        return expenseListFiltered;
-    }
-
 }
