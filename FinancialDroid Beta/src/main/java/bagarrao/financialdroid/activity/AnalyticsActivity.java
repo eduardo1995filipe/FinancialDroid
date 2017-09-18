@@ -17,21 +17,52 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import bagarrao.financialdroid.R;
+import bagarrao.financialdroid.database.ExpenseDataSource;
+import bagarrao.financialdroid.expense.Expense;
+import bagarrao.financialdroid.expense.ExpenseType;
+import bagarrao.financialdroid.utils.DateForCompare;
+import bagarrao.financialdroid.utils.Filter;
 
 public class AnalyticsActivity extends AppCompatActivity {
 
     private static final String TAG = "AnalyticsActivity";
 
-    private float[] yData = {10,23,2.1f,23};
-    private String[] xData = {"um","dois","tres","quatro"};
+    private ExpenseDataSource dataSource;
+
+    private float[] yData = new float[ExpenseType.values().length];
+    private String[] xData = new String[ExpenseType.values().length];
     private PieChart pieChart;
+
+    private List<Expense> lastMonthExpenses;
+
+    private double getAmount(List<Expense> list){
+        return 10;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analytics);
+        dataSource = new ExpenseDataSource(this.getApplicationContext());
+        dataSource.open();
+        readDB();
+        xData[0] = ExpenseType.FEEDING.toString();
+        xData[1] = ExpenseType.TRANSPORTS.toString();
+        xData[2] = ExpenseType.SCHOOL.toString();
+        xData[3] = ExpenseType.CLOTHING.toString();
+        xData[4] = ExpenseType.OTHERS.toString();
+
+        yData[0] = (float) getAmount(Filter.getExpensesByType(lastMonthExpenses,ExpenseType.FEEDING));
+        yData[1] = (float) getAmount(Filter.getExpensesByType(lastMonthExpenses,ExpenseType.TRANSPORTS));
+        yData[2] = (float) getAmount(Filter.getExpensesByType(lastMonthExpenses,ExpenseType.SCHOOL));
+        yData[3] = (float) getAmount(Filter.getExpensesByType(lastMonthExpenses,ExpenseType.CLOTHING));
+        yData[4] = (float) getAmount(Filter.getExpensesByType(lastMonthExpenses,ExpenseType.OTHERS));
+
+        //PIE CHART///////////////////////////////////////////////////////////////////////////////
 
         Log.d(TAG, "onCreate: starting to create chart");
 
@@ -80,6 +111,22 @@ public class AnalyticsActivity extends AppCompatActivity {
             }
         });
 
+
+        //END PIE CHART///////////////////////////////////////////////////////////////////////////////
+
+    }
+
+    @Override
+    protected void onPause() {
+        dataSource.close();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        dataSource.open();
+        readDB();
+        super.onResume();
     }
 
     private void addDataSet() {
@@ -122,4 +169,9 @@ public class AnalyticsActivity extends AppCompatActivity {
         pieChart.setData(pieData);
         pieChart.invalidate();
     }
+
+    public void readDB() {
+        this.lastMonthExpenses = dataSource.getAllExpenses();
+    }
+
 }

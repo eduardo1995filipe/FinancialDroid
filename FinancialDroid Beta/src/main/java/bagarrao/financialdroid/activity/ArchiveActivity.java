@@ -121,22 +121,22 @@ public class ArchiveActivity extends AppCompatActivity {
             }
         });
 
-//        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                try {
-//                    currentType = Filter.getTypeByIndex(position);
-//                } catch (NullPointerException e) {
-//                    currentType = DEFAULT_EXPENSE_TYPE;
-//                } finally {
-//                    readDB();
-//                }
-//            }
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//            }
-//        });
+        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                try {
+                    currentType = Filter.getTypeByIndex(position);
+                } catch (NullPointerException e) {
+                    currentType = DEFAULT_EXPENSE_TYPE;
+                } finally {
+                    readDB();
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
