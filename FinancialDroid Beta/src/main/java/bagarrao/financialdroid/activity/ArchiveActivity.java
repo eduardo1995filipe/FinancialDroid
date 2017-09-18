@@ -81,13 +81,13 @@ public class ArchiveActivity extends AppCompatActivity {
         spinnerOrderAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         orderSpinner.setAdapter(spinnerOrderAdapter);
 
-        this.typeSpinner = (Spinner) findViewById(R.id.typeSpinner);
+        this.typeSpinner = (Spinner) findViewById(R.id.archiveShowByExpensesSpinner);
         this.spinnerTypeAdapter = ArrayAdapter.createFromResource(this, R.array.filter_expense_type,
                 R.layout.support_simple_spinner_dropdown_item);
         spinnerTypeAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         typeSpinner.setAdapter(spinnerTypeAdapter);
 
-        this.archiveListAdapter = new ArrayAdapter<String>(this,
+        this.archiveListAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, archiveListString);
         archiveListView.setAdapter(archiveListAdapter);
     }
@@ -121,22 +121,22 @@ public class ArchiveActivity extends AppCompatActivity {
             }
         });
 
-        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                try {
-                    currentType = Filter.getTypeByIndex(position);
-                } catch (NullPointerException e) {
-                    currentType = DEFAULT_EXPENSE_TYPE;
-                } finally {
-                    readDB();
-                }
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+//        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                try {
+//                    currentType = Filter.getTypeByIndex(position);
+//                } catch (NullPointerException e) {
+//                    currentType = DEFAULT_EXPENSE_TYPE;
+//                } finally {
+//                    readDB();
+//                }
+//            }
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//            }
+//        });
 
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
