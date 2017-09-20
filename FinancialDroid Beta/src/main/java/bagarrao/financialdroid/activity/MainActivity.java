@@ -7,6 +7,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+
 import bagarrao.financialdroid.R;
 
 /**
@@ -27,7 +31,9 @@ public class MainActivity extends AppCompatActivity {
     private Button addExpenseButton;
     private Button infoButton;
     private Button archiveButton;
-    private Button analyticsButton; //TODO analytics functionality
+    private Button analyticsButton;
+
+    private AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(ACTIVITY_TITLE);
+        MobileAds.initialize(this, "ca-app-pub-8899468184876323/4720328233");
+
+        this.adView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        this.adView.loadAd(adRequest);
+
         setSupportActionBar(toolbar);
         init();
         setListeners();

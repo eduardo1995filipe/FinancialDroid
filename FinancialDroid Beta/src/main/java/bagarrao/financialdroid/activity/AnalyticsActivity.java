@@ -2,8 +2,10 @@ package bagarrao.financialdroid.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
@@ -20,15 +22,20 @@ import bagarrao.financialdroid.utils.Filter;
 
 public class AnalyticsActivity extends AppCompatActivity {
 
+    private static final String ACTIVITY_TITLE = "Analytics";
+
+    private PieChart pieChart;
     private PieDataSet dataset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analytics);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(ACTIVITY_TITLE);
+        setSupportActionBar(toolbar);
 
-
-        PieChart pieChart = (PieChart) findViewById(R.id.lastMonthPieChart);
+        this.pieChart = (PieChart) findViewById(R.id.lastMonthPieChart);
 
         setAmountsByType();
 
@@ -44,7 +51,13 @@ public class AnalyticsActivity extends AppCompatActivity {
         pieChart.setDescription("");
         pieChart.setData(data);
 
+        Legend legend = pieChart.getLegend();
+        legend.setWordWrapEnabled(true);
+        legend.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
+
+
         pieChart.animateY(5000);
+
 
 //        pieChart.saveToGallery("/sd/mychart.jpg", 85); // 85 is the quality of the image
 
@@ -57,6 +70,9 @@ public class AnalyticsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         setAmountsByType();
+        pieChart.notifyDataSetChanged();
+        pieChart.invalidate();
+
     }
 
     public float getExpensesAmountByType(ExpenseType type){
@@ -78,6 +94,6 @@ public class AnalyticsActivity extends AppCompatActivity {
         entries.add(new Entry(getExpensesAmountByType(ExpenseType.OTHERS), 4));
 
         dataset = new PieDataSet(entries, "Expense Types");
+        dataset.setValueTextSize(dataset.getValueTextSize() + 5);
     }
-
 }
