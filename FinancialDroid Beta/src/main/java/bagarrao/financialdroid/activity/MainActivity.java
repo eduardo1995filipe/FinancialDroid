@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(ACTIVITY_TITLE);
         MobileAds.initialize(this, "ca-app-pub-8899468184876323/4720328233");
-
         this.adView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         this.adView.loadAd(adRequest);

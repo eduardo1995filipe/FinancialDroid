@@ -7,11 +7,24 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="bagarrao.financialdroid.activity.AnalyticsActivity"
     tools:showIn="@layout/activity_analytics"
-    android:orientation="horizontal">
+    android:orientation="vertical">
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/analyticsAdBanner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center_horizontal|top"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-8899468184876323/9793116541">
+    </com.google.android.gms.ads.AdView>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Last Month Expenses Chart"
+        android:text="
+        Last Month Expenses Chart
+        "
         android:gravity="center_horizontal"/>
     <com.github.mikephil.charting.charts.PieChart
         android:layout_width="match_parent"

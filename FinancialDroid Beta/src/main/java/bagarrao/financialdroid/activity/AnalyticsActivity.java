@@ -2,7 +2,6 @@ package bagarrao.financialdroid.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -10,6 +9,9 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +24,7 @@ import bagarrao.financialdroid.utils.Filter;
 
 public class AnalyticsActivity extends AppCompatActivity {
 
-    private static final String ACTIVITY_TITLE = "Analytics";
+    private AdView adView;
 
     private PieChart pieChart;
     private PieDataSet dataset;
@@ -31,23 +33,25 @@ public class AnalyticsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analytics);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(ACTIVITY_TITLE);
-        setSupportActionBar(toolbar);
+        MobileAds.initialize(this, "ca-app-pub-8899468184876323/9793116541");
+
+        this.adView = (AdView) findViewById(R.id.analyticsAdBanner);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        this.adView.loadAd(adRequest);
 
         this.pieChart = (PieChart) findViewById(R.id.lastMonthPieChart);
 
         setAmountsByType();
 
         ArrayList<String> labels = new ArrayList<String>();
-        labels.add("FEEDING");
-        labels.add("TRANSPORTS");
-        labels.add("SCHOOL");
-        labels.add("CLOTHING");
-        labels.add("OTHERS");
+        labels.add("Feeding");
+        labels.add("Transports");
+        labels.add("School");
+        labels.add("Clothing");
+        labels.add("others");
 
         PieData data = new PieData(labels, dataset);
-        dataset.setColors(ColorTemplate.PASTEL_COLORS);
+        dataset.setColors(ColorTemplate.JOYFUL_COLORS);
         pieChart.setDescription("");
         pieChart.setData(data);
 
@@ -56,14 +60,7 @@ public class AnalyticsActivity extends AppCompatActivity {
         legend.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
 
 
-        pieChart.animateY(5000);
-
-
-//        pieChart.saveToGallery("/sd/mychart.jpg", 85); // 85 is the quality of the image
-
-
-
-
+        pieChart.animateY(2500);
     }
 
     @Override
@@ -72,7 +69,6 @@ public class AnalyticsActivity extends AppCompatActivity {
         setAmountsByType();
         pieChart.notifyDataSetChanged();
         pieChart.invalidate();
-
     }
 
     public float getExpensesAmountByType(ExpenseType type){

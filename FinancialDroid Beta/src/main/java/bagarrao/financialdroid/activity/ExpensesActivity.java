@@ -13,6 +13,10 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +33,8 @@ import bagarrao.financialdroid.utils.Filter;
  * @author Eduardo Bagarrao
  */
 public class ExpensesActivity extends AppCompatActivity {
+
+    private AdView adView;
 
     public static final ExpenseOrder DEFAULT_ORDER = ExpenseOrder.DATE_DESCENDING;
     public static final ExpenseType DEFAULT_EXPENSE_TYPE = null;
@@ -53,10 +59,20 @@ public class ExpensesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_expenses);
+
+        MobileAds.initialize(this, "ca-app-pub-8899468184876323/7706665790");
+
+        this.adView = (AdView) findViewById(R.id.expenseViewerAdBanner);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        this.adView.loadAd(adRequest);
         init();
         readDB();
         setListeners();
+
+
+
     }
 
     /**
