@@ -7,43 +7,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="bagarrao.financialdroid.activity.InfoActivity"
     tools:showIn="@layout/activity_info">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <TextView
-        android:id="@+id/versionEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="FinancialDroid Beta v0.0"
-        android:layout_marginTop="31dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"/>
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Main programmer: Eduardo Bagarrão"
-        android:layout_marginTop="33dp"
-        android:layout_below="@+id/imageView"
-        android:layout_centerHorizontal="true" />
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Main artist: Beatriz Crisóstomo"
-        android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true" />
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:foregroundGravity="center_horizontal"
-        app:srcCompat="@mipmap/ic_launcher_wallet"
-        android:layout_marginTop="26dp"
-        android:layout_below="@+id/versionEditText"
-        android:layout_centerHorizontal="true" />
-    </RelativeLayout>
+
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/infoAdBanner"
@@ -55,4 +19,116 @@
         ads:adSize="BANNER"
         ads:adUnitId="ca-app-pub-8899468184876323/3142457027">
     </com.google.android.gms.ads.AdView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/versionEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="31dp"
+            android:gravity="center_horizontal"
+            android:text="FinancialDroid Beta v0.0" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignTop="@+id/textView"
+            android:layout_toLeftOf="@+id/textView"
+            android:layout_toStartOf="@+id/textView"
+            app:srcCompat="@mipmap/ic_eduardo" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="32dp"
+            android:gravity="center_horizontal"
+            android:text="   Programmer: Eduardo Bagarrão" />
+
+        <TextView
+            android:id="@+id/textViewAbout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView"
+            android:layout_toEndOf="@+id/imageView2"
+            android:layout_toRightOf="@+id/imageView2"
+            android:text="   Currently taking Computer Engineering \n   Degree at ISCTE, Lisbon." />
+
+        <TextView
+            android:id="@+id/textViewLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewAbout"
+            android:layout_toEndOf="@+id/imageView2"
+            android:layout_toRightOf="@+id/imageView2"
+            android:gravity="center_horizontal"
+            android:text="   Click on my image to go to my LinkedIn!" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewLink"
+            android:layout_marginTop="54dp"
+            android:layout_toEndOf="@+id/imageView3"
+            android:layout_toRightOf="@+id/imageView3"
+            android:text="   Artist: Beatriz Crisóstomo" />
+
+        <TextView
+            android:id="@+id/textViewAbout2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView2"
+            android:layout_toEndOf="@+id/imageView3"
+            android:layout_toRightOf="@+id/imageView3"
+            android:text="   Fashion Blogger, taking Design Degree at \n   Lusíada University, Lisbon" />
+
+        <TextView
+            android:id="@+id/textViewLink2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewAbout2"
+            android:layout_toEndOf="@+id/imageView3"
+            android:layout_toRightOf="@+id/imageView3"
+            android:text="   Click on my image to get redirected to my \n   portfolio, or the link below to go to my blog!" />
+
+        <TextView
+            android:id="@+id/textViewLink2_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/textViewLink2"
+            android:layout_alignLeft="@+id/textViewLink2"
+            android:layout_alignRight="@+id/textViewLink2"
+            android:layout_alignStart="@+id/textViewLink2"
+            android:layout_below="@+id/textViewLink2"
+            android:gravity="center_horizontal"
+            android:text="@string/blogLink" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/versionEditText"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="12dp"
+            android:foregroundGravity="center_horizontal"
+            app:srcCompat="@mipmap/ic_financial_droid_about" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignLeft="@+id/imageView2"
+            android:layout_alignStart="@+id/imageView2"
+            android:layout_alignTop="@+id/textView2"
+            app:srcCompat="@mipmap/ic_beatriz" />
+    </RelativeLayout>
 </FrameLayout>
