@@ -22,57 +22,90 @@ import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.expense.ExpenseType;
 import bagarrao.financialdroid.utils.Filter;
 
+/**
+ * @author Eduardo Bagarrao
+ */
 public class AnalyticsActivity extends AppCompatActivity {
 
     private AdView adView;
+    private AdRequest adRequest;
 
     private PieChart pieChart;
-    private PieDataSet dataset;
+    private PieData data;
+    private PieDataSet dataSet;
+    private  Legend legend;
+
+    private ArrayList<String> labels;
+    private ArrayList<Entry> entries;
+
+    private ExpenseDataSource dataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analytics);
-        MobileAds.initialize(this, "ca-app-pub-8899468184876323/9793116541");
-
-        this.adView = (AdView) findViewById(R.id.analyticsAdBanner);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        this.adView.loadAd(adRequest);
-
-        this.pieChart = (PieChart) findViewById(R.id.lastMonthPieChart);
-
-        setAmountsByType();
-
-        ArrayList<String> labels = new ArrayList<String>();
-        labels.add("Feeding");
-        labels.add("Transports");
-        labels.add("School");
-        labels.add("Clothing");
-        labels.add("others");
-
-        PieData data = new PieData(labels, dataset);
-        dataset.setColors(ColorTemplate.JOYFUL_COLORS);
-        pieChart.setDescription("");
-        pieChart.setData(data);
-
-        Legend legend = pieChart.getLegend();
-        legend.setWordWrapEnabled(true);
-        legend.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
-
-
-        pieChart.animateY(2500);
+        init();
+        setup();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        setAmountsByType();
+        setExpensesAmount();
         pieChart.notifyDataSetChanged();
         pieChart.invalidate();
     }
 
-    public float getExpensesAmountByType(ExpenseType type){
-        ExpenseDataSource dataSource = new ExpenseDataSource(this);
+    /**
+     * inits all the class objects
+     */
+    private void init(){
+        MobileAds.initialize(this, "ca-app-pub-8899468184876323/9793116541");
+        this.adView = (AdView) findViewById(R.id.analyticsAdBanner);
+        this.adRequest = new AdRequest.Builder().build();
+        this.pieChart = (PieChart) findViewById(R.id.lastMonthPieChart);
+
+        this.entries = new ArrayList<>();
+        this.labels = new ArrayList<>();
+    }
+
+    /**
+     * setups all the  class objects
+     */
+    private void setup(){
+        this.adView.loadAd(adRequest);
+
+        setExpensesAmount();
+
+        this.labels.add("Feeding");
+        this.labels.add("Transports");
+        this.labels.add("School");
+        this.labels.add("Clothing");
+        this.labels.add("others");
+
+        this.dataSet = new PieDataSet(entries, "Expense Types");
+        this.dataSet.setValueTextSize(dataSet.getValueTextSize() + 5);
+
+        this.data = new PieData(labels, dataSet);
+        this.dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+        this.pieChart.setDescription("");
+        this.pieChart.setData(data);
+
+        this.legend = pieChart.getLegend();
+        this.legend.setWordWrapEnabled(true);
+        this.legend.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
+
+        this.pieChart.animateY(2500);
+
+    }
+
+    /**
+     * return the total value of the ExpenseType given in the parameter
+     * @param type type of the
+     * @return total value of the expenses of that ExpenseType
+     */
+    private float getExpensesAmountByType(ExpenseType type){
+        this.dataSource = new ExpenseDataSource(this);
         dataSource.open();
         List<Expense> expenses = Filter.getExpensesByType(dataSource.getAllExpenses(),type);
         double amount = 0;
@@ -81,15 +114,16 @@ public class AnalyticsActivity extends AppCompatActivity {
         return (float)amount;
     }
 
-    public void setAmountsByType(){
-        ArrayList<Entry> entries = new ArrayList<>();
+    /**
+     * set the expenses amount for the entries of the chart
+     */
+    private void setExpensesAmount(){
+        if(entries.size() != 0)
+            entries.clear();
         entries.add(new Entry(getExpensesAmountByType(ExpenseType.FEEDING), 0));
         entries.add(new Entry(getExpensesAmountByType(ExpenseType.TRANSPORTS), 1));
         entries.add(new Entry(getExpensesAmountByType(ExpenseType.SCHOOL), 2));
         entries.add(new Entry(getExpensesAmountByType(ExpenseType.CLOTHING), 3));
         entries.add(new Entry(getExpensesAmountByType(ExpenseType.OTHERS), 4));
-
-        dataset = new PieDataSet(entries, "Expense Types");
-        dataset.setValueTextSize(dataset.getValueTextSize() + 5);
     }
 }

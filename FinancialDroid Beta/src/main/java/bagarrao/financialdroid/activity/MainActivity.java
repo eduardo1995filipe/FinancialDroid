@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -26,12 +27,11 @@ public class MainActivity extends AppCompatActivity {
     private Intent analyticsIntent;
     private Intent archiveIntent;
 
-    //    functional
-    private Button expensesButton;
-    private Button addExpenseButton;
-    private Button infoButton;
-    private Button archiveButton;
-    private Button analyticsButton;
+    private ImageView expensesView;
+    private ImageView addExpenseView;
+    private ImageView infoView;
+    private ImageView archiveView;
+    private ImageView analyticsView;
 
     private AdView adView;
 
@@ -63,19 +63,18 @@ public class MainActivity extends AppCompatActivity {
         this.analyticsIntent = new Intent(this, AnalyticsActivity.class);
         this.archiveIntent = new Intent(this, ArchiveActivity.class);
 
-
-        this.expensesButton = (Button) findViewById(R.id.expensesButton);
-        this.addExpenseButton = (Button) findViewById(R.id.addExpenseButton);
-        this.infoButton = (Button) findViewById(R.id.infoButton);
-        this.analyticsButton = (Button) findViewById(R.id.analyticsButton);
-        this.archiveButton = (Button) findViewById(R.id.archiveButton);
+        this.expensesView = (ImageView) findViewById(R.id.expenseViewerImage);
+        this.addExpenseView = (ImageView) findViewById(R.id.addExpenseImage);
+        this.analyticsView = (ImageView) findViewById(R.id.analyticsImage);
+        this.archiveView = (ImageView) findViewById(R.id.archiveImage);
+        this.infoView = (ImageView) findViewById(R.id.infoImage);
     }
 
     /**
      * sets the listeners of the views
      */
     public void setListeners() {
-        expensesButton.setOnClickListener(
+        expensesView.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -84,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        addExpenseButton.setOnClickListener(
+        addExpenseView.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -93,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        infoButton.setOnClickListener(
+        infoView.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -102,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        analyticsButton.setOnClickListener(
+        analyticsView.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -111,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        archiveButton.setOnClickListener(new View.OnClickListener() {
+        archiveView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(archiveIntent);
