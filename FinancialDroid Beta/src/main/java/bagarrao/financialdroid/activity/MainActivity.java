@@ -19,7 +19,7 @@ import bagarrao.financialdroid.R;
  */
 public class MainActivity extends AppCompatActivity {
 
-    public static final String ACTIVITY_TITLE = "FinancialDroid";
+    public static final String ACTIVITY_TITLE = "FINANCIALDROID";
 
     private Intent expensesIntent;
     private Intent addExpenseIntent;
