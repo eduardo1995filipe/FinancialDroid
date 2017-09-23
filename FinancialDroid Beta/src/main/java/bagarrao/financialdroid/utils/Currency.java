@@ -39,6 +39,8 @@ public enum Currency {
         return difference;
     }
 
+
+
     public static double convert(double value,Currency currencyFrom, Currency currencyTo){
         return (value / getDifference(currencyFrom)) * getDifference(currencyTo);
     }
