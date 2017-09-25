@@ -36,6 +36,13 @@ public class Expense {
     public double getValue() {
         return value;
     }
+	
+	/**
+     * Setter of the Expense value
+     */
+    public double setValue(double value) {
+        this.value = value;
+    }
 
     /**
      * Getter of the Expense type

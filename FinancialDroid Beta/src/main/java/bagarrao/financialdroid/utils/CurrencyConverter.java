@@ -37,10 +37,27 @@ public class CurrencyConverter {
     }
 
     public void setCurrency(Currency currency){
-        this.editor = sharedPref.edit();
+        
+		//calcular a currency de todas as despesas
+		ExpenseDataSource expenseDataSource = new ExpenseDataSource(context);
+        ArchiveDataSource archiveDataSource = new ArchiveDataSource(context);
+		expenseDataSource.open();
+		expenseDataSource.open();
+		
+		//code here
+		
+		List<Expense> expenses = expenseDataSource.getAllExpenses();
+		List<Expense> archiveExpenses = archiveDataSource.getAllExpenses();
+		
+		for(Expense e : expenses)
+			e.setValue(Currency.convert(e.getValue,getCurrentCurrency(),currency));
+		
+		//end code here
+		expenseDataSource.close();
+		expenseDataSource.close();
+		this.editor = sharedPref.edit();
         editor.putString(CURRENCY_PREF,currency.toString());
         editor.commit();
-		//calcular a currency de todas as despesas
     }
 
     public Currency getCurrentCurrency(){
