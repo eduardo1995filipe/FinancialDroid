@@ -120,10 +120,14 @@ public class AnalyticsActivity extends AppCompatActivity {
     private void setExpensesAmount(){
         if(entries.size() != 0)
             entries.clear();
-        entries.add(new Entry(getExpensesAmountByType(ExpenseType.FEEDING), 0));
-        entries.add(new Entry(getExpensesAmountByType(ExpenseType.TRANSPORTS), 1));
-        entries.add(new Entry(getExpensesAmountByType(ExpenseType.SCHOOL), 2));
-        entries.add(new Entry(getExpensesAmountByType(ExpenseType.CLOTHING), 3));
-        entries.add(new Entry(getExpensesAmountByType(ExpenseType.OTHERS), 4));
-    }
+		int i = 0;
+		for(ExpenseType type : ExpenseType.values()){
+			int amount = getExpensesAmountByType(type);
+			if(amount > 0)
+				entries.add(new Entry(type, i));
+				i++;
+			else
+				continue;
+		}
+	}
 }

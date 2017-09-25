@@ -40,6 +40,7 @@ public class CurrencyConverter {
         this.editor = sharedPref.edit();
         editor.putString(CURRENCY_PREF,currency.toString());
         editor.commit();
+		//calcular a currency de todas as despesas
     }
 
     public Currency getCurrentCurrency(){

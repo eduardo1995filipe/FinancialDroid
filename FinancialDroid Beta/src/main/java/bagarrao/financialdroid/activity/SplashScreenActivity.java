@@ -12,8 +12,14 @@ import bagarrao.financialdroid.migration.Migrator;
  */
 public class SplashScreenActivity extends AppCompatActivity {
 
-    private Intent intent;
+	public static final String DEFAULT_CURRENCY = "defaultCurrency";
 
+    private Intent intent;
+	private SharedPreferences sharedPref;
+    private SharedPreferences.Editor editor;
+	
+	
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +28,12 @@ public class SplashScreenActivity extends AppCompatActivity {
             new Migrator(this).run();
         }
         this.intent = new Intent(this, MainActivity.class);
+		this.sharedPref = context.getSharedPreferences(CURRENCY_PREF,context.MODE_PRIVATE);
+		if(!sharedPref.contains(DEFAULT_CURRENCY)){
+			this.editor = sharedPref.edit();
+			editor.putString(DEFAULT_CURRENCY,Currency.EUR.toString()/*change to magic variable*/);
+			editor.commit();	
+		}
         startActivity(intent);
         finish();
     }
