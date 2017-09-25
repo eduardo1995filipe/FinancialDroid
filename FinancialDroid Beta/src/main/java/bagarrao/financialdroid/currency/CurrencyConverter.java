@@ -1,7 +1,13 @@
-package bagarrao.financialdroid.utils;
+package bagarrao.financialdroid.currency;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import java.util.List;
+
+import bagarrao.financialdroid.database.ArchiveDataSource;
+import bagarrao.financialdroid.database.ExpenseDataSource;
+import bagarrao.financialdroid.expense.Expense;
 
 /**
  * Created by eduar on 23/09/2017.
@@ -50,7 +56,7 @@ public class CurrencyConverter {
 		List<Expense> archiveExpenses = archiveDataSource.getAllExpenses();
 		
 		for(Expense e : expenses)
-			e.setValue(Currency.convert(e.getValue,getCurrentCurrency(),currency));
+			e.setValue(Currency.convert(e.getValue(),getCurrentCurrency(),currency));
 		
 		//end code here
 		expenseDataSource.close();

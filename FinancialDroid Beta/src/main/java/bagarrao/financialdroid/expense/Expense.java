@@ -40,7 +40,7 @@ public class Expense {
 	/**
      * Setter of the Expense value
      */
-    public double setValue(double value) {
+    public void setValue(double value) {
         this.value = value;
     }
 

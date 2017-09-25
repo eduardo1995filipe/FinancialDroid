@@ -43,6 +43,10 @@
         <activity
             android:name=".activity.AnalyticsActivity"
             android:label="@string/title_activity_analytics"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

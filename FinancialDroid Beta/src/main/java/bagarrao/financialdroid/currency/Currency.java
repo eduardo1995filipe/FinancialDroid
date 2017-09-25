@@ -1,4 +1,4 @@
-package bagarrao.financialdroid.utils;
+package bagarrao.financialdroid.currency;
 
 /**
  * Created by eduar on 23/09/2017.
@@ -41,7 +41,7 @@ public enum Currency {
 
 
 
-    public static double convert(double value,Currency currencyFrom, Currency currencyTo){
+    public static double convert(double value, Currency currencyFrom, Currency currencyTo){
         return (value / getDifference(currencyFrom)) * getDifference(currencyTo);
     }
 }

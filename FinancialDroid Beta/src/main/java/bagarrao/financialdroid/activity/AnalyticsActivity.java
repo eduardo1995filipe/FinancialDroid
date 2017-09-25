@@ -77,11 +77,11 @@ public class AnalyticsActivity extends AppCompatActivity {
 
         setExpensesAmount();
 
-        this.labels.add("Feeding");
-        this.labels.add("Transports");
-        this.labels.add("School");
-        this.labels.add("Clothing");
-        this.labels.add("others");
+//        this.labels.add("Feeding");
+//        this.labels.add("Transports");
+//        this.labels.add("School");
+//        this.labels.add("Clothing");
+//        this.labels.add("others");
 
         this.dataSet = new PieDataSet(entries, "Expense Types");
         this.dataSet.setValueTextSize(dataSet.getValueTextSize() + 5);
@@ -120,12 +120,16 @@ public class AnalyticsActivity extends AppCompatActivity {
     private void setExpensesAmount(){
         if(entries.size() != 0)
             entries.clear();
-		int i = 0;
+        if(labels.size() != 0)
+            labels.clear();
+        int i = 0;
 		for(ExpenseType type : ExpenseType.values()){
-			int amount = getExpensesAmountByType(type);
-			if(amount > 0)
-				entries.add(new Entry(type, i));
-				i++;
+			float amount = getExpensesAmountByType(type);
+			if(amount > 0) {
+                labels.add(type.toString());
+                entries.add(new Entry(amount, i));
+                i++;
+            }
 			else
 				continue;
 		}

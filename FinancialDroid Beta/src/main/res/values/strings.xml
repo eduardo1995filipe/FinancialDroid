@@ -13,4 +13,5 @@
             <u>Tap here to go to my blog!</u>
         </a>
     </string>
+    <string name="title_activity_settings">SettingsActivity</string>
 </resources>
