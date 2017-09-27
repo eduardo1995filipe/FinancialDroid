@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="expense_type_kind">
+        <item>Feeding</item>
+        <item>Transports</item>
+        <item>Clothing</item>
+        <item>School</item>
+        <item>Others</item>
+    </string-array>
     <string-array name="order_kind">
         <item>Date(descending)</item>
         <item>Date(ascending)</item>
@@ -13,5 +20,15 @@
         <item>Clothing</item>
         <item>School</item>
         <item>Others</item>
+    </string-array>
+    <string-array name="currency_type">
+        <item>EUR</item>
+        <item>USD</item>
+        <item>AUD</item>
+        <item>BRL</item>
+        <item>JPY</item>
+        <item>KRW</item>
+        <item>CNY</item>
+        <item>GPB</item>
     </string-array>
 </resources>
