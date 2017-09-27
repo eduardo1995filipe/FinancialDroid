@@ -13,6 +13,8 @@ import bagarrao.financialdroid.backup.Backup;
 
 public class SettingsActivity extends AppCompatActivity {
 
+	private CurrencyConverter currencyConverter = CurrencyConverter.getInstance();
+
     private Button exportButton;
     private Button importButton;
 
@@ -52,6 +54,61 @@ public class SettingsActivity extends AppCompatActivity {
                 //TODO import button function
             }
         });
+		
+		currencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                try{
+				 currentCurrency = getCurrencyOrder(position);
+				}catch(NullPointerException e){
+					currentCurrency = Currency.DEFAULT_CURRENCY;
+				}
+				finally{
+					currencyConverter.setCurrency(currentCurrency);
+				}
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+		
     }
 
+
+    public Currency getCurrencyOrder(int index) {
+        Currency currency = null;
+        switch (index) {
+            case 0:
+                currency = Currency.EUR;
+                break;
+			case 1:
+                currency = Currency.USD;
+                break;
+			case 2:
+                currency = Currency.AUD;
+                break;
+			case 3:
+                currency = Currency.BRL;
+                break;
+			case 4:
+                currency = Currency.JPY;
+                break;
+			case 5:
+                currency = Currency.KRW;
+                break;
+			case 6:
+                currency = Currency.CNY;
+                break;
+			case 7:
+                currency = Currency.GPB;
+                break;
+            default:
+                Log.e("ExpensesActivity", "expenseOrder returned NULL");
+                throw new NullPointerException();
+        }
+        return expenseOrder;
+    }
+	
 }

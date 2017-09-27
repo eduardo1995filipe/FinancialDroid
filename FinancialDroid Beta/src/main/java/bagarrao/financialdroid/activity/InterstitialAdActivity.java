@@ -47,7 +47,8 @@ public class InterstitialAdActivity extends AppCompatActivity {
             public void onAdFailedToLoad(int errorCode) {
                 // Code to be executed when an ad request fails.
                 Log.i("Ads", "onAdFailedToLoad");
-            }
+				startActivity(mainIntent);
+			}
 
             @Override
             public void onAdOpened() {

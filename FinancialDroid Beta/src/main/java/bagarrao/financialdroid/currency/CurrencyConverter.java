@@ -48,19 +48,29 @@ public class CurrencyConverter {
 		ExpenseDataSource expenseDataSource = new ExpenseDataSource(context);
         ArchiveDataSource archiveDataSource = new ArchiveDataSource(context);
 		expenseDataSource.open();
-		expenseDataSource.open();
+		archiveDataSource.open();
 		
-		//code here
+		//start code here
 		
 		List<Expense> expenses = expenseDataSource.getAllExpenses();
 		List<Expense> archiveExpenses = archiveDataSource.getAllExpenses();
 		
-		for(Expense e : expenses)
+		expenseDataSource.deleteAllExpenses();
+		archiveDataSource.deleteAllExpenses();
+		
+		for(Expense e : expenses){
 			e.setValue(Currency.convert(e.getValue(),getCurrentCurrency(),currency));
+			expenseDataSource.createExpense(e);
+		}
+		
+		for(Expense e : archiveExpenses){
+			e.setValue(Currency.convert(e.getValue(),getCurrentCurrency(),currency));
+			archiveDataSource.createExpense(e);
+		}
 		
 		//end code here
 		expenseDataSource.close();
-		expenseDataSource.close();
+		archiveDataSource.close();
 		this.editor = sharedPref.edit();
         editor.putString(CURRENCY_PREF,currency.toString());
         editor.commit();
