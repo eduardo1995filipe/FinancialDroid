@@ -19,6 +19,7 @@ import java.util.List;
 
 import bagarrao.financialdroid.R;
 import bagarrao.financialdroid.backup.Backup;
+import bagarrao.financialdroid.currency.CurrencyConverter;
 import bagarrao.financialdroid.database.ArchiveDataSource;
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.expense.ExpenseOrder;
@@ -27,6 +28,8 @@ import bagarrao.financialdroid.utils.DateForCompare;
 import bagarrao.financialdroid.utils.Filter;
 
 public class ArchiveActivity extends AppCompatActivity {
+
+    private CurrencyConverter currencyConverter = CurrencyConverter.getInstance();
 
     public static final ExpenseOrder DEFAULT_ORDER = ExpenseOrder.DATE_DESCENDING;
     public static final ExpenseType DEFAULT_EXPENSE_TYPE = null;
@@ -230,7 +233,7 @@ public class ArchiveActivity extends AppCompatActivity {
         }
         archiveListString.clear();
         for (Expense e : archiveList) {
-            String stringExpense = e.getDescription() + " | " + e.getValue() + "€ | " +
+            String stringExpense = e.getDescription() + " | " + e.getValue() + " " + currencyConverter.getCurrentCurrency().toString() + " | " +
                     DateForCompare.DATE_FORMATTED.format(e.getDate()) + " | " + e.getType().toString();
             archiveListString.add(stringExpense);
         }

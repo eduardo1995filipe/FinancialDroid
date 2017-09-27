@@ -19,7 +19,7 @@ import bagarrao.financialdroid.currency.Currency;
 public class SplashScreenActivity extends AppCompatActivity {
 
 	public static final String DEFAULT_CURRENCY = "defaultCurrency";
-    public static final double AD_PROBABILITY = 0.6;
+    public static final double AD_PROBABILITY = 0.2;
 
     private Intent intent;
 	private SharedPreferences sharedPref;
@@ -28,7 +28,6 @@ public class SplashScreenActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         new Backup(this).go();
         if (Migrator.needsMigration(this)) {
             new Migrator(this).run();

@@ -3,17 +3,24 @@ package bagarrao.financialdroid.activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import bagarrao.financialdroid.R;
 import bagarrao.financialdroid.backup.Backup;
+import bagarrao.financialdroid.currency.Currency;
+import bagarrao.financialdroid.currency.CurrencyConverter;
 
 public class SettingsActivity extends AppCompatActivity {
 
 	private CurrencyConverter currencyConverter = CurrencyConverter.getInstance();
+
+    private Currency currentCurrency = Currency.DEFAULT_CURRENCY;
 
     private Button exportButton;
     private Button importButton;
@@ -66,9 +73,9 @@ public class SettingsActivity extends AppCompatActivity {
 				}
 				finally{
 					currencyConverter.setCurrency(currentCurrency);
-				}
+                    Toast.makeText(getApplicationContext(),"Current currency is now [" + currencyConverter.getCurrentCurrency().toString() + "]",Toast.LENGTH_SHORT);
+                }
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
@@ -78,7 +85,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
     public Currency getCurrencyOrder(int index) {
-        Currency currency = null;
+        Currency currency;
         switch (index) {
             case 0:
                 currency = Currency.EUR;
@@ -102,13 +109,12 @@ public class SettingsActivity extends AppCompatActivity {
                 currency = Currency.CNY;
                 break;
 			case 7:
-                currency = Currency.GPB;
+                currency = Currency.GBP;
                 break;
             default:
                 Log.e("ExpensesActivity", "expenseOrder returned NULL");
                 throw new NullPointerException();
         }
-        return expenseOrder;
+        return currency;
     }
-	
 }

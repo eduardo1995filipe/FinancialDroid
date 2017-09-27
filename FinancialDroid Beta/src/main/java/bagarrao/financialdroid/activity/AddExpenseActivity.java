@@ -9,12 +9,14 @@ import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.ParseException;
 import java.util.Date;
 
 import bagarrao.financialdroid.R;
+import bagarrao.financialdroid.currency.CurrencyConverter;
 import bagarrao.financialdroid.database.ArchiveDataSource;
 import bagarrao.financialdroid.database.ExpenseDataSource;
 import bagarrao.financialdroid.expense.Expense;
@@ -22,10 +24,14 @@ import bagarrao.financialdroid.expense.ExpenseDistributor;
 import bagarrao.financialdroid.expense.ExpenseType;
 import bagarrao.financialdroid.utils.DateForCompare;
 
+
+
 /**
  * @author Eduardo Bagarrao
  */
 public class AddExpenseActivity extends AppCompatActivity {
+
+    private CurrencyConverter currencyConverter = CurrencyConverter.getInstance();
 
     private Button addExpenseButton;
     private Spinner expenseTypeSpinner;
@@ -35,6 +41,7 @@ public class AddExpenseActivity extends AppCompatActivity {
     private ExpenseDataSource dataSource;
     private CalendarView dateCalendarView;
     private Date expenseDate;
+    private TextView priceTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +71,7 @@ public class AddExpenseActivity extends AppCompatActivity {
      */
     public void init() {
 
+        this.priceTextView = (TextView) findViewById(R.id.priceTextView);
         this.addExpenseButton = (Button) findViewById(R.id.addExpenseButton);
         this.priceEditText = (EditText) findViewById(R.id.priceEditText);
         this.descriptionEditText = (EditText) findViewById(R.id.descriptionEditText);
@@ -76,6 +84,8 @@ public class AddExpenseActivity extends AppCompatActivity {
 
         this.dataSource = new ExpenseDataSource(this);
         this.expenseDate = new Date();
+
+        priceTextView.setText("Price(" + currencyConverter.getCurrentCurrency().toString() + ")");
 
     }
 

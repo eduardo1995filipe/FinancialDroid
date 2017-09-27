@@ -22,6 +22,7 @@ import java.util.List;
 
 import bagarrao.financialdroid.R;
 import bagarrao.financialdroid.backup.Backup;
+import bagarrao.financialdroid.currency.CurrencyConverter;
 import bagarrao.financialdroid.database.ExpenseDataSource;
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.expense.ExpenseOrder;
@@ -33,6 +34,8 @@ import bagarrao.financialdroid.utils.Filter;
  * @author Eduardo Bagarrao
  */
 public class ExpensesActivity extends AppCompatActivity {
+
+    private CurrencyConverter currencyConverter = CurrencyConverter.getInstance();
 
     private AdView adView;
 
@@ -222,7 +225,7 @@ public class ExpensesActivity extends AppCompatActivity {
         }
         expenseListString.clear();
         for (Expense e : expenseList) {
-            String stringExpense = e.getDescription() + " | " + e.getValue() + "€ | " +
+            String stringExpense = e.getDescription() + " | " + e.getValue() + " " + currencyConverter.getCurrentCurrency().toString() + " | " +
                     DateForCompare.DATE_FORMATTED.format(e.getDate()) + " | " + e.getType().toString();
             expenseListString.add(stringExpense);
         }
