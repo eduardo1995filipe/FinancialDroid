@@ -25,6 +25,7 @@ import bagarrao.financialdroid.utils.DateForCompare;
  */
 public class Backup {
 
+    public static final String FILE_BEGINING= "FINANCIALDROID -" + ((long)((Math.random() + 0.5) * 100_000_000)) + "droid";
     public static final String FILE_NAME = "backup.csv";
     private static Context context;
 
@@ -59,6 +60,7 @@ public class Backup {
      * @return boolean value that shows if the restore was successfull or if it failed
      */
     public static boolean restorer() {
+        //TODO change restorer method the way he works in order to read a csv file
         try {
             File file = new File(FILE_NAME);
             if (!file.exists()) {
@@ -114,7 +116,7 @@ public class Backup {
      */
     public void open() {
         try {
-            this.bw = new BufferedWriter(new FileWriter(file, true/* APPEND MODE*/));
+            this.bw = new BufferedWriter(new FileWriter(file, false));
             expenseDataSource.open();
             archiveDataSource.open();
         } catch (IOException e) {
@@ -144,19 +146,14 @@ public class Backup {
         open();
         expenseList = expenseDataSource.getAllExpenses();
         archiveList = archiveDataSource.getAllExpenses();
-        for (Expense e : expenseList) {
-            try {
-                bw.write(e.toString() + "\n");
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        }
-        for (Expense e : archiveList) {
-            try {
-                bw.write(e.toString() + "\n");
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+        try {
+            bw.write(FILE_BEGINING);
+            for (Expense e : expenseList)
+                    bw.write(e.toString() + "\n");
+            for (Expense e : archiveList)
+                    bw.write(e.toString() + "\n");
+        }catch(IOException e){
+            e.printStackTrace();
         }
         close();
     }

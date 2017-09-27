@@ -145,7 +145,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="About us"
+                    android:text="Settings"
                     android:layout_gravity="center_horizontal|center_vertical"/>
             </LinearLayout>
         </LinearLayout>

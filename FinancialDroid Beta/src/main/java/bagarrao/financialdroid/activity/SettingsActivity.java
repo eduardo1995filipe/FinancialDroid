@@ -58,6 +58,7 @@ public class SettingsActivity extends AppCompatActivity {
         importButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(SettingsActivity.this, "I'm not available yet, sorry :c", Toast.LENGTH_SHORT).show();
                 //TODO import button function
             }
         });
@@ -72,7 +73,7 @@ public class SettingsActivity extends AppCompatActivity {
 					currentCurrency = Currency.DEFAULT_CURRENCY;
 				}
 				finally{
-					currencyConverter.setCurrency(currentCurrency);
+					currencyConverter.setCurrency(currentCurrency); //TODO correct bug here
                     Toast.makeText(getApplicationContext(),"Current currency is now [" + currencyConverter.getCurrentCurrency().toString() + "]",Toast.LENGTH_SHORT);
                 }
             }
