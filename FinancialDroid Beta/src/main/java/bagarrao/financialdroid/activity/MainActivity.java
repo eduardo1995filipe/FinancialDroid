@@ -22,7 +22,6 @@ import bagarrao.financialdroid.R;
 public class MainActivity extends AppCompatActivity {
 
     public static final String ACTIVITY_TITLE = "FINANCIALDROID";
-    public static final double AD_PROBABILITY = 1;
 
     private Intent expensesIntent;
     private Intent addExpenseIntent;
@@ -40,8 +39,6 @@ public class MainActivity extends AppCompatActivity {
 
     private AdView adView;
 
-    private InterstitialAd interstitialAd;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,15 +46,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(ACTIVITY_TITLE);
-        if(Math.random() <= AD_PROBABILITY) {
-            this.interstitialAd = new InterstitialAd(this);
-            this.interstitialAd.setAdUnitId("ca-app-pub-8899468184876323/9676301128");
-            this.interstitialAd.loadAd(new AdRequest.Builder().build());
-//            while(!interstitialAd.isLoaded())
-//                interstitialAd.loadAd();
-//                interstitialAd.show();
-            //TODO add intersticial add
-        }
         MobileAds.initialize(this, "ca-app-pub-8899468184876323/4720328233");
         this.adView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();

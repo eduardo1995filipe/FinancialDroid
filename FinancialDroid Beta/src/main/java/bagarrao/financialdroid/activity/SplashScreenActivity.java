@@ -19,11 +19,11 @@ import bagarrao.financialdroid.currency.Currency;
 public class SplashScreenActivity extends AppCompatActivity {
 
 	public static final String DEFAULT_CURRENCY = "defaultCurrency";
+    public static final double AD_PROBABILITY = 0.6;
 
     private Intent intent;
 	private SharedPreferences sharedPref;
     private SharedPreferences.Editor editor;
-
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,10 @@ public class SplashScreenActivity extends AppCompatActivity {
 			editor.putString(DEFAULT_CURRENCY, Currency.EUR.toString()/*change to magic variable*/);
 			editor.commit();	
 		}
-        startActivity(intent);
+		if(Math.random() <= AD_PROBABILITY)
+		    startActivity(new Intent(this, InterstitialAdActivity.class));
+		else
+		    startActivity(intent);
         finish();
     }
 }
