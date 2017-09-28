@@ -12,6 +12,7 @@ import bagarrao.financialdroid.database.ArchiveDataSource;
 import bagarrao.financialdroid.database.ExpenseDataSource;
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.utils.DateForCompare;
+import bagarrao.financialdroid.utils.SharedPreferencesHelper;
 
 /**
  * @author Eduardo Bagarrao
@@ -46,14 +47,14 @@ public class Migrator {
      */
     public static boolean needsMigration(Context context) {
         try {
-            SharedPreferences sharedPreferences = context.getSharedPreferences(ACCESS_DATE, Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = context.getSharedPreferences(SharedPreferencesHelper.ACCESS_DATE_PREF_FILE, Context.MODE_PRIVATE);
             SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
             Date currentDate = new Date();
-            if (!sharedPreferences.contains(OLD_DATE)) {
+            if (!sharedPreferences.contains(SharedPreferencesHelper.OLD_DATE_VALUE)) {
                 putNewDate(sharedPreferences, sharedPreferencesEditor, currentDate);
                 return false;
             } else {
-                Date lastDate = DateForCompare.DATE_FORMATTED.parse(sharedPreferences.getString(OLD_DATE, NULL_DATE));
+                Date lastDate = DateForCompare.DATE_FORMATTED.parse(sharedPreferences.getString(SharedPreferencesHelper.OLD_DATE_VALUE, SharedPreferencesHelper.OLD_DATE_DEFAULT_VALUE));
                 DateForCompare currentForCompare = new DateForCompare(currentDate);
                 DateForCompare lastForCompare = new DateForCompare(lastDate);
                 if ((lastForCompare.getMonth() < currentForCompare.getMonth() && lastForCompare.getYear() == currentForCompare.getYear()) ||
@@ -78,9 +79,9 @@ public class Migrator {
      * @param date
      */
     public static void putNewDate(SharedPreferences preferences, SharedPreferences.Editor editor, Date date) {
-        if (preferences.contains(OLD_DATE))
-            editor.remove(OLD_DATE);
-        editor.putString(OLD_DATE, DateForCompare.DATE_FORMATTED.format(date));
+        if (preferences.contains(SharedPreferencesHelper.OLD_DATE_VALUE))
+            editor.remove(SharedPreferencesHelper.OLD_DATE_VALUE);
+        editor.putString(SharedPreferencesHelper.OLD_DATE_VALUE, DateForCompare.DATE_FORMATTED.format(date));
         editor.commit();
     }
 
