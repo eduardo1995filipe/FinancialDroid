@@ -2,7 +2,6 @@ package bagarrao.financialdroid.activity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.content.SharedPreferencesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,9 +20,8 @@ import bagarrao.financialdroid.currency.CurrencyConverter;
 public class SettingsActivity extends AppCompatActivity {
 
 	private CurrencyConverter currencyConverter = CurrencyConverter.getInstance();
-
-    private Currency currentCurrency = Currency.DEFAULT_CURRENCY;
-
+	private currentCurrency = Currency.DEFAULT_CURRENCY;
+	
     private Button exportButton;
     private Button importButton;
 
@@ -45,14 +43,14 @@ public class SettingsActivity extends AppCompatActivity {
         this.exportButton = (Button)findViewById(R.id.exportCsvButton);
         this.importButton = (Button)findViewById(R.id.importCsvButton);
 
-        this.currencyPreferences = getSharedPreferences("currencyPreferences",MODE_PRIVATE);
+        this.currencyPreferences = getSharedPreferences(SharedPreferencesHelper.CURRENCY_PREF_FILE,MODE_PRIVATE);
 
         this.currencySpinner = (Spinner)findViewById(R.id.currencyTypeSpinner);
         this.currencyAdapter = ArrayAdapter.createFromResource(this, R.array.currency_type,
                 R.layout.support_simple_spinner_dropdown_item);
         currencyAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         currencySpinner.setAdapter(currencyAdapter);
-        int startPosition = (int)currencyPreferences.getInt("spinnerPosition",0);
+        int startPosition = (int)currencyPreferences.getInt(String CURRENCY_SPINNER_POSITION_VALUE,CURRENCY_SPINNER_POSITION_DEFAULT_VALUE);
         currencySpinner.setSelection(startPosition);
 
     }
@@ -86,7 +84,7 @@ public class SettingsActivity extends AppCompatActivity {
 					currencyConverter.setCurrency(currentCurrency); //TODO correct bug here
                     Toast.makeText(getApplicationContext(),"Current currency is now [" + currencyConverter.getCurrentCurrency().toString() + "]",Toast.LENGTH_SHORT);
                     currencyPreferencesEditor = currencyPreferences.edit();
-                    currencyPreferencesEditor.putInt("spinnerPosition",position);
+                    currencyPreferencesEditor.putInt(position,CURRENCY_SPINNER_POSITION_VALUE);
                     currencyPreferencesEditor.commit();
 				}
             }

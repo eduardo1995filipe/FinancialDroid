@@ -9,6 +9,7 @@ import bagarrao.financialdroid.activity.SplashScreenActivity;
 import bagarrao.financialdroid.database.ArchiveDataSource;
 import bagarrao.financialdroid.database.ExpenseDataSource;
 import bagarrao.financialdroid.expense.Expense;
+import bagarrao.financialdroid.util.SharedPreferencesHelper;
 
 import static android.content.Context.MODE_PRIVATE;
 import static bagarrao.financialdroid.activity.SplashScreenActivity.DEFAULT_CURRENCY;
@@ -19,8 +20,6 @@ import static bagarrao.financialdroid.activity.SplashScreenActivity.DEFAULT_CURR
 
 public class CurrencyConverter {
 
-    private static final String CURRENCY_PREF = "currencyPreferences";
-
     private static CurrencyConverter INSTANCE = null;
 
     private SharedPreferences sharedPref;
@@ -30,13 +29,13 @@ public class CurrencyConverter {
 
     private CurrencyConverter(Context context) {
         this.context = context;
-        this.sharedPref = context.getSharedPreferences(CURRENCY_PREF, MODE_PRIVATE);
-        if(!sharedPref.contains(DEFAULT_CURRENCY)){
+        this.sharedPref = context.getSharedPreferences(SharedPreferencesHelper.CURRENCY_PREF_FILE, MODE_PRIVATE);
+        if(!sharedPref.contains(SharedPreferencesHelper.CURRENCY_VALUE)){
             this.editor = sharedPref.edit();
-            editor.putString(DEFAULT_CURRENCY, Currency.EUR.toString()/*change to magic variable*/);
+            editor.putString(SharedPreferencesHelper.CURRENCY_DEFAULT_VALUE, SharedPreferencesHelper.CURRENCY_VALUE);
             editor.commit();
         }
-        this.currency = sharedPref.getString(SplashScreenActivity.DEFAULT_CURRENCY,Currency.DEFAULT_CURRENCY.toString());
+        this.currency = sharedPref.getString(SharedPreferencesHelper.CURRENCY_VALUE, Currency.valueOf(CURRENCY_DEFAULT_VALUE));
     }
 
     public static CurrencyConverter getInstance() {
@@ -81,20 +80,11 @@ public class CurrencyConverter {
 		expenseDataSource.close();
 		archiveDataSource.close();
 		this.editor = sharedPref.edit();
-        editor.putString(CURRENCY_PREF,currency.toString());
+        editor.putString(currency.toString(),SharedPreferencesHelper.CURRENCY_VALUE);
         editor.commit();
     }
 
     public Currency getCurrentCurrency(){
-        this.sharedPref = context.getSharedPreferences(DEFAULT_CURRENCY,context.MODE_PRIVATE);
-        if(!sharedPref.contains(DEFAULT_CURRENCY)){
-            this.editor = sharedPref.edit();
-            editor.putString(DEFAULT_CURRENCY, Currency.EUR.toString()/*change to magic variable*/);
-            editor.commit();
-            return Currency.DEFAULT_CURRENCY;
-        }else
-            return Currency.valueOf(sharedPref.getString(CURRENCY_PREF.toString(),Currency.DEFAULT_CURRENCY.toString()));
+            return Currency.valueOf(sharedPref.getString(SharedPreferencesHelper.CURRENCY_VALUE, SharedPreferencesHelper.CURRENCY_DEFAULT_VALUE));
     }
-
-
 }

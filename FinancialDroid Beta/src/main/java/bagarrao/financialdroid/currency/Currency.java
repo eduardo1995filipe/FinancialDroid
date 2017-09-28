@@ -42,7 +42,8 @@ public enum Currency {
 
 
     public static double convert(double value, Currency currencyFrom, Currency currencyTo){
-        return (value / getDifference(currencyFrom)) * getDifference(currencyTo);
+        //TODO a mudar para ter so um argumento
+		return (value / getDifference(currencyFrom)) * getDifference(currencyTo);
     }
 }
 
