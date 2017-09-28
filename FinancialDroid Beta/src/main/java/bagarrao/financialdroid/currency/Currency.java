@@ -13,25 +13,25 @@ public enum Currency {
         double difference = 1;
         switch (currency){
             case USD:
-                difference = 1.1951;
+                difference = 0.851462387;
                 break;
             case AUD:
-                difference = 1.51555694;
+                difference = 0.664498276;
                 break;
             case BRL:
-                difference = 3.73480421;
+                difference = 0.266202858;
                 break;
             case JPY:
-                difference = 133.844775;
+                difference = 0.00753033335;
                 break;
             case KRW:
-                difference = 1354.98866;
+                difference = 0.000739920814;
                 break;
             case CNY:
-                difference = 7.87986681;
+                difference = 0.127435847;
                 break;
             case GBP:
-                difference = 0.885521636;
+                difference = 1.13869897;
                 break;
             default:
                 break;

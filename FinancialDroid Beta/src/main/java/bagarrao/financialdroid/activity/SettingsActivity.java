@@ -1,6 +1,8 @@
 package bagarrao.financialdroid.activity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.content.SharedPreferencesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -25,6 +27,8 @@ public class SettingsActivity extends AppCompatActivity {
     private Button exportButton;
     private Button importButton;
 
+    private SharedPreferences currencyPreferences;
+    private SharedPreferences.Editor currencyPreferencesEditor;
     private Spinner currencySpinner;
     private ArrayAdapter<CharSequence> currencyAdapter;
 
@@ -37,14 +41,20 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void init(){
+        this.currencyConverter.setContext(this);
         this.exportButton = (Button)findViewById(R.id.exportCsvButton);
         this.importButton = (Button)findViewById(R.id.importCsvButton);
+
+        this.currencyPreferences = getSharedPreferences("currencyPreferences",MODE_PRIVATE);
 
         this.currencySpinner = (Spinner)findViewById(R.id.currencyTypeSpinner);
         this.currencyAdapter = ArrayAdapter.createFromResource(this, R.array.currency_type,
                 R.layout.support_simple_spinner_dropdown_item);
         currencyAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         currencySpinner.setAdapter(currencyAdapter);
+        int startPosition = (int)currencyPreferences.getInt("spinnerPosition",0);
+        currencySpinner.setSelection(startPosition);
+
     }
 
     public void setListeners(){
@@ -75,7 +85,10 @@ public class SettingsActivity extends AppCompatActivity {
 				finally{
 					currencyConverter.setCurrency(currentCurrency); //TODO correct bug here
                     Toast.makeText(getApplicationContext(),"Current currency is now [" + currencyConverter.getCurrentCurrency().toString() + "]",Toast.LENGTH_SHORT);
-                }
+                    currencyPreferencesEditor = currencyPreferences.edit();
+                    currencyPreferencesEditor.putInt("spinnerPosition",position);
+                    currencyPreferencesEditor.commit();
+				}
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {

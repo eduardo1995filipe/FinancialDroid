@@ -63,6 +63,7 @@ public class ExpensesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        this.currencyConverter.setContext(this);
         setContentView(R.layout.activity_expenses);
 
         MobileAds.initialize(this, "ca-app-pub-8899468184876323/7706665790");

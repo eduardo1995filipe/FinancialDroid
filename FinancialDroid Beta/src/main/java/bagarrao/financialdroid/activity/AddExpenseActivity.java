@@ -71,6 +71,7 @@ public class AddExpenseActivity extends AppCompatActivity {
      */
     public void init() {
 
+        this.currencyConverter.setContext(this);
         this.priceTextView = (TextView) findViewById(R.id.priceTextView);
         this.addExpenseButton = (Button) findViewById(R.id.addExpenseButton);
         this.priceEditText = (EditText) findViewById(R.id.priceEditText);

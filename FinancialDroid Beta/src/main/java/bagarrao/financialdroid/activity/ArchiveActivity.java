@@ -67,7 +67,7 @@ public class ArchiveActivity extends AppCompatActivity {
      */
     public void init() {
         this.context = this;
-
+        this.currencyConverter.setContext(this);
         this.currentOrder = DEFAULT_ORDER;
         this.currentType = DEFAULT_EXPENSE_TYPE;
 
