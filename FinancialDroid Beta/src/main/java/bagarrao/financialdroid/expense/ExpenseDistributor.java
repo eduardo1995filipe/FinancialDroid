@@ -44,6 +44,6 @@ public class ExpenseDistributor {
             }
             expenseDataSource.close();
         }
-        new Backup().go();
+        new Backup(context).go();
     }
 }

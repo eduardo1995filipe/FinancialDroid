@@ -16,17 +16,18 @@ import bagarrao.financialdroid.R;
 import bagarrao.financialdroid.backup.Backup;
 import bagarrao.financialdroid.currency.Currency;
 import bagarrao.financialdroid.currency.CurrencyConverter;
+import bagarrao.financialdroid.utils.SharedPreferencesHelper;
 
 public class SettingsActivity extends AppCompatActivity {
 
 	private CurrencyConverter currencyConverter = CurrencyConverter.getInstance();
-	private currentCurrency = Currency.DEFAULT_CURRENCY;
 	
     private Button exportButton;
     private Button importButton;
 
-    private SharedPreferences currencyPreferences;
-    private SharedPreferences.Editor currencyPreferencesEditor;
+    private SharedPreferences sharedPref;
+    private SharedPreferences.Editor sharedPrefEditor;
+
     private Spinner currencySpinner;
     private ArrayAdapter<CharSequence> currencyAdapter;
 
@@ -39,27 +40,26 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void init(){
-        this.currencyConverter.setContext(this);
         this.exportButton = (Button)findViewById(R.id.exportCsvButton);
         this.importButton = (Button)findViewById(R.id.importCsvButton);
 
-        this.currencyPreferences = getSharedPreferences(SharedPreferencesHelper.CURRENCY_PREF_FILE,MODE_PRIVATE);
+        this.sharedPref = getSharedPreferences(SharedPreferencesHelper.CURRENCY_SPINNER_PREFERENCES_FILE,MODE_PRIVATE);
 
         this.currencySpinner = (Spinner)findViewById(R.id.currencyTypeSpinner);
         this.currencyAdapter = ArrayAdapter.createFromResource(this, R.array.currency_type,
                 R.layout.support_simple_spinner_dropdown_item);
         currencyAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         currencySpinner.setAdapter(currencyAdapter);
-        int startPosition = (int)currencyPreferences.getInt(String CURRENCY_SPINNER_POSITION_VALUE,CURRENCY_SPINNER_POSITION_DEFAULT_VALUE);
+        int startPosition = sharedPref.getInt(SharedPreferencesHelper.CURRENCY_SPINNER_POSITION_KEY,SharedPreferencesHelper.CURRENCY_SPINNER_POSITION_DEFAULT_VALUE);
         currencySpinner.setSelection(startPosition);
-
     }
 
     public void setListeners(){
         exportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Backup().go();
+//                new Backup(getApplicationContext()).go();
+                Toast.makeText(SettingsActivity.this, "I'm not available yet, sorry :c", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -73,6 +73,8 @@ public class SettingsActivity extends AppCompatActivity {
 		
 		currencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
+            Currency currentCurrency = null;
+
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 try{
@@ -81,20 +83,18 @@ public class SettingsActivity extends AppCompatActivity {
 					currentCurrency = Currency.DEFAULT_CURRENCY;
 				}
 				finally{
-					currencyConverter.setCurrency(currentCurrency); //TODO correct bug here
-                    Toast.makeText(getApplicationContext(),"Current currency is now [" + currencyConverter.getCurrentCurrency().toString() + "]",Toast.LENGTH_SHORT);
-                    currencyPreferencesEditor = currencyPreferences.edit();
-                    currencyPreferencesEditor.putInt(position,CURRENCY_SPINNER_POSITION_VALUE);
-                    currencyPreferencesEditor.commit();
+					currencyConverter.setCurrency(currentCurrency);
+                    Toast.makeText(getApplicationContext(),"Current currency is now [" + currencyConverter.getCurrency().toString() + "]",Toast.LENGTH_SHORT);
+                    sharedPrefEditor = sharedPref.edit();
+                    sharedPrefEditor.putInt(SharedPreferencesHelper.CURRENCY_SPINNER_POSITION_KEY,position);
+                    sharedPrefEditor.commit();
 				}
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-		
     }
-
 
     public Currency getCurrencyOrder(int index) {
         Currency currency;

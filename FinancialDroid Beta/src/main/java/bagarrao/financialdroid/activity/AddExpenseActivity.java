@@ -71,7 +71,7 @@ public class AddExpenseActivity extends AppCompatActivity {
      */
     public void init() {
 
-        this.currencyConverter.setContext(this);
+//        this.currencyConverter.setContext(this);
         this.priceTextView = (TextView) findViewById(R.id.priceTextView);
         this.addExpenseButton = (Button) findViewById(R.id.addExpenseButton);
         this.priceEditText = (EditText) findViewById(R.id.priceEditText);
@@ -86,7 +86,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         this.dataSource = new ExpenseDataSource(this);
         this.expenseDate = new Date();
 
-        priceTextView.setText("Price(" + currencyConverter.getCurrentCurrency().toString() + ")");
+        priceTextView.setText("Price(" + currencyConverter.getCurrency().toString() + ")");
 
     }
 

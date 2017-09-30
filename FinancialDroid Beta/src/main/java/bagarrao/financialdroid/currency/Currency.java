@@ -7,6 +7,9 @@ package bagarrao.financialdroid.currency;
 public enum Currency {
     EUR,USD,AUD,BRL,JPY,KRW,CNY,GBP;
 
+    /**
+     *  Default currency of the App
+     */
     public static final Currency DEFAULT_CURRENCY = EUR;
 
     public static double getDifference(Currency currency){
@@ -41,9 +44,8 @@ public enum Currency {
 
 
 
-    public static double convert(double value, Currency currencyFrom, Currency currencyTo){
-        //TODO a mudar para ter so um argumento
-		return (value / getDifference(currencyFrom)) * getDifference(currencyTo);
+    public double convert(double value, Currency toConvert){
+        return ((value / getDifference(this)) * getDifference(toConvert));
     }
 }
 

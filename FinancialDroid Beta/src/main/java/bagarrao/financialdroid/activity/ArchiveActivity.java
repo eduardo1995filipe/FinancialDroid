@@ -67,7 +67,7 @@ public class ArchiveActivity extends AppCompatActivity {
      */
     public void init() {
         this.context = this;
-        this.currencyConverter.setContext(this);
+//        this.currencyConverter.setContext(this);
         this.currentOrder = DEFAULT_ORDER;
         this.currentType = DEFAULT_EXPENSE_TYPE;
 
@@ -233,7 +233,7 @@ public class ArchiveActivity extends AppCompatActivity {
         }
         archiveListString.clear();
         for (Expense e : archiveList) {
-            String stringExpense = e.getDescription() + " | " + e.getValue() + " " + currencyConverter.getCurrentCurrency().toString() + " | " +
+            String stringExpense = e.getDescription() + " | " + CurrencyConverter.round(e.getValue(), 2) + " " + currencyConverter.getCurrency().toString() + " | " +
                     DateForCompare.DATE_FORMATTED.format(e.getDate()) + " | " + e.getType().toString();
             archiveListString.add(stringExpense);
         }
@@ -251,7 +251,7 @@ public class ArchiveActivity extends AppCompatActivity {
         currentOrder.sortByOrder(archiveList);
         archiveList = Filter.getExpensesByType(archiveList,currentType);
         for (Expense e : archiveList) {
-            String stringExpense = e.getDescription() + " | " + e.getValue() + "€ | " + DateForCompare.DATE_FORMATTED.format(e.getDate()) + " | " + e.getType().toString();
+            String stringExpense = e.getDescription() + " | " + e.getValue() + " " + currencyConverter.getCurrency().toString() +  " | " + DateForCompare.DATE_FORMATTED.format(e.getDate()) + " | " + e.getType().toString();
             archiveListString.add(stringExpense);
         }
         archiveListAdapter.notifyDataSetChanged();

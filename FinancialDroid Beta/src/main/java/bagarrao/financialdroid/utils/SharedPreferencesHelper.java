@@ -1,3 +1,7 @@
+package bagarrao.financialdroid.utils;
+
+import bagarrao.financialdroid.currency.Currency;
+
 public class SharedPreferencesHelper{
 	
 	//preference files and respective data
@@ -7,18 +11,14 @@ public class SharedPreferencesHelper{
 	
 	public static final String OLD_DATE_VALUE = "oldDate";
 	public static final String OLD_DATE_DEFAULT_VALUE = "nullValue"; //pratically useless
+
+	public static final String CURRENCY_PREFERENCES_FILE = "currencyPreferences";
 	
-    //TODO add all SharedPreferences files and vars here
-	//
-	public static final String CURRENCY_PREF_FILE = "currencyPreferences";
-	
-	public static final String CURRENCY_VALUE = "defaultCurrency";
-	public static final String CURRENCY_DEFAULT_VALUE = "EUR";
-	
-	//spenner setting currency
-	
-	public static final String CURRENCY_SPINNER_POSITION_VALUE = "defaultCurrency";
-	public static final long CURRENCY_SPINNER_POSITION_DEFAULT_VALUE = 0;
-	
-	
+	public static final String CURRENCY_KEY = "defaultCurrency";
+	public static final String CURRENCY_DEFAULT_VALUE = Currency.DEFAULT_CURRENCY.toString();
+
+	public static final String CURRENCY_SPINNER_PREFERENCES_FILE = "currencySpinnerFile";
+
+	public static final String CURRENCY_SPINNER_POSITION_KEY = "currencyPosition";
+	public static final int CURRENCY_SPINNER_POSITION_DEFAULT_VALUE = 0;
 }

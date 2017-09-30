@@ -63,7 +63,7 @@ public class ExpensesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.currencyConverter.setContext(this);
+//        this.currencyConverter.setContext(this);
         setContentView(R.layout.activity_expenses);
 
         MobileAds.initialize(this, "ca-app-pub-8899468184876323/7706665790");
@@ -226,7 +226,7 @@ public class ExpensesActivity extends AppCompatActivity {
         }
         expenseListString.clear();
         for (Expense e : expenseList) {
-            String stringExpense = e.getDescription() + " | " + e.getValue() + " " + currencyConverter.getCurrentCurrency().toString() + " | " +
+            String stringExpense = e.getDescription() + " | " + e.getValue() + " " + currencyConverter.getCurrency().toString() + " | " +
                     DateForCompare.DATE_FORMATTED.format(e.getDate()) + " | " + e.getType().toString();
             expenseListString.add(stringExpense);
         }
@@ -244,7 +244,7 @@ public class ExpensesActivity extends AppCompatActivity {
         currentOrder.sortByOrder(expenseList);
         expenseList = Filter.getExpensesByType(expenseList,currentType);
         for (Expense e : expenseList) {
-            String stringExpense = e.getDescription() + " | " + e.getValue() + "€ | " + DateForCompare.DATE_FORMATTED.format(e.getDate()) + " | " + e.getType().toString();
+            String stringExpense = e.getDescription() + " | " + CurrencyConverter.round(e.getValue(), 2) + " " + currencyConverter.getCurrency().toString() +  " | " + DateForCompare.DATE_FORMATTED.format(e.getDate()) + " | " + e.getType().toString();
             expenseListString.add(stringExpense);
         }
         expenseListAdapter.notifyDataSetChanged();

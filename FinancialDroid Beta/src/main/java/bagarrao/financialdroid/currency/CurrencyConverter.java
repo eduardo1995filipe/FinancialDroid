@@ -3,88 +3,93 @@ package bagarrao.financialdroid.currency;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
-import bagarrao.financialdroid.activity.SplashScreenActivity;
 import bagarrao.financialdroid.database.ArchiveDataSource;
 import bagarrao.financialdroid.database.ExpenseDataSource;
 import bagarrao.financialdroid.expense.Expense;
-import bagarrao.financialdroid.util.SharedPreferencesHelper;
-
-import static android.content.Context.MODE_PRIVATE;
-import static bagarrao.financialdroid.activity.SplashScreenActivity.DEFAULT_CURRENCY;
+import bagarrao.financialdroid.utils.SharedPreferencesHelper;
 
 /**
- * Created by eduar on 23/09/2017.
+ * @author Eduardo Bagarrao
  */
-
 public class CurrencyConverter {
 
-    private static CurrencyConverter INSTANCE = null;
+    private static final CurrencyConverter INSTANCE = new CurrencyConverter();
+
+    private boolean isInitialized;
+
+    private Context context;
 
     private SharedPreferences sharedPref;
-    private SharedPreferences.Editor editor;
-    private Context context;
-    private Currency currency;
+    private SharedPreferences.Editor sharedPrefEditor;
 
-    private CurrencyConverter(Context context) {
-        this.context = context;
-        this.sharedPref = context.getSharedPreferences(SharedPreferencesHelper.CURRENCY_PREF_FILE, MODE_PRIVATE);
-        if(!sharedPref.contains(SharedPreferencesHelper.CURRENCY_VALUE)){
-            this.editor = sharedPref.edit();
-            editor.putString(SharedPreferencesHelper.CURRENCY_DEFAULT_VALUE, SharedPreferencesHelper.CURRENCY_VALUE);
-            editor.commit();
-        }
-        this.currency = sharedPref.getString(SharedPreferencesHelper.CURRENCY_VALUE, Currency.valueOf(CURRENCY_DEFAULT_VALUE));
+    private ExpenseDataSource expenseDataSource;
+    private ArchiveDataSource archiveDataSource;
+
+    private CurrencyConverter(){
+        this.isInitialized = false;
     }
 
     public static CurrencyConverter getInstance() {
-        return INSTANCE;
+        return ((INSTANCE != null) ? INSTANCE : new CurrencyConverter());
     }
 
-    public static void init(Context context){
-        INSTANCE = new CurrencyConverter(context);
-    }
-
-    public void setContext(Context context){
+    public void init(Context context){
         this.context = context;
+        this.isInitialized = true;
+        this.sharedPref = context.getSharedPreferences(SharedPreferencesHelper.CURRENCY_PREFERENCES_FILE, context.MODE_PRIVATE);
+        this.expenseDataSource = new ExpenseDataSource(context);
+        this.archiveDataSource = new ArchiveDataSource(context);
+    }
+
+    public Currency getCurrency(){
+        if(isInitialized)
+            return Currency.valueOf(sharedPref.getString(SharedPreferencesHelper.CURRENCY_KEY, SharedPreferencesHelper.CURRENCY_DEFAULT_VALUE));
+        else
+            throw new NullPointerException("Context needs to be initialized before you use this Singleton!");
     }
 
     public void setCurrency(Currency currency){
-        
-		//calcular a currency de todas as despesas
-		ExpenseDataSource expenseDataSource = new ExpenseDataSource(context);
-        ArchiveDataSource archiveDataSource = new ArchiveDataSource(context);
-		expenseDataSource.open();
-		archiveDataSource.open();
-		
-		//start code here
-		
-		List<Expense> expenses = expenseDataSource.getAllExpenses();
-		List<Expense> archiveExpenses = archiveDataSource.getAllExpenses();
-		
-		expenseDataSource.deleteAllExpenses();
-		archiveDataSource.deleteAllExpenses();
-		
-		for(Expense e : expenses){
-			e.setValue(Currency.convert(e.getValue(),getCurrentCurrency(),currency));
-			expenseDataSource.createExpense(e);
-		}
-		
-		for(Expense e : archiveExpenses){
-			e.setValue(Currency.convert(e.getValue(),getCurrentCurrency(),currency));
-			archiveDataSource.createExpense(e);
-		}
-		
-		//end code here
-		expenseDataSource.close();
-		archiveDataSource.close();
-		this.editor = sharedPref.edit();
-        editor.putString(currency.toString(),SharedPreferencesHelper.CURRENCY_VALUE);
-        editor.commit();
+        if(isInitialized){
+            Currency lastCurrency = getCurrency();
+
+            expenseDataSource.open();
+            archiveDataSource.open();
+
+            List<Expense> expenses = expenseDataSource.getAllExpenses();
+            List<Expense> archiveExpenses = archiveDataSource.getAllExpenses();
+
+            expenseDataSource.deleteAllExpenses();
+            archiveDataSource.deleteAllExpenses();
+
+            for(Expense e : expenses){
+                e.setValue(lastCurrency.convert(e.getValue(),currency));
+                expenseDataSource.createExpense(e);
+            }
+
+            for(Expense e : archiveExpenses){
+                e.setValue(lastCurrency.convert(e.getValue(),currency));
+                archiveDataSource.createExpense(e);
+            }
+
+            expenseDataSource.close();
+            expenseDataSource.close();
+
+            this.sharedPrefEditor = sharedPref.edit();
+            sharedPrefEditor.putString(SharedPreferencesHelper.CURRENCY_KEY, currency.toString());
+            sharedPrefEditor.commit();
+        }else
+            throw new NullPointerException("Context needs to be initialized before you use this Singleton");
     }
 
-    public Currency getCurrentCurrency(){
-            return Currency.valueOf(sharedPref.getString(SharedPreferencesHelper.CURRENCY_VALUE, SharedPreferencesHelper.CURRENCY_DEFAULT_VALUE));
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 }

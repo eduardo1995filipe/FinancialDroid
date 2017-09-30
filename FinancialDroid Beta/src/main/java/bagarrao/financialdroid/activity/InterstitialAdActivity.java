@@ -16,23 +16,55 @@ import com.google.android.gms.ads.InterstitialAd;
 
 import bagarrao.financialdroid.R;
 
+/**
+ * @author Eduardo Bagarrao
+ */
 public class InterstitialAdActivity extends AppCompatActivity {
-
 
     private Intent mainIntent;
     private InterstitialAd interstitialAd;
+    private Runnable adWaiter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_interstitial_ad);
+        init();
+        setup();
+        setListeners();
+    }
 
+    /**
+     * inits all the class objects
+     */
+    private void init(){
         this.mainIntent = new Intent(this, MainActivity.class);
-
         this.interstitialAd = new InterstitialAd(this);
+        this.adWaiter = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                    startActivity(mainIntent);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+    }
+
+    /**
+     * setup all class objects
+     */
+    private void setup(){
         this.interstitialAd.setAdUnitId("ca-app-pub-8899468184876323/9676301128");
         this.interstitialAd.loadAd(new AdRequest.Builder().build());
+    }
 
+    /**
+     * sets the needed listeners for the class objects
+     */
+    private void setListeners(){
         interstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
@@ -47,8 +79,8 @@ public class InterstitialAdActivity extends AppCompatActivity {
             public void onAdFailedToLoad(int errorCode) {
                 // Code to be executed when an ad request fails.
                 Log.i("Ads", "onAdFailedToLoad");
-				startActivity(mainIntent);
-			}
+                startActivity(mainIntent);
+            }
 
             @Override
             public void onAdOpened() {
@@ -61,19 +93,7 @@ public class InterstitialAdActivity extends AppCompatActivity {
             public void onAdLeftApplication() {
                 // Code to be executed when the user has left the app.
                 Log.i("Ads", "onAdLeftApplication");
-                Runnable waitForAd = new Thread(){
-                    @Override
-                    public void run() {
-                        super.run();
-                        try {
-                            Thread.sleep(2000);
-                            startActivity(mainIntent);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                };
-                new Thread(waitForAd).start();
+                new Thread(adWaiter).start();
             }
 
             @Override
@@ -83,8 +103,8 @@ public class InterstitialAdActivity extends AppCompatActivity {
                 startActivity(mainIntent);
             }
         });
-
     }
+
 }
 
 
