@@ -1,6 +1,6 @@
 # What is
 
-FINANCIALDROID is an Android App that helps you managing your expenses. You can add new expenses and check your last month expenses in a chart, and also has an archive for your older expenses. Currently only have the €(EUR) currency, but It will be soon added more currencies. It will be soon uploaded to Google Playstore, but on early development yet. Check it out!!!
+FINANCIALDROID is an Android App that helps you managing your expenses. You can add new expenses and check your last month expenses in a chart, and also has an archive for your older expenses. Check it out!!!
 
 # For now what FINANCIALDROID can do:
 
