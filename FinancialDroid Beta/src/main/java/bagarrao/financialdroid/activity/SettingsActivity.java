@@ -1,7 +1,9 @@
 package bagarrao.financialdroid.activity;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -58,8 +60,9 @@ public class SettingsActivity extends AppCompatActivity {
         exportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                new Backup(getApplicationContext()).go();
-                Toast.makeText(SettingsActivity.this, "I'm not available yet, sorry :c", Toast.LENGTH_SHORT).show();
+                Backup backup = new Backup(getApplicationContext());
+                Toast.makeText(SettingsActivity.this, "backup made successful", Toast.LENGTH_SHORT).show();
+                backup.go();
             }
         });
 
@@ -67,7 +70,25 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(SettingsActivity.this, "I'm not available yet, sorry :c", Toast.LENGTH_SHORT).show();
-                //TODO import button function
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                builder.setMessage("You want to import a FINANCIALDROID backup or a external .csv file?");
+                builder.setTitle("Backup type selection");
+                builder.setPositiveButton("local backup", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //TODO: local backup
+                    }
+                });
+                builder.setPositiveButton("local backup", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //TODO: external csv backup
+                    }
+                });
+                builder.show();
+
+
+                //TODO: import button function
             }
         });
 		

@@ -29,7 +29,7 @@
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:layout_gravity="center_vertical|center_horizontal"
-                    android:src="@mipmap/ic_add_expense"
+                    android:src="@mipmap/ic_add_expenses"
                     android:layout_weight="1"
                     android:id="@+id/addExpenseImage"/>
                 <TextView
@@ -119,7 +119,7 @@
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_gravity="center_vertical|center_horizontal"
-                android:src="@mipmap/ic_info"
+                android:src="@mipmap/ic_about"
                 android:layout_weight="1"
                 android:id="@+id/infoImage"/>
                 <TextView
