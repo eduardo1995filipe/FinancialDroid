@@ -86,9 +86,6 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                 });
                 builder.show();
-
-
-                //TODO: import button function
             }
         });
 		

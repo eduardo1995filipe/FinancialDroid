@@ -28,6 +28,16 @@
         android:gravity="center_horizontal"/>
     <com.github.mikephil.charting.charts.PieChart
         android:layout_width="match_parent"
-        android:layout_height="match_parent" android:id="@+id/lastMonthPieChart">
+        android:layout_height="match_parent" android:id="@+id/lastMonthPieChart"
+        android:layout_weight="1">
     </com.github.mikephil.charting.charts.PieChart>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="previous months"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="previous years"
+        />
 </LinearLayout>
