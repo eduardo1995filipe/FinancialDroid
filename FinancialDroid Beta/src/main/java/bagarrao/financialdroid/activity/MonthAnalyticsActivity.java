@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import com.github.mikephil.charting.charts.Chart;
+import com.github.mikephil.charting.charts.PieChart;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -34,6 +35,7 @@ public class MonthAnalyticsActivity extends AppCompatActivity {
     private LinearLayout linearLayout;
 
     private List<Expense> expenseList;
+    private List<PieChart> pieChartList;
 
     private HashMap<Integer,List<Expense>> expensesByMonthMap;
 
@@ -68,6 +70,7 @@ public class MonthAnalyticsActivity extends AppCompatActivity {
         this.archiveDataSource = new ArchiveDataSource(this);
 
         this.expenseList = new LinkedList<>();
+        this.pieChartList = new LinkedList<>();
 
         this.expensesByMonthMap = new HashMap<>();
     }
@@ -88,14 +91,28 @@ public class MonthAnalyticsActivity extends AppCompatActivity {
                 archiveList.add(e);
             else
                 continue;
-
-
     }
 
     public void distributeExpenses(){
         for(Expense e : expenseList){
             DateForCompare dateForCompare = new DateForCompare(e.getDate());
             expensesByMonthMap.get(dateForCompare.getMonth()).add(e);
+        }
+    }
+
+    public void loadCharts(){
+        Iterator it = expensesByMonthMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            //code here
+            List<Expense> list = (List<Expense>) pair.getValue();
+            for(Expense e: list){
+                PieChart pieChart = new PieChart(this);
+                //TODO: fazer aqui os graficos
+                pieChartList.add(pieChart);
+            }
+            //end code here
+            it.remove();
         }
     }
 
