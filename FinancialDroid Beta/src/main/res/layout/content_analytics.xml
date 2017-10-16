@@ -34,10 +34,11 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="previous months"/>
+        android:text="previous months"
+        android:id="@+id/monthAnalyticsButton"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="previous years"
-        />
+        android:id="@+id/yearAnalyticsButton"/>
 </LinearLayout>
