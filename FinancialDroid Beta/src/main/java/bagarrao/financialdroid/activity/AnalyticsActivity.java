@@ -1,33 +1,22 @@
 package bagarrao.financialdroid.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ScrollView;
 
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import bagarrao.financialdroid.R;
-import bagarrao.financialdroid.database.ExpenseDataSource;
-import bagarrao.financialdroid.expense.Expense;
-import bagarrao.financialdroid.expense.ExpenseType;
 import bagarrao.financialdroid.utils.DateForCompare;
-import bagarrao.financialdroid.utils.Filter;
 import bagarrao.financialdroid.utils.Pair;
 import bagarrao.financialdroid.utils.PieChartHelper;
 

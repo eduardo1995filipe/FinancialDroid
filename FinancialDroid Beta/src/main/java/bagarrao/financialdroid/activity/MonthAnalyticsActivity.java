@@ -1,7 +1,9 @@
 package bagarrao.financialdroid.activity;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -67,7 +69,7 @@ public class MonthAnalyticsActivity extends AppCompatActivity {
 
         this.pieChartLayoutList = new LinkedList<>();
 
-        this.expensesByMonthMap = new HashMap<>();
+        this.expensesByMonthMap = new HashMap<Integer, List<Expense>>();
 
     /*              SETUP               */
 
@@ -94,6 +96,8 @@ public class MonthAnalyticsActivity extends AppCompatActivity {
 
         for (Expense e : totalExpenseList) {
             DateForCompare dateForCompare = new DateForCompare(e.getDate());
+            if(!expensesByMonthMap.containsKey(dateForCompare.getMonth()))
+                expensesByMonthMap.put(dateForCompare.getMonth(), new LinkedList<Expense>());
             expensesByMonthMap.get(dateForCompare.getMonth()).add(e);
         }
     }
@@ -124,12 +128,17 @@ public class MonthAnalyticsActivity extends AppCompatActivity {
     public PieChart getChartByPair(Map.Entry<Integer, List<Expense>> pair) {
         DateForCompare dateForCompare = new DateForCompare(new Date());
         Pair<List<Entry>, List<String>> pair_2 = PieChartHelper.setExpensesAmount(getApplicationContext(),pair.getKey(),dateForCompare.getYear());
-        PieChart pieChart = PieChartHelper.generatePieChart(this, R.id.lastMonthPieChart, pair_2.getKey(), pair_2.getValue());
+        PieChart pieChart = PieChartHelper.generatePieChart(getApplicationContext(), pair_2.getKey(), pair_2.getValue());
+        PieChart.LayoutParams  params = new PieChart.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,300);
+        pieChart.setLayoutParams(params);
         return pieChart;
     }
 
     public LinearLayout getChartLayout(int monthNum, PieChart chart) {
         LinearLayout layout = new LinearLayout(this);
+        layout.setWeightSum(1);
+//        layout.getLayoutParams().height = LinearLayout.LayoutParams.MATCH_PARENT;
+//        layout.getLayoutParams().width = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.setOrientation(LinearLayout.VERTICAL);
         int index = 0;
         TextView textView = new TextView(this);

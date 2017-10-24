@@ -45,6 +45,25 @@ public class PieChartHelper {
         return pieChart;
     }
 
+    public static PieChart generatePieChart(Context context, List<Entry> entries, List<String> labels){
+        PieChart pieChart = new PieChart(context);
+        PieDataSet dataSet = new PieDataSet(entries, "Expense Types");
+        dataSet.setValueTextSize(dataSet.getValueTextSize() + 5);
+
+        PieData data = new PieData(labels, dataSet);
+        dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+        pieChart.setDescription("");
+        pieChart.setData(data);
+
+        Legend legend = pieChart.getLegend();
+        legend.setWordWrapEnabled(true);
+        legend.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
+
+        pieChart.animateY(2500);
+
+        return pieChart;
+    }
+
     public static Pair<List<Entry>, List<String>> setExpensesAmount(Context context, int month, int year){
 
         final List<Entry> entries = new LinkedList<>();
@@ -88,5 +107,4 @@ public class PieChartHelper {
             }
         return filteredList;
     }
-
 }
