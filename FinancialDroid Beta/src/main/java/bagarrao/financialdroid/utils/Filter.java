@@ -2,6 +2,7 @@ package bagarrao.financialdroid.utils;
 
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -53,4 +54,20 @@ public class Filter {
         return type;
     }
 
+    public static List<Expense> filterExpensesByYear(List<Expense> toFilter, int year){
+        List<Expense> newList = new ArrayList<Expense>();
+        for(Expense e : toFilter){
+            if(new DateForCompare(e.getDate()).getYear() == year)
+                newList.add(e);
+        }
+        return newList;
+    }
+    public static List<Expense> filterExpensesByMonth(List<Expense> toFilter, int month){
+        List<Expense> newList = new ArrayList<Expense>();
+        for(Expense e : toFilter){
+            if(new DateForCompare(e.getDate()).getMonth() == month)
+                newList.add(e);
+        }
+        return newList;
+    }
 }
