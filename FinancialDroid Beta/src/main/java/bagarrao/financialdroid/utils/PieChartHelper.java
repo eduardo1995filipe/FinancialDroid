@@ -10,11 +10,13 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import bagarrao.financialdroid.database.ArchiveDataSource;
 import bagarrao.financialdroid.database.ExpenseDataSource;
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.expense.ExpenseType;
@@ -70,7 +72,8 @@ public class PieChartHelper {
         final List<String> labels = new LinkedList<>();
 
         int i = 0;
-        for (ExpenseType type : ExpenseType.values()) {
+        ExpenseType[] array = ExpenseType.values();
+        for (ExpenseType type : array) {
             float amount = getExpensesAmountByType(type, context, month, year);
             if (amount > 0) {
                 labels.add(type.toString());
@@ -88,9 +91,20 @@ public class PieChartHelper {
      * @return total value of the expenses of that ExpenseType
      */
     public static float getExpensesAmountByType(ExpenseType type, Context context, int month, int year){
-        ExpenseDataSource dataSource = new ExpenseDataSource(context);
-        dataSource.open();
-        List<Expense> expenses = Filter.getExpensesByType(dataSource.getAllExpenses(),type);
+        ExpenseDataSource expenseDataSource = new ExpenseDataSource(context);
+        ArchiveDataSource archiveDataSource = new ArchiveDataSource(context);
+        expenseDataSource.open();
+        archiveDataSource.open();
+
+        List<Expense> totalExpenseList = new ArrayList<>();
+        for(Expense e : expenseDataSource.getAllExpenses()){
+            totalExpenseList.add(e);
+        }
+        for(Expense e : archiveDataSource.getAllExpenses()){
+            totalExpenseList.add(e);
+        }
+
+        List<Expense> expenses = Filter.getExpensesByType(totalExpenseList,type);
         List<Expense> expensesFiltered = filterListByDate(expenses,month,year);
         double amount = 0;
         for(Expense e : expensesFiltered)

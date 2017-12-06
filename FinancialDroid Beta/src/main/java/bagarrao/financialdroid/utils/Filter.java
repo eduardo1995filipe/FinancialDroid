@@ -57,16 +57,20 @@ public class Filter {
     public static List<Expense> filterExpensesByYear(List<Expense> toFilter, int year){
         List<Expense> newList = new ArrayList<Expense>();
         for(Expense e : toFilter){
-            if(new DateForCompare(e.getDate()).getYear() == year)
+            if(new DateForCompare(e.getDate()).getYear() == year){
                 newList.add(e);
+                Log.d("Filter",  "[ExpensesByYear]Expense added --> " + e.toString());
+            }
         }
         return newList;
     }
     public static List<Expense> filterExpensesByMonth(List<Expense> toFilter, int month){
         List<Expense> newList = new ArrayList<Expense>();
         for(Expense e : toFilter){
-            if(new DateForCompare(e.getDate()).getMonth() == month)
+            if(new DateForCompare(e.getDate()).getMonth() == month) {
                 newList.add(e);
+                Log.d("Filter",  "[ExpensesByMonth]Expense added --> " + e.toString());
+            }
         }
         return newList;
     }

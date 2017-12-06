@@ -3,6 +3,7 @@ package bagarrao.financialdroid.activity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -34,12 +35,10 @@ public class MonthAnalyticsActivity extends AppCompatActivity {
     private ScrollView scrollView;
     private LinearLayout mainLayout;
 
-    private ExpenseDataSource expenseDataSource;
     private ArchiveDataSource archiveDataSource;
 
     private List<LinearLayout> pieChartLayoutList;
     private List<Expense> totalExpenseList;
-//    private HashMap<Integer, List<Expense>> expensesByMonthMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,30 +57,25 @@ public class MonthAnalyticsActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        expenseDataSource.close();
         archiveDataSource.close();
     }
 
     public void init() {
         this.scrollView = new ScrollView(this);
         this.mainLayout = new LinearLayout(this);
-        this.expenseDataSource = new ExpenseDataSource(this);
+//        this.expenseDataSource = new ExpenseDataSource(this);
         this.archiveDataSource = new ArchiveDataSource(this);
         this.pieChartLayoutList = new LinkedList<>();
         this.totalExpenseList = new ArrayList<>();
-//        this.expensesByMonthMap = new HashMap<Integer, List<Expense>>();
-
         mainLayout.setOrientation(LinearLayout.VERTICAL);
     }
 
     public void readDB() {
-        List<Expense> expenseViewerList = expenseDataSource.getAllExpenses();
         List<Expense> archiveList = archiveDataSource.getAllExpenses();
         List<Expense> newTotalExpenseList = new ArrayList<>();
 
-        for (Expense e : expenseViewerList)
-            newTotalExpenseList.add(e);
-        for (Expense e : Filter.filterExpensesByYear(archiveList,new DateForCompare(new Date()).getYear()))
+        List<Expense> filteredList = Filter.filterExpensesByYear(archiveList,new DateForCompare(new Date()).getYear());
+        for (Expense e : filteredList)
                 newTotalExpenseList.add(e);
         totalExpenseList = newTotalExpenseList;
     }
@@ -89,42 +83,46 @@ public class MonthAnalyticsActivity extends AppCompatActivity {
     public void loadCharts() {
         scrollView.removeAllViews();
         mainLayout.removeAllViews();
+        pieChartLayoutList.clear();
+        totalExpenseList.clear();
 
-        if(!expenseDataSource.isOpen())
-            expenseDataSource.open();
         if(!archiveDataSource.isOpen())
             archiveDataSource.open();
         readDB();
-
-        for(int i = 0;i < 12; i++){
+        DateForCompare dfc = new DateForCompare(new Date());
+        for(int i = 0;i < dfc.getMonth(); i++){
             List<Expense> list = Filter.filterExpensesByMonth(totalExpenseList,i);
-            pieChartLayoutList.add(getChartLayout(i, getChartByPair(new Pair<>(i, list))));
+            pieChartLayoutList.add(getChartLayout(i, new DateForCompare(new Date()).getYear(),list));
         }
         int i = 0;
         scrollView.addView(mainLayout,0);
         for(LinearLayout l : pieChartLayoutList){
             mainLayout.addView(l,i++);
+            Log.d("MonthAnalyticsActivity","Added layout --> " + i);
         }
     }
 
-    public PieChart getChartByPair(Pair<Integer, List<Expense>> pair) {
-        //TODO: to debug from here
-        Pair<List<Entry>, List<String>> pair_2 = PieChartHelper.setExpensesAmount(getApplicationContext(),pair.getKey(),new DateForCompare(new Date()).getYear());
-        PieChart pieChart = PieChartHelper.generatePieChart(getApplicationContext(), pair_2.getKey(), pair_2.getValue());
-        PieChart.LayoutParams  params = new PieChart.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,300);
-        pieChart.setLayoutParams(params);
-        return pieChart;
-    }
+    public LinearLayout getChartLayout(int monthNum,int yearNum, List<Expense> list) {
 
-    public LinearLayout getChartLayout(int monthNum, PieChart chart) {
         LinearLayout layout = new LinearLayout(this);
         layout.setWeightSum(1);
         layout.setOrientation(LinearLayout.VERTICAL);
+
+        //piechart
+
+        Pair<List<Entry>, List<String>> pair_2 = PieChartHelper.setExpensesAmount(getApplicationContext(),monthNum,yearNum); //critico
+        PieChart pieChart = PieChartHelper.generatePieChart(getApplicationContext(), pair_2.getKey(), pair_2.getValue());
+        PieChart.LayoutParams  params = new PieChart.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,300);
+        pieChart.setLayoutParams(params);
+
+        //end piechart
+
         int index = 0;
         TextView textView = new TextView(this);
         textView.setText(new DateFormatSymbols().getMonths()[monthNum]);
         layout.addView(textView, index++);
-        layout.addView(chart, index++);
+        layout.addView(pieChart, index++);
+        Log.d("PieChartHelper","Chart is null --> " + (pieChart == null));
         return layout;
     }
 }
