@@ -65,7 +65,8 @@ public class AnalyticsActivity extends AppCompatActivity {
         this.monthAnalyticsButton = (Button) findViewById(R.id.monthAnalyticsButton);
         this.yearAnalyticsButton = (Button) findViewById(R.id.yearAnalyticsButton);
 
-        this.yearAnalyticsIntent = new Intent(this,MonthAnalyticsActivity.class);
+        this.monthAnalyticsIntent = new Intent(this,MonthAnalyticsActivity.class);
+        this.yearAnalyticsIntent = new Intent(this,YearAnalyticsActivity.class);
     }
 
     /**
@@ -82,43 +83,15 @@ public class AnalyticsActivity extends AppCompatActivity {
         monthAnalyticsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                startActivity(monthAnalyticsIntent);
+            }
+        });
+
+        yearAnalyticsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 startActivity(yearAnalyticsIntent);
             }
         });
     }
-
-//    /**
-//     * return the total value of the ExpenseType given in the parameter
-//     * @param type type of the
-//     * @return total value of the expenses of that ExpenseType
-//     */
-//    private float getExpensesAmountByType(ExpenseType type){
-//        this.dataSource = new ExpenseDataSource(this);
-//        dataSource.open();
-//        List<Expense> expenses = Filter.getExpensesByType(dataSource.getAllExpenses(),type);
-//        double amount = 0;
-//        for(Expense e : expenses)
-//            amount += e.getValue();
-//        return (float)amount;
-//    }
-
-//    /**
-//     * set the expenses amount for the entries of the chart
-//     */
-//    private void setExpensesAmount() {
-//        if (entries.size() != 0)
-//            entries.clear();
-//        if (labels.size() != 0)
-//            labels.clear();
-//        int i = 0;
-//        for (ExpenseType type : ExpenseType.values()) {
-//            float amount = getExpensesAmountByType(type);
-//            if (amount > 0) {
-//                labels.add(type.toString());
-//                entries.add(new Entry(amount, i));
-//                i++;
-//            } else
-//                continue;
-//        }
-//    }
 }
