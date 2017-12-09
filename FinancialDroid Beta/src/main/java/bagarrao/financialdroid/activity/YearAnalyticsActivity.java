@@ -113,6 +113,10 @@ public class YearAnalyticsActivity extends AppCompatActivity {
 
         int i = 0;
         scrollView.addView(mainLayout,0);
+        TextView text = new TextView(this);
+        text.setText("Here you can check your expenses along all the years!!\n\n");
+        mainLayout.addView(text,i++);
+
         for(LinearLayout l : pieChartLayoutList){
             mainLayout.addView(l,i++);
             Log.d("YearAnalyticsActivity","Added layout --> " + i);

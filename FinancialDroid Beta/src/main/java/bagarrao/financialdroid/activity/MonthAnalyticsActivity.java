@@ -97,6 +97,10 @@ public class MonthAnalyticsActivity extends AppCompatActivity {
         }
         int i = 0;
         scrollView.addView(mainLayout,0);
+        TextView text = new TextView(this);
+        text.setText("Here you can check your expenses along the months of "
+                + new DateForCompare(new Date()).getYear() + "!!\n\n");
+        mainLayout.addView(text,i++);
         for(LinearLayout l : pieChartLayoutList){
             mainLayout.addView(l,i++);
             Log.d("MonthAnalyticsActivity","Added layout --> " + i);
@@ -125,5 +129,8 @@ public class MonthAnalyticsActivity extends AppCompatActivity {
         layout.addView(pieChart, index++);
         Log.d("PieChartHelper","Chart is null --> " + (pieChart == null));
         return layout;
+
+
+
     }
 }
