@@ -92,7 +92,8 @@ public class MonthAnalyticsActivity extends AppCompatActivity {
         DateForCompare dfc = new DateForCompare(new Date());
         for(int i = 0;i < dfc.getMonth(); i++){
             List<Expense> list = Filter.filterExpensesByMonth(totalExpenseList,i);
-            pieChartLayoutList.add(getChartLayout(i, new DateForCompare(new Date()).getYear(),list));
+            if(!list.isEmpty())
+                pieChartLayoutList.add(getChartLayout(i, new DateForCompare(new Date()).getYear(),list));
         }
         int i = 0;
         scrollView.addView(mainLayout,0);

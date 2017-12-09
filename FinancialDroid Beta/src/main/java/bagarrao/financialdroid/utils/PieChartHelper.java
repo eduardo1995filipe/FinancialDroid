@@ -2,6 +2,7 @@ package bagarrao.financialdroid.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -66,25 +67,6 @@ public class PieChartHelper {
         return pieChart;
     }
 
-    public static Pair<List<Entry>, List<String>> setExpensesAmount(Context context, int month, int year){
-
-        final List<Entry> entries = new LinkedList<>();
-        final List<String> labels = new LinkedList<>();
-
-        int i = 0;
-        ExpenseType[] array = ExpenseType.values();
-        for (ExpenseType type : array) {
-            float amount = getExpensesAmountByType(type, context, month, year);
-            if (amount > 0) {
-                labels.add(type.toString());
-                entries.add(new Entry(amount, i));
-                i++;
-            } else
-                continue;
-        }
-        return new Pair<>(entries,labels);
-    }
-
     /**
      * return the total value of the ExpenseType given in the parameter
      * @param type type of the
@@ -120,5 +102,78 @@ public class PieChartHelper {
                     filteredList.add(e);
             }
         return filteredList;
+    }
+
+
+    public static Pair<List<Entry>, List<String>> setExpensesAmount(Context context, int month, int year){
+
+        final List<Entry> entries = new LinkedList<>();
+        final List<String> labels = new LinkedList<>();
+
+        int i = 0;
+        ExpenseType[] array = ExpenseType.values();
+        for (ExpenseType type : array) {
+            float amount = getExpensesAmountByType(type, context, month, year);
+            if (amount > 0) {
+                labels.add(type.toString());
+                entries.add(new Entry(amount, i));
+                i++;
+            } else
+                continue;
+        }
+        return new Pair<>(entries,labels);
+    }
+
+    public static Pair<List<Entry>,List<String>> setExpensesAmount(Context context, int yearNum) {
+
+        final List<Entry> entries = new LinkedList<>();
+        final List<String> labels = new LinkedList<>();
+
+        int i = 0;
+        ExpenseType[] array = ExpenseType.values();
+        for(ExpenseType type : array) {
+            float yearAmount = 0;
+
+            yearAmount = getExpensesAmountByType(type,context,yearNum);
+
+            Log.d("PieChartHelper","Output test -->[" + type + ", " + yearAmount + ", " + i);
+            Log.d("PieChartHelper","Year amount <= 0 --> " + (yearAmount <= 0));
+            if (yearAmount > 0) {
+                labels.add(type.toString());
+                entries.add(new Entry(yearAmount, i));
+
+
+                i++;
+            }
+        }
+        return new Pair<>(entries,labels);
+    }
+
+    private static float getExpensesAmountByType(ExpenseType type, Context context, int yearNum) {
+        ExpenseDataSource expenseDataSource = new ExpenseDataSource(context);
+        ArchiveDataSource archiveDataSource = new ArchiveDataSource(context);
+        expenseDataSource.open();
+        archiveDataSource.open();
+
+        List<Expense> totalExpenseList = new ArrayList<>();
+        for(Expense e : expenseDataSource.getAllExpenses()){
+            totalExpenseList.add(e);
+        }
+        for(Expense e : archiveDataSource.getAllExpenses()){
+            totalExpenseList.add(e);
+        }
+
+        List<Expense> expenses = Filter.getExpensesByType(totalExpenseList,type);
+        List<Expense> newList = new LinkedList<>();
+
+        for(Expense e : expenses){
+            if(new DateForCompare(e.getDate()).getYear() == yearNum)
+                newList.add(e);
+        }
+
+        double amount = 0;
+        for(Expense e : newList)
+            amount += e.getValue();
+        return (float)amount;
     }
 }
