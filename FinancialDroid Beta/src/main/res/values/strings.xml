@@ -17,4 +17,5 @@
     <string name="title_activity_interstitial_ad">InterstitialAdActivity</string>
     <string name="title_activity_month_analytics">MonthAnalyticsActivity</string>
     <string name="title_activity_year_analythics">YearAnalythicsActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
 </resources>

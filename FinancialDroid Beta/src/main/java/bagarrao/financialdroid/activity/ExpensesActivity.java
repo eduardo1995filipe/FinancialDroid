@@ -23,6 +23,7 @@ import java.util.List;
 import bagarrao.financialdroid.R;
 import bagarrao.financialdroid.backup.Backup;
 import bagarrao.financialdroid.currency.CurrencyConverter;
+import bagarrao.financialdroid.database.DataSource;
 import bagarrao.financialdroid.database.ExpenseDataSource;
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.expense.ExpenseOrder;
@@ -54,7 +55,7 @@ public class ExpensesActivity extends AppCompatActivity {
     private ListView expenseListView;
     private List<Expense> expenseList;
     private ArrayList<String> expenseListString;
-    private ExpenseDataSource dataSource;
+    private DataSource dataSource;
     private ArrayAdapter<String> expenseListAdapter;
 
     private Context context;

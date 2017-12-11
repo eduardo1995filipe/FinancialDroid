@@ -70,7 +70,7 @@
         <activity
             android:name=".activity.YearAnalyticsActivity"
             android:label="@string/title_activity_year_analythics"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
