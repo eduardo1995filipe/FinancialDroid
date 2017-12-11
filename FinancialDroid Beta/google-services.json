@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "216504264530",
+    "firebase_url": "https://financialdroid-52dd5.firebaseio.com",
+    "project_id": "financialdroid-52dd5",
+    "storage_bucket": "financialdroid-52dd5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:216504264530:android:ca7e6e3ce79dfb33",
+        "android_client_info": {
+          "package_name": "bagarrao.financialdroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "216504264530-qllu8unmqlc7lamh2cckv50gdvvv3ppe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bagarrao.financialdroid",
+            "certificate_hash": "7ecb4aef0e334091ea483132a92f500097afd082"
+          }
+        },
+        {
+          "client_id": "216504264530-0kb28oc7jg9jk9utdvs17baugkc2rusi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7DOe11eCFq320UsksOxlGh33bey_lcXM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "216504264530-0kb28oc7jg9jk9utdvs17baugkc2rusi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
