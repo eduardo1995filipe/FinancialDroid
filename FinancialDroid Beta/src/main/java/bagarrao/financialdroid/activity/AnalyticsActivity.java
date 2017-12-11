@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 import bagarrao.financialdroid.R;
-import bagarrao.financialdroid.utils.DateForCompare;
+import bagarrao.financialdroid.utils.DateParser;
 import bagarrao.financialdroid.utils.Pair;
 import bagarrao.financialdroid.utils.PieChartHelper;
 
@@ -47,8 +47,8 @@ public class AnalyticsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        DateForCompare dateForCompare = new DateForCompare(new Date());
-        PieChartHelper.setExpensesAmount(getApplicationContext(), dateForCompare.getMonth(), dateForCompare.getYear());
+        Date date = new Date();
+        PieChartHelper.setExpensesAmount(getApplicationContext(), DateParser.getMonth(date), DateParser.getYear(date));
         pieChart.notifyDataSetChanged();
         pieChart.invalidate();
     }
@@ -74,8 +74,9 @@ public class AnalyticsActivity extends AppCompatActivity {
      */
     private void setup(){
         this.adView.loadAd(adRequest);
-        DateForCompare dateForCompare = new DateForCompare(new Date());
-        Pair<List<Entry>, List<String>> pair = PieChartHelper.setExpensesAmount(getApplicationContext(),dateForCompare.getMonth(),dateForCompare.getYear());
+        Date date = new Date();
+        Pair<List<Entry>, List<String>> pair =
+                PieChartHelper.setExpensesAmount(getApplicationContext(),DateParser.getMonth(date),DateParser.getYear(date));
         this.pieChart = PieChartHelper.generatePieChart(this, R.id.lastMonthPieChart, pair.getKey(), pair.getValue());
 
         this.pieChart.animateY(2500);

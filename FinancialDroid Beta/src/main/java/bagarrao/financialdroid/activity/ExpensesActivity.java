@@ -28,7 +28,7 @@ import bagarrao.financialdroid.database.ExpenseDataSource;
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.expense.ExpenseOrder;
 import bagarrao.financialdroid.expense.ExpenseType;
-import bagarrao.financialdroid.utils.DateForCompare;
+import bagarrao.financialdroid.utils.DateParser;
 import bagarrao.financialdroid.utils.Filter;
 
 /**
@@ -148,7 +148,7 @@ public class ExpensesActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 try {
-                    currentType = Filter.getTypeByIndex(position);
+                    currentType = ExpenseType.getTypeByIndex(position);
                 } catch (NullPointerException e) {
                     currentType = DEFAULT_EXPENSE_TYPE;
                 } finally {
@@ -228,7 +228,7 @@ public class ExpensesActivity extends AppCompatActivity {
         expenseListString.clear();
         for (Expense e : expenseList) {
             String stringExpense = e.getDescription() + " | " + e.getValue() + " " + currencyConverter.getCurrency().toString() + " | " +
-                    DateForCompare.DATE_FORMATTED.format(e.getDate()) + " | " + e.getType().toString();
+                    DateParser.parseString(e.getDate()) + " | " + e.getType().toString();
             expenseListString.add(stringExpense);
         }
         expenseListAdapter.notifyDataSetChanged();
@@ -243,9 +243,13 @@ public class ExpensesActivity extends AppCompatActivity {
             expenseList = new ArrayList<>();
         expenseListString.clear();
         currentOrder.sortByOrder(expenseList);
-        expenseList = Filter.getExpensesByType(expenseList,currentType);
+        expenseList = Filter.filterExpensesByType(expenseList,currentType);
         for (Expense e : expenseList) {
-            String stringExpense = e.getDescription() + " | " + CurrencyConverter.round(e.getValue(), 2) + " " + currencyConverter.getCurrency().toString() +  " | " + DateForCompare.DATE_FORMATTED.format(e.getDate()) + " | " + e.getType().toString();
+            String stringExpense = e.getDescription() +
+                    " | " + CurrencyConverter.round(e.getValue(), 2) +
+                    " " + currencyConverter.getCurrency().toString() +  " | " +
+                    DateParser.parseString(e.getDate()) + " | " +
+                    e.getType().toString();
             expenseListString.add(stringExpense);
         }
         expenseListAdapter.notifyDataSetChanged();

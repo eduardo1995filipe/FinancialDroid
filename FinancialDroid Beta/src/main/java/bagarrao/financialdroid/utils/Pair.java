@@ -1,8 +1,5 @@
 package bagarrao.financialdroid.utils;
 
-/**
- * Created by eduar on 15/10/2017.
- */
 
 public class Pair<K,V> {
 
@@ -20,10 +17,6 @@ public class Pair<K,V> {
 
     public V getValue() {
         return value;
-    }
-
-    public void setKey(K key) {
-        this.key = key;
     }
 
     public void setValue(V value) {

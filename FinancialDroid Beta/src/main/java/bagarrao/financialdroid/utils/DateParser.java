@@ -15,12 +15,12 @@ public class DateParser {
     /**
      * Defines the default format for dates in FinancialDroid
      */
-    public static final String SIMPLE_DATE_FORMAT = "dd-M-yyyy";
+    private static final String SIMPLE_DATE_FORMAT = "dd-M-yyyy";
 
     /**
      * Default SimpleDateFormat used in FinancialDroid
      */
-    public static final SimpleDateFormat DATE_FORMATTED = new SimpleDateFormat(SIMPLE_DATE_FORMAT);
+    private static final SimpleDateFormat DATE_FORMATTED = new SimpleDateFormat(SIMPLE_DATE_FORMAT);
 
     /**
      * Getter for the year

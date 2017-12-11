@@ -22,8 +22,7 @@ import bagarrao.financialdroid.database.ExpenseDataSource;
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.expense.ExpenseDistributor;
 import bagarrao.financialdroid.expense.ExpenseType;
-import bagarrao.financialdroid.utils.DateForCompare;
-
+import bagarrao.financialdroid.utils.DateParser;
 
 
 /**
@@ -99,7 +98,7 @@ public class AddExpenseActivity extends AppCompatActivity {
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 String myDate = dayOfMonth + "-" + (month + 1) + "-" + year;
                 try {
-                    expenseDate = DateForCompare.DATE_FORMATTED.parse(myDate);
+                    expenseDate = DateParser.parseDate(myDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }

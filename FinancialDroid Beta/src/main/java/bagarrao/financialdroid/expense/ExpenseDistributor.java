@@ -7,7 +7,7 @@ import java.util.Date;
 import bagarrao.financialdroid.backup.Backup;
 import bagarrao.financialdroid.database.ArchiveDataSource;
 import bagarrao.financialdroid.database.ExpenseDataSource;
-import bagarrao.financialdroid.utils.DateForCompare;
+import bagarrao.financialdroid.utils.DateParser;
 
 /**
  * @author Eduardo Bagarrao
@@ -24,10 +24,10 @@ public class ExpenseDistributor {
      * @param archiveDataSource
      */
     public static void addNewExpense(Expense expense, Context context, ExpenseDataSource expenseDataSource, ArchiveDataSource archiveDataSource) {
-        DateForCompare expenseDFC = new DateForCompare(expense.getDate());
-        DateForCompare currentDFC = new DateForCompare(new Date());
-        if ((expenseDFC.getMonth() < currentDFC.getMonth() && expenseDFC.getYear() == currentDFC.getYear()) ||
-                (expenseDFC.getYear() < currentDFC.getYear())) {
+        Date date = new Date();
+        if ((DateParser.getMonth(expense.getDate()) < DateParser.getMonth(date) &&
+                DateParser.getYear(expense.getDate()) < DateParser.getYear(date)) ||
+                (DateParser.getYear(expense.getDate()) < DateParser.getYear(date))) {
             if (archiveDataSource.isOpen())
                 archiveDataSource.createExpense(expense);
             else {

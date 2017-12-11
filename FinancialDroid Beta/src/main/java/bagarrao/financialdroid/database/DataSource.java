@@ -12,7 +12,7 @@ import java.util.List;
 
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.expense.ExpenseType;
-import bagarrao.financialdroid.utils.DateForCompare;
+import bagarrao.financialdroid.utils.DateParser;
 
 /**
  * @author Eduardo Bagarrao
@@ -74,7 +74,7 @@ public class DataSource {
         values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_PRICE, expense.getValue());
         values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_TYPE, expense.getType().toString());
         values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_DESCRIPTION, expense.getDescription());
-        values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_DATE, DateForCompare.DATE_FORMATTED.format(expense.getDate()));
+        values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_DATE, DateParser.parseString(expense.getDate()));
 
         long insertId = database.insert(tableName, null,
                 values);
@@ -138,7 +138,7 @@ public class DataSource {
         Expense expense = null;
         try {
             expense = new Expense(cursor.getDouble(1), ExpenseType.valueOf(cursor.getString(2).toUpperCase()),
-                    cursor.getString(3), DateForCompare.DATE_FORMATTED.parse(cursor.getString(4)));
+                    cursor.getString(3), DateParser.parseDate(cursor.getString(4)));
         } catch (ParseException e) {
             e.printStackTrace();
         }

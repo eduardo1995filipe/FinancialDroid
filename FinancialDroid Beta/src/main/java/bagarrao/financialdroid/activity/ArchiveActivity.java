@@ -24,7 +24,7 @@ import bagarrao.financialdroid.database.ArchiveDataSource;
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.expense.ExpenseOrder;
 import bagarrao.financialdroid.expense.ExpenseType;
-import bagarrao.financialdroid.utils.DateForCompare;
+import bagarrao.financialdroid.utils.DateParser;
 import bagarrao.financialdroid.utils.Filter;
 
 public class ArchiveActivity extends AppCompatActivity {
@@ -129,7 +129,7 @@ public class ArchiveActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 try {
-                    currentType = Filter.getTypeByIndex(position);
+                    currentType = ExpenseType.getTypeByIndex(position);
                 } catch (NullPointerException e) {
                     currentType = DEFAULT_EXPENSE_TYPE;
                 } finally {
@@ -234,7 +234,7 @@ public class ArchiveActivity extends AppCompatActivity {
         archiveListString.clear();
         for (Expense e : archiveList) {
             String stringExpense = e.getDescription() + " | " + CurrencyConverter.round(e.getValue(), 2) + " " + currencyConverter.getCurrency().toString() + " | " +
-                    DateForCompare.DATE_FORMATTED.format(e.getDate()) + " | " + e.getType().toString();
+                    DateParser.parseString(e.getDate()) + " | " + e.getType().toString();
             archiveListString.add(stringExpense);
         }
         archiveListAdapter.notifyDataSetChanged();
@@ -249,9 +249,11 @@ public class ArchiveActivity extends AppCompatActivity {
             archiveList = new ArrayList<>();
         archiveListString.clear();
         currentOrder.sortByOrder(archiveList);
-        archiveList = Filter.getExpensesByType(archiveList,currentType);
+        archiveList = Filter.filterExpensesByType(archiveList,currentType);
         for (Expense e : archiveList) {
-            String stringExpense = e.getDescription() + " | " + e.getValue() + " " + currencyConverter.getCurrency().toString() +  " | " + DateForCompare.DATE_FORMATTED.format(e.getDate()) + " | " + e.getType().toString();
+            String stringExpense = e.getDescription() +
+                    " | " + e.getValue() + " " + currencyConverter.getCurrency().toString() +
+                    " | " + DateParser.parseString(e.getDate()) + " | " + e.getType().toString();
             archiveListString.add(stringExpense);
         }
         archiveListAdapter.notifyDataSetChanged();

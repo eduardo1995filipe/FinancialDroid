@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import java.util.Random;
+
 import bagarrao.financialdroid.backup.Backup;
 import bagarrao.financialdroid.currency.CurrencyConverter;
 import bagarrao.financialdroid.migration.Migrator;
@@ -15,7 +17,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     private CurrencyConverter currencyConverter = CurrencyConverter.getInstance();
 
-	private static final double AD_PROBABILITY = 0;
+	private static final double AD_PROBABILITY = 0.4;
 
     private Intent intent;
 

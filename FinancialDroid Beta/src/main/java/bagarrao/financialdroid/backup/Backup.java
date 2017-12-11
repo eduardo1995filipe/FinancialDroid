@@ -18,7 +18,7 @@ import bagarrao.financialdroid.database.ExpenseDataSource;
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.expense.ExpenseDistributor;
 import bagarrao.financialdroid.expense.ExpenseType;
-import bagarrao.financialdroid.utils.DateForCompare;
+import bagarrao.financialdroid.utils.DateParser;
 
 /**
  * @author Eduardo Bagarrao
@@ -80,7 +80,9 @@ public class Backup {
             archiveDataSource.deleteAllExpenses();
             while ((text = br.readLine()) != null) {
                 String[] nExp = text.split(";");
-                Expense e = new Expense(Double.parseDouble(nExp[0]), ExpenseType.valueOf(nExp[1]), nExp[2], DateForCompare.DATE_FORMATTED.parse(nExp[3]));
+                Expense e =
+                        new Expense(Double.parseDouble(nExp[0]), ExpenseType.valueOf(nExp[1]),
+                                nExp[2], DateParser.parseDate(nExp[3]));
                 ExpenseDistributor.addNewExpense(e, context, expenseDataSource, archiveDataSource);
                 expenseDataSource.close();
                 archiveDataSource.close();

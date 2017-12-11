@@ -11,7 +11,7 @@ import bagarrao.financialdroid.backup.Backup;
 import bagarrao.financialdroid.database.ArchiveDataSource;
 import bagarrao.financialdroid.database.ExpenseDataSource;
 import bagarrao.financialdroid.expense.Expense;
-import bagarrao.financialdroid.utils.DateForCompare;
+import bagarrao.financialdroid.utils.DateParser;
 import bagarrao.financialdroid.utils.SharedPreferencesHelper;
 
 /**
@@ -26,7 +26,6 @@ public class Migrator {
     private Context context;
     private ExpenseDataSource expenseDataSource;
     private ArchiveDataSource archiveDataSource;
-    private DateForCompare dateForCompare;
     private Date date;
 
     /**
@@ -35,7 +34,6 @@ public class Migrator {
     public Migrator(Context context) {
         this.context = context;
         this.date = new Date();
-        this.dateForCompare = new DateForCompare(date);
         this.expenseDataSource = new ExpenseDataSource(context);
         this.archiveDataSource = new ArchiveDataSource(context);
     }
@@ -47,18 +45,20 @@ public class Migrator {
      */
     public static boolean needsMigration(Context context) {
         try {
-            SharedPreferences sharedPreferences = context.getSharedPreferences(SharedPreferencesHelper.ACCESS_DATE_PREF_FILE, Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = context.getSharedPreferences(
+                    SharedPreferencesHelper.ACCESS_DATE_PREF_FILE, Context.MODE_PRIVATE);
             SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
             Date currentDate = new Date();
             if (!sharedPreferences.contains(SharedPreferencesHelper.OLD_DATE_VALUE)) {
                 putNewDate(sharedPreferences, sharedPreferencesEditor, currentDate);
                 return false;
             } else {
-                Date lastDate = DateForCompare.DATE_FORMATTED.parse(sharedPreferences.getString(SharedPreferencesHelper.OLD_DATE_VALUE, SharedPreferencesHelper.OLD_DATE_DEFAULT_VALUE));
-                DateForCompare currentForCompare = new DateForCompare(currentDate);
-                DateForCompare lastForCompare = new DateForCompare(lastDate);
-                if ((lastForCompare.getMonth() < currentForCompare.getMonth() && lastForCompare.getYear() == currentForCompare.getYear()) ||
-                        (lastForCompare.getYear() < currentForCompare.getYear())) {
+                Date lastDate = DateParser.parseDate(
+                        (sharedPreferences.getString(SharedPreferencesHelper.OLD_DATE_VALUE,
+                        SharedPreferencesHelper.OLD_DATE_DEFAULT_VALUE)));
+                if ((DateParser.getMonth(lastDate) < DateParser.getMonth(currentDate) &&
+                        DateParser.getYear(lastDate) < DateParser.getYear(currentDate)) ||
+                        (DateParser.getYear(lastDate) < DateParser.getYear(currentDate))) {
                     putNewDate(sharedPreferences, sharedPreferencesEditor, currentDate);
                     return true;
                 } else {
@@ -81,7 +81,7 @@ public class Migrator {
     public static void putNewDate(SharedPreferences preferences, SharedPreferences.Editor editor, Date date) {
         if (preferences.contains(SharedPreferencesHelper.OLD_DATE_VALUE))
             editor.remove(SharedPreferencesHelper.OLD_DATE_VALUE);
-        editor.putString(SharedPreferencesHelper.OLD_DATE_VALUE, DateForCompare.DATE_FORMATTED.format(date));
+        editor.putString(SharedPreferencesHelper.OLD_DATE_VALUE, DateParser.parseString(date));
         editor.commit();
     }
 
@@ -108,8 +108,8 @@ public class Migrator {
         open();
         List<Expense> expenseList = expenseDataSource.getAllExpenses();
         for (Expense e : expenseList) {
-            DateForCompare expenseDFC = new DateForCompare(e.getDate());
-            if (expenseDFC.getMonth() < dateForCompare.getMonth() || expenseDFC.getYear() < dateForCompare.getYear()) {
+            if (DateParser.getMonth(e.getDate()) < DateParser.getMonth(date)
+                    || DateParser.getYear(e.getDate()) < DateParser.getYear(date) ) {
                 archiveDataSource.createExpense(e);
                 expenseDataSource.deleteExpense(e);
             }

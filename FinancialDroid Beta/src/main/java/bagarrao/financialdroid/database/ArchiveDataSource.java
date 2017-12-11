@@ -12,7 +12,6 @@ import java.util.List;
 
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.expense.ExpenseType;
-import bagarrao.financialdroid.utils.DateForCompare;
 
 
 /**

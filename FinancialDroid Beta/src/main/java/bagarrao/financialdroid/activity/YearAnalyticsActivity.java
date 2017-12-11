@@ -22,11 +22,10 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import bagarrao.financialdroid.R;
 import bagarrao.financialdroid.database.ArchiveDataSource;
 import bagarrao.financialdroid.database.ExpenseDataSource;
 import bagarrao.financialdroid.expense.Expense;
-import bagarrao.financialdroid.utils.DateForCompare;
+import bagarrao.financialdroid.utils.DateParser;
 import bagarrao.financialdroid.utils.Filter;
 import bagarrao.financialdroid.utils.Pair;
 import bagarrao.financialdroid.utils.PieChartHelper;
@@ -103,7 +102,7 @@ public class YearAnalyticsActivity extends AppCompatActivity {
         HashSet<Integer> set = new HashSet<>();
         //ver todos os anos que existem
         for(Expense e : totalExpenseList){
-            set.add(new DateForCompare(e.getDate()).getYear());
+            set.add(DateParser.getYear(e.getDate()));
         }
 
         for(Integer year : set){

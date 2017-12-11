@@ -2,7 +2,7 @@ package bagarrao.financialdroid.expense;
 
 import java.util.Date;
 
-import bagarrao.financialdroid.utils.DateForCompare;
+import bagarrao.financialdroid.utils.DateParser;
 
 /**
  * @author Eduardo Bagarrao
@@ -95,6 +95,6 @@ public class Expense {
 
     @Override
     public String toString() {
-        return value + ";" + type.toString() + ";" + description + ";" + DateForCompare.DATE_FORMATTED.format(date);
+        return value + ";" + type.toString() + ";" + description + ";" + DateParser.parseString(date);
     }
 }

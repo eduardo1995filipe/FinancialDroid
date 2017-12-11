@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import bagarrao.financialdroid.database.ArchiveDataSource;
 import bagarrao.financialdroid.database.ExpenseDataSource;
@@ -86,7 +85,7 @@ public class PieChartHelper {
             totalExpenseList.add(e);
         }
 
-        List<Expense> expenses = Filter.getExpensesByType(totalExpenseList,type);
+        List<Expense> expenses = Filter.filterExpensesByType(totalExpenseList,type);
         List<Expense> expensesFiltered = filterListByDate(expenses,month,year);
         double amount = 0;
         for(Expense e : expensesFiltered)
@@ -97,8 +96,8 @@ public class PieChartHelper {
     private static List<Expense> filterListByDate(List<Expense> toFilter, int month, int year){
         List<Expense> filteredList = new LinkedList<>();
             for(Expense e : toFilter){
-                DateForCompare expenseDate = new DateForCompare(e.getDate());
-                if(expenseDate.getMonth() == month && expenseDate.getYear() == year)
+                Date date = new Date();
+                if(DateParser.getMonth(date) == month && DateParser.getYear(date) == year)
                     filteredList.add(e);
             }
         return filteredList;
@@ -163,11 +162,11 @@ public class PieChartHelper {
             totalExpenseList.add(e);
         }
 
-        List<Expense> expenses = Filter.getExpensesByType(totalExpenseList,type);
+        List<Expense> expenses = Filter.filterExpensesByType(totalExpenseList,type);
         List<Expense> newList = new LinkedList<>();
 
         for(Expense e : expenses){
-            if(new DateForCompare(e.getDate()).getYear() == yearNum)
+            if(DateParser.getYear(e.getDate()) == yearNum)
                 newList.add(e);
         }
 

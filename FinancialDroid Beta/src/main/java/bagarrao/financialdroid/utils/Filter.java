@@ -10,12 +10,18 @@ import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.expense.ExpenseType;
 
 /**
- * Created by eduar on 15/08/2017.
+ * @author Eduardo
  */
-
 public class Filter {
 
-    public static List<Expense> getExpensesByType(List<Expense> toFilter,ExpenseType type) {
+
+    /**
+     *
+     * @param toFilter
+     * @param type
+     * @return
+     */
+    public static List<Expense> filterExpensesByType(List<Expense> toFilter, ExpenseType type) {
         if(type == null)
             return toFilter;
         else{
@@ -27,51 +33,48 @@ public class Filter {
             }
     }
 
-    public static ExpenseType getTypeByIndex(int index){
-        ExpenseType type = null;
-        switch(index){
-            case 0 :
-                break;
-            case 1 :
-                type = ExpenseType.FEEDING;
-                break;
-            case 2 :
-                type = ExpenseType.TRANSPORTS;
-                break;
-            case 3 :
-                type = ExpenseType.CLOTHING;
-                break;
-            case 4 :
-                type = ExpenseType.SCHOOL;
-                break;
-            case 5 :
-                type = ExpenseType.OTHERS;
-                break;
-            default:
-                Log.d("Filter", "getTypeByIndex: unexpected error, index value is out of bounds");
-                break;
-        }
-        return type;
-    }
-
+    /**
+     *
+     * @param toFilter
+     * @param year
+     * @return
+     */
     public static List<Expense> filterExpensesByYear(List<Expense> toFilter, int year){
         List<Expense> newList = new ArrayList<Expense>();
         for(Expense e : toFilter){
-            if(new DateForCompare(e.getDate()).getYear() == year){
+            if(DateParser.getYear(e.getDate()) == year){
                 newList.add(e);
                 Log.d("Filter",  "[ExpensesByYear]Expense added --> " + e.toString());
             }
         }
         return newList;
     }
+
+    /**
+     *
+     * @param toFilter
+     * @param month
+     * @return
+     */
     public static List<Expense> filterExpensesByMonth(List<Expense> toFilter, int month){
         List<Expense> newList = new ArrayList<Expense>();
         for(Expense e : toFilter){
-            if(new DateForCompare(e.getDate()).getMonth() == month) {
+            if(DateParser.getMonth(e.getDate()) == month) {
                 newList.add(e);
                 Log.d("Filter",  "[ExpensesByMonth]Expense added --> " + e.toString());
             }
         }
         return newList;
+    }
+
+    /**
+     *
+     * @param toFilter
+     * @param year
+     * @param month
+     * @return
+     */
+    public static List<Expense> filterExpensesByDate(List<Expense> toFilter, int year, int month){
+        return(filterExpensesByMonth(filterExpensesByYear(toFilter,year),month));
     }
 }

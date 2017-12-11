@@ -47,32 +47,18 @@ public class Sorter {
         return a;
     }
 
-//    /**
-//     * @param tipo type for filter the list
-//     * @return List filtered by type given in the parameter
-//     */
-//    public static List<Expense> getListByType(ExpenseType tipo) {
-//        // return GestorDespesa.getInstance().getMapa_despesas().get(tipo);
-//        return null;
-//    }
-
     /**
      *Comparator that sorts Expense Objects by Date in descending order
      */
     public static class ExternalDateComparatorDec implements Comparator<Expense> {
 
         @Override
-        public int compare(Expense d1, Expense d2) {
-
-            DateForCompare date1 = new DateForCompare(d1.getDate());
-            DateForCompare date2 = new DateForCompare(d2.getDate());
-
-            if (date1.getYear() != date2.getYear())
-                return date2.getYear() - date1.getYear();
-            else if (date1.getMonth() != date2.getMonth())
-                return date2.getMonth() - date1.getMonth();
-            else
-                return date2.getDay() - date1.getDay();
+        public int compare(Expense e1, Expense e2) {
+            return(DateParser.getYear(e1.getDate()) != DateParser.getYear(e2.getDate())) ?
+                    DateParser.getYear(e2.getDate()) - DateParser.getYear(e1.getDate()) :
+                    (DateParser.getMonth(e1.getDate()) != DateParser.getMonth(e2.getDate())) ?
+                            DateParser.getMonth(e2.getDate()) - DateParser.getMonth(e1.getDate()) :
+                            DateParser.getDay(e2.getDate()) - DateParser.getDay(e1.getDate());
         }
     }
 
@@ -83,17 +69,13 @@ public class Sorter {
     public static class ExternalDateComparatorCre implements Comparator<Expense> {
 
         @Override
-        public int compare(Expense d1, Expense d2) {
+        public int compare(Expense e1, Expense e2) {
 
-            DateForCompare date1 = new DateForCompare(d1.getDate());
-            DateForCompare date2 = new DateForCompare(d2.getDate());
-
-            if (date1.getYear() != date2.getYear())
-                return date1.getYear() - date2.getYear();
-            else if (date1.getMonth() != date2.getMonth())
-                return date1.getMonth() - date2.getMonth();
-            else
-                return date1.getDay() - date2.getDay();
+            return(DateParser.getYear(e1.getDate()) != DateParser.getYear(e2.getDate())) ?
+                    DateParser.getYear(e1.getDate()) - DateParser.getYear(e2.getDate()) :
+                    (DateParser.getMonth(e1.getDate()) != DateParser.getMonth(e2.getDate())) ?
+                            DateParser.getMonth(e1.getDate()) - DateParser.getMonth(e2.getDate()) :
+                            DateParser.getDay(e1.getDate()) - DateParser.getDay(e2.getDate());
         }
     }
 

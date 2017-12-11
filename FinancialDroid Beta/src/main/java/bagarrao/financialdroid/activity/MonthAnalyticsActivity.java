@@ -19,13 +19,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-import bagarrao.financialdroid.R;
 import bagarrao.financialdroid.database.ArchiveDataSource;
-import bagarrao.financialdroid.database.ExpenseDataSource;
 import bagarrao.financialdroid.expense.Expense;
-import bagarrao.financialdroid.utils.DateForCompare;
+import bagarrao.financialdroid.utils.DateParser;
 import bagarrao.financialdroid.utils.Filter;
 import bagarrao.financialdroid.utils.Pair;
 import bagarrao.financialdroid.utils.PieChartHelper;
@@ -74,7 +71,7 @@ public class MonthAnalyticsActivity extends AppCompatActivity {
         List<Expense> archiveList = archiveDataSource.getAllExpenses();
         List<Expense> newTotalExpenseList = new ArrayList<>();
 
-        List<Expense> filteredList = Filter.filterExpensesByYear(archiveList,new DateForCompare(new Date()).getYear());
+        List<Expense> filteredList = Filter.filterExpensesByYear(archiveList, DateParser.getYear(new Date()));
         for (Expense e : filteredList)
                 newTotalExpenseList.add(e);
         totalExpenseList = newTotalExpenseList;
@@ -89,17 +86,17 @@ public class MonthAnalyticsActivity extends AppCompatActivity {
         if(!archiveDataSource.isOpen())
             archiveDataSource.open();
         readDB();
-        DateForCompare dfc = new DateForCompare(new Date());
-        for(int i = 0;i < dfc.getMonth(); i++){
+        Date date = new Date();
+        for(int i = 0;i < DateParser.getMonth(date); i++){
             List<Expense> list = Filter.filterExpensesByMonth(totalExpenseList,i);
             if(!list.isEmpty())
-                pieChartLayoutList.add(getChartLayout(i, new DateForCompare(new Date()).getYear(),list));
+                pieChartLayoutList.add(getChartLayout(i, DateParser.getYear(date),list));
         }
         int i = 0;
         scrollView.addView(mainLayout,0);
         TextView text = new TextView(this);
         text.setText("Here you can check your expenses along the months of "
-                + new DateForCompare(new Date()).getYear() + "!!\n\n");
+                + DateParser.getYear(date) + "!!\n\n");
         mainLayout.addView(text,i++);
         for(LinearLayout l : pieChartLayoutList){
             mainLayout.addView(l,i++);
