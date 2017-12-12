@@ -1,7 +1,6 @@
 package bagarrao.financialdroid.activity;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.ViewGroup;
@@ -15,24 +14,25 @@ import com.github.mikephil.charting.data.Entry;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import bagarrao.financialdroid.database.ArchiveDataSource;
+import bagarrao.financialdroid.database.DataSource;
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.utils.DateParser;
 import bagarrao.financialdroid.utils.Filter;
 import bagarrao.financialdroid.utils.Pair;
 import bagarrao.financialdroid.utils.PieChartHelper;
 
+/**
+ * @authos Eduardo
+ */
 public class MonthAnalyticsActivity extends AppCompatActivity {
 
     private ScrollView scrollView;
     private LinearLayout mainLayout;
 
-    private ArchiveDataSource archiveDataSource;
+    private DataSource dataSource;
 
     private List<LinearLayout> pieChartLayoutList;
     private List<Expense> totalExpenseList;
@@ -54,37 +54,40 @@ public class MonthAnalyticsActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        archiveDataSource.close();
+        dataSource.close();
     }
 
+    /**
+     *
+     */
     public void init() {
         this.scrollView = new ScrollView(this);
         this.mainLayout = new LinearLayout(this);
-//        this.expenseDataSource = new ExpenseDataSource(this);
-        this.archiveDataSource = new ArchiveDataSource(this);
+        this.dataSource = new DataSource( DataSource.ARCHIVE,this);
         this.pieChartLayoutList = new LinkedList<>();
         this.totalExpenseList = new ArrayList<>();
         mainLayout.setOrientation(LinearLayout.VERTICAL);
     }
 
+    /**
+     *
+     */
     public void readDB() {
-        List<Expense> archiveList = archiveDataSource.getAllExpenses();
-        List<Expense> newTotalExpenseList = new ArrayList<>();
-
-        List<Expense> filteredList = Filter.filterExpensesByYear(archiveList, DateParser.getYear(new Date()));
-        for (Expense e : filteredList)
-                newTotalExpenseList.add(e);
-        totalExpenseList = newTotalExpenseList;
+        totalExpenseList.clear();
+        totalExpenseList.addAll(dataSource.getAllExpenses());
+        totalExpenseList.addAll(Filter.filterExpensesByYear(totalExpenseList, DateParser.getYear(new Date()))); //critico
     }
 
+    /**
+     *
+     */
     public void loadCharts() {
         scrollView.removeAllViews();
         mainLayout.removeAllViews();
         pieChartLayoutList.clear();
-        totalExpenseList.clear();
 
-        if(!archiveDataSource.isOpen())
-            archiveDataSource.open();
+        if(!dataSource.isOpen())
+            dataSource.open();
         readDB();
         Date date = new Date();
         for(int i = 0;i < DateParser.getMonth(date); i++){
@@ -104,20 +107,22 @@ public class MonthAnalyticsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *
+     * @param monthNum
+     * @param yearNum
+     * @param list
+     * @return
+     */
     public LinearLayout getChartLayout(int monthNum,int yearNum, List<Expense> list) {
-
         LinearLayout layout = new LinearLayout(this);
         layout.setWeightSum(1);
         layout.setOrientation(LinearLayout.VERTICAL);
-
-        //piechart
 
         Pair<List<Entry>, List<String>> pair_2 = PieChartHelper.setExpensesAmount(getApplicationContext(),monthNum,yearNum); //critico
         PieChart pieChart = PieChartHelper.generatePieChart(getApplicationContext(), pair_2.getKey(), pair_2.getValue());
         PieChart.LayoutParams  params = new PieChart.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,300);
         pieChart.setLayoutParams(params);
-
-        //end piechart
 
         int index = 0;
         TextView textView = new TextView(this);
@@ -126,8 +131,5 @@ public class MonthAnalyticsActivity extends AppCompatActivity {
         layout.addView(pieChart, index++);
         Log.d("PieChartHelper","Chart is null --> " + (pieChart == null));
         return layout;
-
-
-
     }
 }

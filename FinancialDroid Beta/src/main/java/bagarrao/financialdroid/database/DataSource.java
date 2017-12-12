@@ -19,6 +19,9 @@ import bagarrao.financialdroid.utils.DateParser;
  */
 public class DataSource {
 
+    public static final String ARCHIVE = DataSQLiteOpenHelper.ARCHIVE_TABLE;
+    public static final String CURRENT = DataSQLiteOpenHelper.EXPENSE_TABLE;
+
     private static final String[] allColumns = {DataSQLiteOpenHelper.EXPENSE_COLUMN_ID,
             DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_PRICE, DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_TYPE,
             DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_DESCRIPTION, DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_DATE};
@@ -32,7 +35,7 @@ public class DataSource {
      * creates de ExpenseDataSource object
      * @param context context of the current activity where the DataSouce object is created
      */
-    protected DataSource(String tableName, Context context){
+    public DataSource(String tableName, Context context){
         this.isOpen = false;
         this.dbHelper = new DataSQLiteOpenHelper(context);
         this.tableName = tableName;
