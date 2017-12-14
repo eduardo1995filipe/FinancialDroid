@@ -38,17 +38,14 @@ public class InterstitialAdActivity extends AppCompatActivity {
      * inits all the class objects
      */
     private void init(){
-        this.mainIntent = new Intent(this, MainActivity.class);
+        this.mainIntent = new Intent(this, LoginActivity.class);
         this.interstitialAd = new InterstitialAd(this);
-        this.adWaiter = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(2000);
-                    startActivity(mainIntent);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        this.adWaiter = () -> {
+            try {
+                Thread.sleep(2000);
+                startActivity(mainIntent);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         };
     }
