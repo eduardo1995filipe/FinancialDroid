@@ -17,8 +17,7 @@ import java.util.Date;
 
 import bagarrao.financialdroid.R;
 import bagarrao.financialdroid.currency.CurrencyConverter;
-import bagarrao.financialdroid.database.ArchiveDataSource;
-import bagarrao.financialdroid.database.ExpenseDataSource;
+import bagarrao.financialdroid.database.DataSource;
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.expense.ExpenseDistributor;
 import bagarrao.financialdroid.expense.ExpenseType;
@@ -37,7 +36,7 @@ public class AddExpenseActivity extends AppCompatActivity {
     private EditText priceEditText;
     private EditText descriptionEditText;
     private ArrayAdapter<CharSequence> spinnerAdapter;
-    private ExpenseDataSource dataSource;
+    private DataSource dataSource;
     private CalendarView dateCalendarView;
     private Date expenseDate;
     private TextView priceTextView;
@@ -82,7 +81,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         spinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         expenseTypeSpinner.setAdapter(spinnerAdapter);
 
-        this.dataSource = new ExpenseDataSource(this);
+        this.dataSource = new DataSource(DataSource.CURRENT, this);
         this.expenseDate = new Date();
 
         priceTextView.setText("Price(" + currencyConverter.getCurrency().toString() + ")");
@@ -115,7 +114,7 @@ public class AddExpenseActivity extends AppCompatActivity {
                     Expense expense = new Expense(Double.parseDouble(priceEditText.getText().toString()),
                             ExpenseType.valueOf(expenseTypeSpinner.getSelectedItem().toString().toUpperCase()), descriptionEditText.getText().toString(),
                             expenseDate);
-                    ExpenseDistributor.addNewExpense(expense, getApplicationContext(), dataSource, new ArchiveDataSource(getApplicationContext()));
+                    ExpenseDistributor.addNewExpense(expense, getApplicationContext(), dataSource, new DataSource(DataSource.ARCHIVE, getApplicationContext()));
                     Toast.makeText(getApplicationContext(), "Expense sucessefully registered!", Toast.LENGTH_SHORT).show();
                     finish();
                 } else

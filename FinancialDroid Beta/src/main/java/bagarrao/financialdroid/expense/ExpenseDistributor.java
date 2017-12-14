@@ -1,12 +1,12 @@
 package bagarrao.financialdroid.expense;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.Date;
 
 import bagarrao.financialdroid.backup.Backup;
-import bagarrao.financialdroid.database.ArchiveDataSource;
-import bagarrao.financialdroid.database.ExpenseDataSource;
+import bagarrao.financialdroid.database.DataSource;
 import bagarrao.financialdroid.utils.DateParser;
 
 /**
@@ -23,27 +23,31 @@ public class ExpenseDistributor {
      * @param expenseDataSource
      * @param archiveDataSource
      */
-    public static void addNewExpense(Expense expense, Context context, ExpenseDataSource expenseDataSource, ArchiveDataSource archiveDataSource) {
-        Date date = new Date();
-        if ((DateParser.getMonth(expense.getDate()) < DateParser.getMonth(date) &&
-                DateParser.getYear(expense.getDate()) < DateParser.getYear(date)) ||
-                (DateParser.getYear(expense.getDate()) < DateParser.getYear(date))) {
-            if (archiveDataSource.isOpen())
-                archiveDataSource.createExpense(expense);
-            else {
-                archiveDataSource.open();
-                archiveDataSource.createExpense(expense);
+    public static void addNewExpense(Expense expense, Context context, DataSource expenseDataSource, DataSource archiveDataSource) {
+        if(expenseDataSource.getMode().equals(DataSource.CURRENT) && archiveDataSource.getMode().equals(DataSource.ARCHIVE)) {
+            Date date = new Date();
+            if ((DateParser.getMonth(expense.getDate()) < DateParser.getMonth(date) &&
+                    DateParser.getYear(expense.getDate()) < DateParser.getYear(date)) ||
+                    (DateParser.getYear(expense.getDate()) < DateParser.getYear(date))) {
+                if (archiveDataSource.isOpen())
+                    archiveDataSource.createExpense(expense);
+                else {
+                    archiveDataSource.open();
+                    archiveDataSource.createExpense(expense);
+                }
+                archiveDataSource.close();
+            } else {
+                if (expenseDataSource.isOpen())
+                    expenseDataSource.createExpense(expense);
+                else {
+                    expenseDataSource.open();
+                    expenseDataSource.createExpense(expense);
+                }
+                expenseDataSource.close();
             }
-            archiveDataSource.close();
-        } else {
-            if (expenseDataSource.isOpen())
-                expenseDataSource.createExpense(expense);
-            else {
-                expenseDataSource.open();
-                expenseDataSource.createExpense(expense);
-            }
-            expenseDataSource.close();
+            new Backup(context).go();
+        }else{
+            Log.e("ExpenseDistributor", "Datasources have not different modes");
         }
-        new Backup(context).go();
     }
 }

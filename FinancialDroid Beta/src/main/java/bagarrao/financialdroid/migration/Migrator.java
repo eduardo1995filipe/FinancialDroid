@@ -8,8 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import bagarrao.financialdroid.backup.Backup;
-import bagarrao.financialdroid.database.ArchiveDataSource;
-import bagarrao.financialdroid.database.ExpenseDataSource;
+import bagarrao.financialdroid.database.DataSource;
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.utils.DateParser;
 import bagarrao.financialdroid.utils.SharedPreferencesHelper;
@@ -24,8 +23,8 @@ public class Migrator {
     private static final String OLD_DATE = "oldDate";
 
     private Context context;
-    private ExpenseDataSource expenseDataSource;
-    private ArchiveDataSource archiveDataSource;
+    private DataSource expenseDataSource;
+    private DataSource archiveDataSource;
     private Date date;
 
     /**
@@ -34,8 +33,8 @@ public class Migrator {
     public Migrator(Context context) {
         this.context = context;
         this.date = new Date();
-        this.expenseDataSource = new ExpenseDataSource(context);
-        this.archiveDataSource = new ArchiveDataSource(context);
+        this.expenseDataSource = new DataSource(DataSource.CURRENT, context);
+        this.archiveDataSource = new DataSource(DataSource.ARCHIVE, context);
     }
 
     /**

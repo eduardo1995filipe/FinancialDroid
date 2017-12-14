@@ -20,7 +20,7 @@ import java.util.List;
 import bagarrao.financialdroid.R;
 import bagarrao.financialdroid.backup.Backup;
 import bagarrao.financialdroid.currency.CurrencyConverter;
-import bagarrao.financialdroid.database.ArchiveDataSource;
+import bagarrao.financialdroid.database.DataSource;
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.expense.ExpenseOrder;
 import bagarrao.financialdroid.expense.ExpenseType;
@@ -46,7 +46,7 @@ public class ArchiveActivity extends AppCompatActivity {
     private ListView archiveListView;
     private List<Expense> archiveList;
     private ArrayList<String> archiveListString;
-    private ArchiveDataSource dataSource;
+    private DataSource dataSource;
     private ArrayAdapter<String> archiveListAdapter;
 
     private Context context;
@@ -72,7 +72,7 @@ public class ArchiveActivity extends AppCompatActivity {
         this.currentType = DEFAULT_EXPENSE_TYPE;
 
         this.archiveListString = new ArrayList<>();
-        this.dataSource = new ArchiveDataSource(this);
+        this.dataSource = new DataSource(DataSource.ARCHIVE,this);
         this.dataSource.open();
         this.archiveListView = (ListView) findViewById(R.id.archiveExpensesListView);
 

@@ -13,8 +13,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
-import bagarrao.financialdroid.database.ArchiveDataSource;
-import bagarrao.financialdroid.database.ExpenseDataSource;
+import bagarrao.financialdroid.database.DataSource;
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.expense.ExpenseDistributor;
 import bagarrao.financialdroid.expense.ExpenseType;
@@ -31,8 +30,8 @@ public class Backup {
 
     private BufferedWriter bw;
     private File file;
-    private ExpenseDataSource expenseDataSource;
-    private ArchiveDataSource archiveDataSource;
+    private DataSource expenseDataSource;
+    private DataSource archiveDataSource;
     private List<Expense> expenseList;
     private List<Expense> archiveList;
 
@@ -70,8 +69,8 @@ public class Backup {
                 Log.e("Backup", "context is not set. Please set it before use this function.");
                 return false;
             }
-            ExpenseDataSource expenseDataSource = new ExpenseDataSource(context);
-            ArchiveDataSource archiveDataSource = new ArchiveDataSource(context);
+            DataSource expenseDataSource = new DataSource(DataSource.CURRENT,context);
+            DataSource archiveDataSource = new DataSource(DataSource.ARCHIVE, context);
             BufferedReader br = new BufferedReader(new FileReader(file));
             String text = "";
             expenseDataSource.open();
@@ -101,8 +100,8 @@ public class Backup {
      * initiates all objects
      */
     private void init() {
-        this.expenseDataSource = new ExpenseDataSource(context);
-        this.archiveDataSource = new ArchiveDataSource(context);
+        this.expenseDataSource = new DataSource(DataSource.CURRENT, context);
+        this.archiveDataSource = new DataSource(DataSource.ARCHIVE, context);
         this.file = new File(context.getFilesDir(), (FILE_NAME));
         if (file.exists())
             file.delete();

@@ -7,8 +7,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-import bagarrao.financialdroid.database.ArchiveDataSource;
-import bagarrao.financialdroid.database.ExpenseDataSource;
+import bagarrao.financialdroid.database.DataSource;
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.utils.SharedPreferencesHelper;
 
@@ -26,8 +25,8 @@ public class CurrencyConverter {
     private SharedPreferences sharedPref;
     private SharedPreferences.Editor sharedPrefEditor;
 
-    private ExpenseDataSource expenseDataSource;
-    private ArchiveDataSource archiveDataSource;
+    private DataSource expenseDataSource;
+    private DataSource archiveDataSource;
 
     private CurrencyConverter(){
         this.isInitialized = false;
@@ -41,8 +40,8 @@ public class CurrencyConverter {
         this.context = context;
         this.isInitialized = true;
         this.sharedPref = context.getSharedPreferences(SharedPreferencesHelper.CURRENCY_PREFERENCES_FILE, context.MODE_PRIVATE);
-        this.expenseDataSource = new ExpenseDataSource(context);
-        this.archiveDataSource = new ArchiveDataSource(context);
+        this.expenseDataSource = new DataSource(DataSource.CURRENT, context);
+        this.archiveDataSource = new DataSource(DataSource.ARCHIVE,context);
     }
 
     public Currency getCurrency(){

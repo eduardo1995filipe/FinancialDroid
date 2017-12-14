@@ -18,4 +18,5 @@
     <string name="title_activity_month_analytics">MonthAnalyticsActivity</string>
     <string name="title_activity_year_analythics">YearAnalythicsActivity</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_explorer">ExplorerActivity</string>
 </resources>

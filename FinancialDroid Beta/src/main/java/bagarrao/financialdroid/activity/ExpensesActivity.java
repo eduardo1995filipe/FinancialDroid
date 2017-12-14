@@ -24,7 +24,6 @@ import bagarrao.financialdroid.R;
 import bagarrao.financialdroid.backup.Backup;
 import bagarrao.financialdroid.currency.CurrencyConverter;
 import bagarrao.financialdroid.database.DataSource;
-import bagarrao.financialdroid.database.ExpenseDataSource;
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.expense.ExpenseOrder;
 import bagarrao.financialdroid.expense.ExpenseType;
@@ -91,7 +90,7 @@ public class ExpensesActivity extends AppCompatActivity {
         this.currentType = DEFAULT_EXPENSE_TYPE;
 
         this.expenseListString = new ArrayList<>();
-        this.dataSource = new ExpenseDataSource(this);
+        this.dataSource = new DataSource(DataSource.CURRENT, this);
         this.dataSource.open();
         this.expenseListView = (ListView) findViewById(R.id.expensesListView);
 

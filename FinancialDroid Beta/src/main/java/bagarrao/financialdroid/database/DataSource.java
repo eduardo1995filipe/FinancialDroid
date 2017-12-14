@@ -29,16 +29,16 @@ public class DataSource {
     private boolean isOpen;
     private DataSQLiteOpenHelper dbHelper;
     private SQLiteDatabase database;
-    private String tableName;
+    private String mode;
 
     /**
      * creates de ExpenseDataSource object
      * @param context context of the current activity where the DataSouce object is created
      */
-    public DataSource(String tableName, Context context){
+    public DataSource(String mode, Context context){
         this.isOpen = false;
         this.dbHelper = new DataSQLiteOpenHelper(context);
-        this.tableName = tableName;
+        this.mode = mode;
     }
     /**
      * returns the value if the the database is already isOpen
@@ -47,6 +47,14 @@ public class DataSource {
      */
     public boolean isOpen() {
         return isOpen;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getMode() {
+        return mode;
     }
 
     /**
@@ -79,10 +87,10 @@ public class DataSource {
         values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_DESCRIPTION, expense.getDescription());
         values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_DATE, DateParser.parseString(expense.getDate()));
 
-        long insertId = database.insert(tableName, null,
+        long insertId = database.insert(mode, null,
                 values);
 
-        Cursor cursor = database.query(tableName,
+        Cursor cursor = database.query(mode,
                 allColumns, DataSQLiteOpenHelper.EXPENSE_COLUMN_ID + " = " + insertId, null,
                 null, null, null);
         cursor.moveToFirst();
@@ -97,7 +105,7 @@ public class DataSource {
      */
     public void deleteExpense(Expense expense) {
         long id = expense.getId();
-        database.delete(tableName, DataSQLiteOpenHelper.EXPENSE_COLUMN_ID + " = " + id, null);
+        database.delete(mode, DataSQLiteOpenHelper.EXPENSE_COLUMN_ID + " = " + id, null);
     }
 
     /**
@@ -108,7 +116,7 @@ public class DataSource {
 
         List<Expense> expenses = new ArrayList<Expense>();
 
-        Cursor cursor = database.query(tableName,
+        Cursor cursor = database.query(mode,
                 allColumns, null, null, null, null, null);
 
         cursor.moveToFirst();

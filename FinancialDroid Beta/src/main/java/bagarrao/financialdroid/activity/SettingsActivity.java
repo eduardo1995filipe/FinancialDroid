@@ -1,21 +1,16 @@
 package bagarrao.financialdroid.activity;
 
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import bagarrao.financialdroid.R;
-import bagarrao.financialdroid.backup.Backup;
 import bagarrao.financialdroid.currency.Currency;
 import bagarrao.financialdroid.currency.CurrencyConverter;
 import bagarrao.financialdroid.utils.SharedPreferencesHelper;
@@ -24,14 +19,12 @@ public class SettingsActivity extends AppCompatActivity {
 
 	private CurrencyConverter currencyConverter = CurrencyConverter.getInstance();
 	
-    private Button exportButton;
-    private Button importButton;
-
     private SharedPreferences sharedPref;
     private SharedPreferences.Editor sharedPrefEditor;
 
     private Spinner currencySpinner;
     private ArrayAdapter<CharSequence> currencyAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +35,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void init(){
-        this.exportButton = (Button)findViewById(R.id.exportCsvButton);
-        this.importButton = (Button)findViewById(R.id.importCsvButton);
-
         this.sharedPref = getSharedPreferences(SharedPreferencesHelper.CURRENCY_SPINNER_PREFERENCES_FILE,MODE_PRIVATE);
-
         this.currencySpinner = (Spinner)findViewById(R.id.currencyTypeSpinner);
         this.currencyAdapter = ArrayAdapter.createFromResource(this, R.array.currency_type,
                 R.layout.support_simple_spinner_dropdown_item);
@@ -57,39 +46,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void setListeners(){
-        exportButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Backup backup = new Backup(getApplicationContext());
-                Toast.makeText(SettingsActivity.this, "backup made successful", Toast.LENGTH_SHORT).show();
-                backup.go();
-            }
-        });
-
-        importButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(SettingsActivity.this, "I'm not available yet, sorry :c", Toast.LENGTH_SHORT).show();
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-                builder.setMessage("You want to import a FINANCIALDROID backup or a external .csv file?");
-                builder.setTitle("Backup type selection");
-                builder.setPositiveButton("local backup", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //TODO: local backup
-                    }
-                });
-                builder.setPositiveButton("local backup", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //TODO: external csv backup
-                    }
-                });
-                builder.show();
-            }
-        });
-		
-		currencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        currencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             Currency currentCurrency = null;
 

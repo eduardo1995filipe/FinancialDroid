@@ -32,24 +32,5 @@
             android:layout_marginRight="100dp">
         </Spinner>
     </LinearLayout>
-    <Button
-        android:id="@+id/exportCsvButton"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:layout_margin="10dp"
-        android:text="EXPORT EXPENSES TO CSV"/>
-    <Button
-        android:id="@+id/importCsvButton"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:layout_margin="10dp"
-        android:text="IMPORT EXPENSES FROM CSV"/>
-    <TextView
-        android:layout_margin="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="More to come here!!!"/>
+
 </LinearLayout>
