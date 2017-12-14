@@ -26,7 +26,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         currencyConverter.init(this);
         new Backup(this).go(); //for now its not needed
-        this.intent = new Intent(this, MainActivity.class);
+        this.intent = new Intent(this, LoginActivity.class);
         setup();
         finish();
     }

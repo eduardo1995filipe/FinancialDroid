@@ -5,7 +5,7 @@ android {
 //    buildToolsVersion "25.0.3"
     defaultConfig {
         applicationId "bagarrao.financialdroid"
-        minSdkVersion 16
+        minSdkVersion 23
         targetSdkVersion 25
         versionCode 7
         versionName "0.1.8"
@@ -41,6 +41,7 @@ dependencies {
     apply plugin: 'com.google.gms.google-services'
     compile 'com.android.support:recyclerview-v7:21.0.+'
 }
+
 
 
 
