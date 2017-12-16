@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import java.util.Random;
 
+import bagarrao.financialdroid.LoginActivity;
 import bagarrao.financialdroid.backup.Backup;
 import bagarrao.financialdroid.currency.CurrencyConverter;
 import bagarrao.financialdroid.migration.Migrator;
