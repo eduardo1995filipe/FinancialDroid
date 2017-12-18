@@ -57,12 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
             optionsIntent[i] = new Intent(this, ACTIVITY_ARRAY[i]);
             optionImages[i] = (ImageView) findViewById(IMAGE_ID_ARRAY[i]);
-            optionImages[i].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(optionsIntent[index]);
-                }
-            });
+            optionImages[i].setOnClickListener(v -> startActivity(optionsIntent[index]));
         }
 
         this.appBarLayout = (AppBarLayout) findViewById(R.id.appBarMainMenu);

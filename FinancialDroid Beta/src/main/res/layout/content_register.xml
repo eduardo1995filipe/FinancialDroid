@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="30dp"
-            android:text="Register  now for a FINANCIALDROID account!"
+            android:text="Register now for a FINANCIALDROID account!"
             android:gravity="center_horizontal"/>
     </LinearLayout>
     <RelativeLayout

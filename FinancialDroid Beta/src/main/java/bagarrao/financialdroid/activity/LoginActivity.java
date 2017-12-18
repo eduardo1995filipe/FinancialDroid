@@ -69,8 +69,9 @@ public class LoginActivity extends AppCompatActivity {
         this.emailEditText = (EditText) findViewById(R.id.emailEditText);
         this.passwordEditText = (EditText) findViewById(R.id.passwordEditText);
         this.signInButton = (Button) findViewById(R.id.signInButton);
+        this.registerButton = (Button) findViewById(R.id.registerButton);
+        this.registerIntent = new Intent(this,RegisterActivity.class);
         this.intent = new Intent(this, MainActivity.class);
-        this.intent = new Intent(this,RegisterActivity.class);
     }
 
     private boolean isValidEmail() {
