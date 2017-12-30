@@ -1,5 +1,7 @@
 package bagarrao.financialdroid.expense;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import java.util.Date;
 
 import bagarrao.financialdroid.utils.DateParser;
@@ -7,6 +9,7 @@ import bagarrao.financialdroid.utils.DateParser;
 /**
  * @author Eduardo Bagarrao
  */
+//@IgnoreExtraProperties
 public class Expense {
 
     private double value;

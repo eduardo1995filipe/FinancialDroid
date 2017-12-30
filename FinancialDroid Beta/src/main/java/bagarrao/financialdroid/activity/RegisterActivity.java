@@ -2,8 +2,7 @@ package bagarrao.financialdroid.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -12,21 +11,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 import bagarrao.financialdroid.R;
+import bagarrao.financialdroid.firebase.FirebaseManager;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener, OnCompleteListener<AuthResult>{
 
+    private FirebaseManager manager = FirebaseManager.getInstance();
     private FirebaseAuth auth = FirebaseAuth.getInstance();
-
     private Button registerButton;
 
-    private EditText usernameEditText;
+    private EditText emailEditText;
     private EditText passwordEditText;
-
-    private String email;
-    private String password;
 
     private Intent intent;
 
@@ -37,49 +37,53 @@ public class RegisterActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle("Register new Account");
-
         init();
-
-        registerButton.setOnClickListener(l -> {
-            this.email = usernameEditText.getText().toString();
-            this.password = passwordEditText.getText().toString();
-            attempRegister();
-        });
+        registerButton.setOnClickListener(this);
     }
 
     public void init(){
-        this.intent = new Intent(this, LoginActivity.class);
+        this.intent = new Intent(this, MainActivity.class);
         this.registerButton = (Button) findViewById(R.id.registerRegisterButton);
-        this.usernameEditText = (EditText) findViewById(R.id.registerEmailEditText);
+        this.emailEditText = (EditText) findViewById(R.id.registerEmailEditText);
         this.passwordEditText = (EditText) findViewById(R.id.registerPasswordEditText);
-        this.email = "";
-        this.password = "";
+    }
+
+    @Override
+    public void onClick(View v) {
+        attempRegister();
+    }
+
+    @Override
+    public void onComplete(@NonNull Task<AuthResult> task) {
+        if (task.isSuccessful()){
+            manager.setUser(auth.getCurrentUser());
+            startActivity(intent);
+            finish();
+        }
+        else {
+            Toast.makeText(this, "Problems with sign in. Try again with other credentials", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void attempRegister(){
+        if (!isValidEmail())
+            Toast.makeText(this, "Invalid email!", Toast.LENGTH_SHORT).show();
+        else if (!isValidPassword())
+            Toast.makeText(this, "Invalid password!", Toast.LENGTH_SHORT).show();
+        else if (TextUtils.isEmpty(emailEditText.getText().toString()))
+            Toast.makeText(this, "email field is empty!", Toast.LENGTH_SHORT).show();
+        else if (TextUtils.isEmpty(passwordEditText.getText().toString()))
+            Toast.makeText(this, "password field is empty", Toast.LENGTH_SHORT).show();
+        else {
+            auth.createUserWithEmailAndPassword(emailEditText.getText().toString(),passwordEditText.getText().toString()).addOnCompleteListener(this);
+        }
     }
 
     private boolean isValidEmail() {
-        return email.contains("@");
+        return (emailEditText.getText().toString()).contains("@");
     }
 
     private boolean isValidPassword() {
-        return password.length() >= 8;
-    }
-
-    private void attempRegister() {
-        if (!isValidEmail() || !isValidPassword()) {
-            Toast.makeText(this, "Invalid login, please try again!", Toast.LENGTH_SHORT).show();
-        } else if (TextUtils.isEmpty(email)) {
-            Toast.makeText(this, "Empty email!", Toast.LENGTH_SHORT).show();
-        } else if (TextUtils.isEmpty(password)) {
-            Toast.makeText(this, "Empty password!", Toast.LENGTH_SHORT).show();
-        } else {
-            auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    //TODO: set new user on app
-                    finish();
-                    startActivity(intent);
-                } else
-                    Toast.makeText(this, "Problems with Sign In", Toast.LENGTH_SHORT).show();
-            });
-        }
+        return (passwordEditText.getText().toString()).length() >= 8;
     }
 }
