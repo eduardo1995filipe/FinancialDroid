@@ -60,10 +60,8 @@ public class FirebaseManager{
      */
     public void insertExpense(String expenseId, Expense expense) {
         if (user != null) {
-            //TODO: convert to default currency(EURO) before
             Currency currency = CurrencyConverter.getInstance().getCurrency();
             expense.setValue(currency.convert(expense.getValue(),Currency.EUR));
-            //TODO: end conversion
             Date date = new Date();
             if ((DateParser.getMonth(expense.getDate()) < DateParser.getMonth(date) &&
                     DateParser.getYear(expense.getDate()) < DateParser.getYear(date)) ||
