@@ -9,7 +9,7 @@ import bagarrao.financialdroid.utils.DateParser;
 /**
  * @author Eduardo Bagarrao
  */
-//@IgnoreExtraProperties
+@IgnoreExtraProperties
 public class Expense {
 
     private double value;
@@ -17,6 +17,10 @@ public class Expense {
     private String description;
     private Date date;
     private long id;
+
+    public Expense(){
+        //Default constructor for Firebase
+    }
 
     /**
      * Constructor for the Expense Object

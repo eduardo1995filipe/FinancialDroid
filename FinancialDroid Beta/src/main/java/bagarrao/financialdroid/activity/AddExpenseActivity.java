@@ -68,7 +68,6 @@ public class AddExpenseActivity extends AppCompatActivity {
      * initializes all the elements
      */
     public void init() {
-
 //        this.currencyConverter.setContext(this);
         this.priceTextView = (TextView) findViewById(R.id.priceTextView);
         this.addExpenseButton = (Button) findViewById(R.id.addExpenseButton);
@@ -92,34 +91,28 @@ public class AddExpenseActivity extends AppCompatActivity {
      * sets the listeners of the views
      */
     public void setListeners() {
-        dateCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                String myDate = dayOfMonth + "-" + (month + 1) + "-" + year;
-                try {
-                    expenseDate = DateParser.parseDate(myDate);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+        dateCalendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
+            String myDate = dayOfMonth + "-" + (month + 1) + "-" + year;
+            try {
+                expenseDate = DateParser.parseDate(myDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
         });
 
-        addExpenseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String price = priceEditText.getText().toString();
-                String description = descriptionEditText.getText().toString();
-                boolean noNullFields = !price.trim().equals("") && !description.trim().equals("");
-                if (noNullFields) {
-                    Expense expense = new Expense(Double.parseDouble(priceEditText.getText().toString()),
-                            ExpenseType.valueOf(expenseTypeSpinner.getSelectedItem().toString().toUpperCase()), descriptionEditText.getText().toString(),
-                            expenseDate);
-                    ExpenseDistributor.addNewExpense(expense, getApplicationContext(), dataSource, new DataSource(DataSource.ARCHIVE, getApplicationContext()));
-                    Toast.makeText(getApplicationContext(), "Expense sucessefully registered!", Toast.LENGTH_SHORT).show();
-                    finish();
-                } else
-                    Toast.makeText(getApplicationContext(), "Fill the fields that are null before register your new Expense!!", Toast.LENGTH_SHORT).show();
-            }
+        addExpenseButton.setOnClickListener(v -> {
+            String price = priceEditText.getText().toString();
+            String description = descriptionEditText.getText().toString();
+            boolean noNullFields = !price.trim().equals("") && !description.trim().equals("");
+            if (noNullFields) {
+                Expense expense = new Expense(Double.parseDouble(priceEditText.getText().toString()),
+                        ExpenseType.valueOf(expenseTypeSpinner.getSelectedItem().toString().toUpperCase()), descriptionEditText.getText().toString(),
+                        expenseDate);
+                ExpenseDistributor.addNewExpense(expense, getApplicationContext(), dataSource, new DataSource(DataSource.ARCHIVE, getApplicationContext()));
+                Toast.makeText(getApplicationContext(), "Expense sucessefully registered!", Toast.LENGTH_SHORT).show();
+                finish();
+            } else
+                Toast.makeText(getApplicationContext(), "Fill the fields that are null before register your new Expense!!", Toast.LENGTH_SHORT).show();
         });
     }
 }
