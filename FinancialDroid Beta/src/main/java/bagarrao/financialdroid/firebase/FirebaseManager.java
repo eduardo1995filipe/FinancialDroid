@@ -7,6 +7,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Date;
 
+import bagarrao.financialdroid.currency.Currency;
+import bagarrao.financialdroid.currency.CurrencyConverter;
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.utils.DateParser;
 
@@ -20,7 +22,6 @@ public class FirebaseManager{
     private static final String EXPENSE_TABLE = "expenses";
     private static final String ARCHIVE_TABLE = "archive";
 
-    private FirebaseAuth auth = FirebaseAuth.getInstance();
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference;
 
@@ -58,13 +59,18 @@ public class FirebaseManager{
      * @param expense
      */
     public void insertExpense(String expenseId, Expense expense) {
-        //TODO: convert to default currency(EURO) before
-        Date date = new Date();
-        if ((DateParser.getMonth(expense.getDate()) < DateParser.getMonth(date) &&
-                DateParser.getYear(expense.getDate()) < DateParser.getYear(date)) ||
-                (DateParser.getYear(expense.getDate()) < DateParser.getYear(date)))
-            databaseReference.child(ARCHIVE_TABLE).child(expenseId).setValue(expense);
-        else
-            databaseReference.child(EXPENSE_TABLE).child(expenseId).setValue(expense);
+        if (user != null) {
+            //TODO: convert to default currency(EURO) before
+            Currency currency = CurrencyConverter.getInstance().getCurrency();
+            expense.setValue(currency.convert(expense.getValue(),Currency.EUR));
+            //TODO: end conversion
+            Date date = new Date();
+            if ((DateParser.getMonth(expense.getDate()) < DateParser.getMonth(date) &&
+                    DateParser.getYear(expense.getDate()) < DateParser.getYear(date)) ||
+                    (DateParser.getYear(expense.getDate()) < DateParser.getYear(date)))
+                databaseReference.child(ARCHIVE_TABLE).child(expenseId).setValue(expense);
+            else
+                databaseReference.child(EXPENSE_TABLE).child(expenseId).setValue(expense);
+        }
     }
 }
