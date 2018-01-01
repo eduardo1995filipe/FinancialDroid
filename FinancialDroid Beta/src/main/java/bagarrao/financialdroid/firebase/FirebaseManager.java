@@ -1,15 +1,22 @@
 package bagarrao.financialdroid.firebase;
 
+import android.util.Log;
+
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import bagarrao.financialdroid.currency.Currency;
 import bagarrao.financialdroid.currency.CurrencyConverter;
 import bagarrao.financialdroid.expense.Expenditure;
+import bagarrao.financialdroid.expense.ExpenseType;
 import bagarrao.financialdroid.utils.DateParser;
 
 /**
@@ -26,15 +33,14 @@ public class FirebaseManager{
     private DatabaseReference databaseReference;
 
     private FirebaseUser user;
-    private boolean isConnected;
 
     /**
      *
      */
     private FirebaseManager(){
-        this.isConnected = false;
         this.databaseReference = firebaseDatabase.getReference("ExpenseDatabase");
         this.user = null;
+
     }
 
     /**
@@ -72,11 +78,32 @@ public class FirebaseManager{
                 DatabaseReference newReference = databaseReference.child(EXPENSE_NODE).push();
                 newReference.setValue(expenditure);
             }
+
+
+
         }
     }
 
-    public List<Expenditure> getAllExpenditures(){
-//        TODO:
-        return null;
+    public List<Expenditure> getAllExpenditures(String parentNode){
+        List<Expenditure> list = new LinkedList<>();
+        if(parentNode.equals(EXPENSE_NODE) ||
+                parentNode.equals(ARCHIVE_NODE)){
+
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    for (DataSnapshot postSnapshot: snapshot.getChildren()) {
+                        list.add(postSnapshot.getValue(Expenditure.class));
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError firebaseError) {
+                    Log.e("The read failed: " ,firebaseError.getMessage());
+                }
+            });
+        }else
+            Log.d("FirebaseManager","Inexistent node.");
+        return list;
     }
 }
