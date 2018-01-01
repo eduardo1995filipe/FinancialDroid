@@ -27,6 +27,7 @@ import bagarrao.financialdroid.database.DataSource;
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.expense.ExpenseOrder;
 import bagarrao.financialdroid.expense.ExpenseType;
+import bagarrao.financialdroid.firebase.FirebaseManager;
 import bagarrao.financialdroid.utils.DateParser;
 import bagarrao.financialdroid.utils.Filter;
 
@@ -35,6 +36,7 @@ import bagarrao.financialdroid.utils.Filter;
  */
 public class ExpensesActivity extends AppCompatActivity {
 
+    private FirebaseManager manager = FirebaseManager.getInstance();
     private CurrencyConverter currencyConverter = CurrencyConverter.getInstance();
 
     private AdView adView;
@@ -117,12 +119,7 @@ public class ExpensesActivity extends AppCompatActivity {
      */
     public void setListeners() {
 
-        expenseListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                showDeleteDialog(context, position);
-            }
-        });
+        expenseListView.setOnItemClickListener((parent, view, position, id) -> showDeleteDialog(context, position));
 
         orderBySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 

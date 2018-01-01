@@ -21,6 +21,14 @@ public class Expenditure {
     public Expenditure(){
     }
 
+    @Deprecated
+    public  Expenditure(Expense expense){
+        this.value = (float) expense.getValue();
+        this.date = expense.getDate();
+        this.description = expense.getDescription();
+        this.type = expense.getType();
+    }
+
     public Expenditure(float value, ExpenseType type, String description, Date date){
         this.value = value;
         this.type = type;
