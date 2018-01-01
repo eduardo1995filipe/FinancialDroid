@@ -33,7 +33,7 @@ public class FirebaseManager{
      */
     private FirebaseManager(){
         this.isConnected = false;
-        this.databaseReference = firebaseDatabase.getReference("Expenses");
+        this.databaseReference = firebaseDatabase.getReference("ExpenseDatabase");
         this.user = null;
     }
 
@@ -64,12 +64,14 @@ public class FirebaseManager{
             Date date = new Date();
             if ((DateParser.getMonth(expenditure.getDate()) < DateParser.getMonth(date) &&
                     DateParser.getYear(expenditure.getDate()) < DateParser.getYear(date)) ||
-                    (DateParser.getYear(expenditure.getDate()) < DateParser.getYear(date)))
-                databaseReference.child(ARCHIVE_NODE).child(new String(user.getEmail()).replace('.','_')).
-                        child(expenditure.getID()).setValue(expenditure);
-            else
-                databaseReference.child(EXPENSE_NODE).child(new String(user.getEmail()).replace('.','_')).
-                        child(expenditure.getID()).setValue(expenditure);
+                    (DateParser.getYear(expenditure.getDate()) < DateParser.getYear(date))){
+                DatabaseReference newReference = databaseReference.child(ARCHIVE_NODE).push();
+                newReference.setValue(expenditure);
+            }
+            else{
+                DatabaseReference newReference = databaseReference.child(EXPENSE_NODE).push();
+                newReference.setValue(expenditure);
+            }
         }
     }
 

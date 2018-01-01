@@ -69,12 +69,4 @@ public class Expenditure {
         map.put("date",date);
         return map;
     }
-
-    @Exclude
-    public String getID(){
-        return ((int)(value + 0.5)) + "_" + DateParser.getYear(date)
-                + DateParser.getMonth(date) + DateParser.getDay(date)
-                + DateParser.getHour(date) + DateParser.getMinutes(date)
-                + DateParser.getSeconds(date) + "_" + type;
-    }
 }
