@@ -18,9 +18,11 @@ import java.util.Date;
 import bagarrao.financialdroid.R;
 import bagarrao.financialdroid.currency.CurrencyConverter;
 import bagarrao.financialdroid.database.DataSource;
+import bagarrao.financialdroid.expense.Expenditure;
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.expense.ExpenseDistributor;
 import bagarrao.financialdroid.expense.ExpenseType;
+import bagarrao.financialdroid.firebase.FirebaseManager;
 import bagarrao.financialdroid.utils.DateParser;
 
 
@@ -29,6 +31,7 @@ import bagarrao.financialdroid.utils.DateParser;
  */
 public class AddExpenseActivity extends AppCompatActivity {
 
+    private FirebaseManager manager = FirebaseManager.getInstance();
     private CurrencyConverter currencyConverter = CurrencyConverter.getInstance();
 
     private Button addExpenseButton;
@@ -94,21 +97,25 @@ public class AddExpenseActivity extends AppCompatActivity {
         dateCalendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
             String myDate = dayOfMonth + "-" + (month + 1) + "-" + year;
             try {
-                expenseDate = DateParser.parseDate(myDate);
+                expenseDate = DateParser.parseExpenditureDate(myDate); //fazer parse de uma data que passa a ter segundos horas e minutos
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         });
-
         addExpenseButton.setOnClickListener(v -> {
             String price = priceEditText.getText().toString();
             String description = descriptionEditText.getText().toString();
             boolean noNullFields = !price.trim().equals("") && !description.trim().equals("");
             if (noNullFields) {
-                Expense expense = new Expense(Double.parseDouble(priceEditText.getText().toString()),
-                        ExpenseType.valueOf(expenseTypeSpinner.getSelectedItem().toString().toUpperCase()), descriptionEditText.getText().toString(),
+//                Expense expense = new Expense(Double.parseDouble(priceEditText.getText().toString()),
+//                        ExpenseType.valueOf(expenseTypeSpinner.getSelectedItem().toString().toUpperCase()), descriptionEditText.getText().toString(),
+//                        expenseDate);
+                Expenditure expenditure = new Expenditure(Float.parseFloat(priceEditText.getText().toString()),
+                        ExpenseType.valueOf(expenseTypeSpinner.getSelectedItem().toString().toUpperCase()),
+                        descriptionEditText.getText().toString(),
                         expenseDate);
-                ExpenseDistributor.addNewExpense(expense, getApplicationContext(), dataSource, new DataSource(DataSource.ARCHIVE, getApplicationContext()));
+                manager.insertExpense(expenditure);
+//                ExpenseDistributor.addNewExpense(expense, getApplicationContext(), dataSource, new DataSource(DataSource.ARCHIVE, getApplicationContext()));
                 Toast.makeText(getApplicationContext(), "Expense sucessefully registered!", Toast.LENGTH_SHORT).show();
                 finish();
             } else

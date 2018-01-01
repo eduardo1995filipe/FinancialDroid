@@ -1,8 +1,10 @@
 package bagarrao.financialdroid.expense;
 
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.Date;
+import java.util.Map;
 
 import bagarrao.financialdroid.utils.DateParser;
 
@@ -29,6 +31,7 @@ public class Expense {
      * @param description of the Expense
      * @param date        When the Expense was made
      */
+    @Deprecated
     public Expense(double value, ExpenseType type, String description, Date date) {
         this.value = value;
         this.type = type;
@@ -103,5 +106,10 @@ public class Expense {
     @Override
     public String toString() {
         return value + ";" + type.toString() + ";" + description + ";" + DateParser.parseString(date);
+    }
+
+    @Exclude
+    public Map<String,Object> toMap(){
+        return null;
     }
 }

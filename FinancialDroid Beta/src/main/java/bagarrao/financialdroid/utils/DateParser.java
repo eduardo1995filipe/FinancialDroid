@@ -23,6 +23,16 @@ public class DateParser {
     private static final SimpleDateFormat DATE_FORMATTED = new SimpleDateFormat(SIMPLE_DATE_FORMAT);
 
     /**
+     * Defines the default format for dates in FinancialDroid
+     */
+    private static final String SIMPLE_DATE_FORMAT_EXPENDITURE = "dd-M-yyyy hh:mm:ss";
+
+    /**
+     * Default SimpleDateFormat used in FinancialDroid
+     */
+    private static final SimpleDateFormat DATE__EXPENDITURE_FORMATTED = new SimpleDateFormat(SIMPLE_DATE_FORMAT_EXPENDITURE);
+
+    /**
      * Getter for the year
      * @return Date's year
      */
@@ -50,6 +60,33 @@ public class DateParser {
     }
 
     /**
+     * Getter for the hour
+     * @return Date's hour
+     */
+    public static int getHour(Date date) {
+        cal.setTime(date);
+        return cal.get(Calendar.HOUR_OF_DAY);
+    }
+
+    /**
+     * Getter for the minutes
+     * @return Date's minutes
+     */
+    public static int getMinutes(Date date) {
+        cal.setTime(date);
+        return cal.get(Calendar.MINUTE);
+    }
+
+    /**
+     * Getter for the seconds
+     * @return Date's seconds
+     */
+    public static int getSeconds(Date date) {
+        cal.setTime(date);
+        return cal.get(Calendar.SECOND);
+    }
+
+    /**
      *
      * @param date
      * @return
@@ -68,4 +105,22 @@ public class DateParser {
         return DATE_FORMATTED.parse(string);
     }
 
+    /**
+     *
+     * @param string
+     * @return
+     * @throws ParseException
+     */
+    public static Date parseExpenditureDate(String string) throws ParseException {
+        return DATE__EXPENDITURE_FORMATTED.parse(string);
+    }
+
+    /**
+     *
+     * @param date
+     * @return
+     */
+    public static String parseExpenditureString(Date date){
+        return DATE__EXPENDITURE_FORMATTED.format(date);
+    }
 }

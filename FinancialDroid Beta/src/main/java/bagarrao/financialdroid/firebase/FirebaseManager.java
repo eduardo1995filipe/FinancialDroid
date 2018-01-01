@@ -1,6 +1,5 @@
 package bagarrao.financialdroid.firebase;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -9,7 +8,7 @@ import java.util.Date;
 
 import bagarrao.financialdroid.currency.Currency;
 import bagarrao.financialdroid.currency.CurrencyConverter;
-import bagarrao.financialdroid.expense.Expense;
+import bagarrao.financialdroid.expense.Expenditure;
 import bagarrao.financialdroid.utils.DateParser;
 
 /**
@@ -19,8 +18,8 @@ public class FirebaseManager{
 
     private static final FirebaseManager INSTANCE = new FirebaseManager();
 
-    private static final String EXPENSE_TABLE = "expenses";
-    private static final String ARCHIVE_TABLE = "archive";
+    private static final String EXPENSE_NODE = "expense_node";
+    private static final String ARCHIVE_NODE = "archive_node";
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference;
@@ -55,20 +54,21 @@ public class FirebaseManager{
 
     /**
      *
-     * @param expenseId
      * @param expense
      */
-    public void insertExpense(String expenseId, Expense expense) {
+    public void insertExpense(Expenditure expense) {
         if (user != null) {
             Currency currency = CurrencyConverter.getInstance().getCurrency();
-            expense.setValue(currency.convert(expense.getValue(),Currency.EUR));
+            expense.setValue((float)currency.convert(expense.getValue(),Currency.EUR));
             Date date = new Date();
             if ((DateParser.getMonth(expense.getDate()) < DateParser.getMonth(date) &&
                     DateParser.getYear(expense.getDate()) < DateParser.getYear(date)) ||
                     (DateParser.getYear(expense.getDate()) < DateParser.getYear(date)))
-                databaseReference.child(ARCHIVE_TABLE).child(expenseId).setValue(expense);
+                databaseReference.child(ARCHIVE_NODE).child(expense.getID()).setValue(expense);
             else
-                databaseReference.child(EXPENSE_TABLE).child(expenseId).setValue(expense);
+                databaseReference.child(EXPENSE_NODE).child(expense.getID()).setValue(expense);
         }
     }
+
+
 }
