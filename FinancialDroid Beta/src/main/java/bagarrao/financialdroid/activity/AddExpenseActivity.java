@@ -93,7 +93,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         dateCalendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
             String myDate = dayOfMonth + "-" + (month + 1) + "-" + year;
             try {
-                expenseDate = DateParser.parseExpenditureDate(myDate); //fazer parse de uma data que passa a ter segundos horas e minutos
+                expenseDate = DateParser.parseDate(myDate); //fazer parse de uma data que passa a ter segundos horas e minutos
             } catch (ParseException e) {
                 e.printStackTrace();
             }
