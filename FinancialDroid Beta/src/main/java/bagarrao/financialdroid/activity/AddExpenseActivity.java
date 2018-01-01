@@ -1,9 +1,7 @@
 package bagarrao.financialdroid.activity;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
@@ -19,8 +17,6 @@ import bagarrao.financialdroid.R;
 import bagarrao.financialdroid.currency.CurrencyConverter;
 import bagarrao.financialdroid.database.DataSource;
 import bagarrao.financialdroid.expense.Expenditure;
-import bagarrao.financialdroid.expense.Expense;
-import bagarrao.financialdroid.expense.ExpenseDistributor;
 import bagarrao.financialdroid.expense.ExpenseType;
 import bagarrao.financialdroid.firebase.FirebaseManager;
 import bagarrao.financialdroid.utils.DateParser;
@@ -114,7 +110,7 @@ public class AddExpenseActivity extends AppCompatActivity {
                         ExpenseType.valueOf(expenseTypeSpinner.getSelectedItem().toString().toUpperCase()),
                         descriptionEditText.getText().toString(),
                         expenseDate);
-                manager.insertExpense(expenditure);
+                manager.insertExpensediture(expenditure);
 //                ExpenseDistributor.addNewExpense(expense, getApplicationContext(), dataSource, new DataSource(DataSource.ARCHIVE, getApplicationContext()));
                 Toast.makeText(getApplicationContext(), "Expense sucessefully registered!", Toast.LENGTH_SHORT).show();
                 finish();

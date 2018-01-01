@@ -5,6 +5,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Date;
+import java.util.List;
 
 import bagarrao.financialdroid.currency.Currency;
 import bagarrao.financialdroid.currency.CurrencyConverter;
@@ -54,21 +55,26 @@ public class FirebaseManager{
 
     /**
      *
-     * @param expense
+     * @param expenditure
      */
-    public void insertExpense(Expenditure expense) {
+    public void insertExpensediture(Expenditure expenditure) {
         if (user != null) {
             Currency currency = CurrencyConverter.getInstance().getCurrency();
-            expense.setValue((float)currency.convert(expense.getValue(),Currency.EUR));
+            expenditure.setValue((float)currency.convert(expenditure.getValue(),Currency.EUR));
             Date date = new Date();
-            if ((DateParser.getMonth(expense.getDate()) < DateParser.getMonth(date) &&
-                    DateParser.getYear(expense.getDate()) < DateParser.getYear(date)) ||
-                    (DateParser.getYear(expense.getDate()) < DateParser.getYear(date)))
-                databaseReference.child(ARCHIVE_NODE).child(expense.getID()).setValue(expense);
+            if ((DateParser.getMonth(expenditure.getDate()) < DateParser.getMonth(date) &&
+                    DateParser.getYear(expenditure.getDate()) < DateParser.getYear(date)) ||
+                    (DateParser.getYear(expenditure.getDate()) < DateParser.getYear(date)))
+                databaseReference.child(ARCHIVE_NODE).child(new String(user.getEmail()).replace('.','_')).
+                        child(expenditure.getID()).setValue(expenditure);
             else
-                databaseReference.child(EXPENSE_NODE).child(expense.getID()).setValue(expense);
+                databaseReference.child(EXPENSE_NODE).child(new String(user.getEmail()).replace('.','_')).
+                        child(expenditure.getID()).setValue(expenditure);
         }
     }
 
-
+    public List<Expenditure> getAllExpenditures(){
+//        TODO:
+        return null;
+    }
 }
