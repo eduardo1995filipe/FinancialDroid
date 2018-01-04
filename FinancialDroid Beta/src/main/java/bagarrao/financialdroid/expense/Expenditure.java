@@ -213,4 +213,20 @@ public class Expenditure {
         map.put("uid",uid);
         return map;
     }
+
+    /**
+     * Compares the actual date and
+     * decides whether this {@link Expenditure}
+     * is a archived ecpenditure or a recent expense.
+     *
+     * @return String
+     */
+    @Exclude
+    public String getNode(){
+        Date currentDate = new Date();
+        return ((DateParser.getMonth(getDate()) < DateParser.getMonth(currentDate) &&
+                DateParser.getYear(getDate()) < DateParser.getYear(currentDate)) ||
+                (DateParser.getYear(getDate()) < DateParser.getYear(currentDate))) ?
+                FirebaseManager.ARCHIVE_NODE : FirebaseManager.EXPENSE_NODE;
+    }
 }
