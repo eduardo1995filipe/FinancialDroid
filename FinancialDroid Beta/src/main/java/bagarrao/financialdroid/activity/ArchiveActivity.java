@@ -244,19 +244,19 @@ public class ArchiveActivity extends AppCompatActivity {
      * reads and converts the database to an ArrayList, and Updates the ListView View
      */
     public void readDB() {
-        this.archiveList = dataSource.getAllExpenses();
-        if (archiveList == null)
-            archiveList = new ArrayList<>();
-        archiveListString.clear();
-        currentOrder.sortByOrder(archiveList);
-        archiveList = Filter.filterExpensesByType(archiveList,currentType);
-        for (Expense e : archiveList) {
-            String stringExpense = e.getDescription() +
-                    " | " + e.getValue() + " " + currencyConverter.getCurrency().toString() +
-                    " | " + DateParser.parseString(e.getDate()) + " | " + e.getType().toString();
-            archiveListString.add(stringExpense);
-        }
-        archiveListAdapter.notifyDataSetChanged();
+//        this.archiveList = dataSource.getAllExpenses();
+//        if (archiveList == null)
+//            archiveList = new ArrayList<>();
+//        archiveListString.clear();
+//        currentOrder.sortByOrder(archiveList);
+//        archiveList = Filter.filterExpensesByType(archiveList,currentType);
+//        for (Expense e : archiveList) {
+//            String stringExpense = e.getDescription() +
+//                    " | " + e.getValue() + " " + currencyConverter.getCurrency().toString() +
+//                    " | " + DateParser.parseString(e.getDate()) + " | " + e.getType().toString();
+//            archiveListString.add(stringExpense);
+//        }
+//        archiveListAdapter.notifyDataSetChanged();
     }
 
     @Override

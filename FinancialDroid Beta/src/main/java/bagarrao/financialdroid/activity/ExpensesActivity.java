@@ -24,6 +24,7 @@ import bagarrao.financialdroid.R;
 import bagarrao.financialdroid.backup.Backup;
 import bagarrao.financialdroid.currency.CurrencyConverter;
 import bagarrao.financialdroid.database.DataSource;
+import bagarrao.financialdroid.expense.Expenditure;
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.expense.ExpenseOrder;
 import bagarrao.financialdroid.expense.ExpenseType;
@@ -54,9 +55,12 @@ public class ExpensesActivity extends AppCompatActivity {
     private ArrayAdapter<CharSequence> spinnerTypeAdapter;
 
     private ListView expenseListView;
-    private List<Expense> expenseList;
+//    private List<Expense> expenseList;
+    private List<Expenditure> expenseList;
+//    private ArrayList<String> expenseListString;
     private ArrayList<String> expenseListString;
     private DataSource dataSource;
+//    private ArrayAdapter<String> expenseListAdapter;
     private ArrayAdapter<String> expenseListAdapter;
 
     private Context context;
@@ -155,7 +159,6 @@ public class ExpensesActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-
     }
 
     /**
@@ -213,34 +216,35 @@ public class ExpensesActivity extends AppCompatActivity {
      * @param index variable to get the Expense that is pretended to remove
      */
     public void removeExpense(int index) {
-        this.expenseList = dataSource.getAllExpenses();
-        if (expenseList == null)
-            expenseList = new ArrayList<>();
-        else if ((expenseList.size() - 1) >= index) {
-            Expense e = expenseList.get(index);
-            dataSource.deleteExpense(e);
-            expenseList.remove(index);
-        }
-        expenseListString.clear();
-        for (Expense e : expenseList) {
-            String stringExpense = e.getDescription() + " | " + e.getValue() + " " + currencyConverter.getCurrency().toString() + " | " +
-                    DateParser.parseString(e.getDate()) + " | " + e.getType().toString();
-            expenseListString.add(stringExpense);
-        }
-        expenseListAdapter.notifyDataSetChanged();
+//        this.expenseList = dataSource.getAllExpenses();
+//        if (expenseList == null)
+//            expenseList = new ArrayList<>();
+//        else if ((expenseList.size() - 1) >= index) {
+//            Expense e = expenseList.get(index);
+//            dataSource.deleteExpense(e);
+//            expenseList.remove(index);
+//        }
+//        expenseListString.clear();
+//        for (Expense e : expenseList) {
+//            String stringExpense = e.getDescription() + " | " + e.getValue() + " " + currencyConverter.getCurrency().toString() + " | " +
+//                    DateParser.parseString(e.getDate()) + " | " + e.getType().toString();
+//            expenseListString.add(stringExpense);
+//        }
+//        expenseListAdapter.notifyDataSetChanged();
     }
 
     /**
      * reads and converts the database to an ArrayList, and Updates the ListView View
      */
     public void readDB() {
-        this.expenseList = dataSource.getAllExpenses();
+//        this.expenseList = dataSource.getAllExpenses();
+        this.expenseList = manager.getAllExpenditures(FirebaseManager.EXPENSE_NODE);
         if (expenseList == null)
             expenseList = new ArrayList<>();
         expenseListString.clear();
         currentOrder.sortByOrder(expenseList);
         expenseList = Filter.filterExpensesByType(expenseList,currentType);
-        for (Expense e : expenseList) {
+        for (Expenditure e : expenseList) {
             String stringExpense = e.getDescription() +
                     " | " + CurrencyConverter.round(e.getValue(), 2) +
                     " " + currencyConverter.getCurrency().toString() +  " | " +
