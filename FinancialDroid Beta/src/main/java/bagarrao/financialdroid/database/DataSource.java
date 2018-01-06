@@ -10,11 +10,15 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import bagarrao.financialdroid.expense.Expenditure;
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.expense.ExpenseType;
 import bagarrao.financialdroid.utils.DateParser;
 
 /**
+ *
+ *
+ *
  * @author Eduardo Bagarrao
  */
 public class DataSource {
@@ -76,16 +80,16 @@ public class DataSource {
 
     /**
      * add an Expense to the database
-     * @param expense to be added in the database
+     * @param expenditure to be added in the database
      * @return returns the Expense created
      */
-    public Expense createExpense(Expense expense) {
+    public Expenditure createExpense(Expenditure expenditure) {
 
         ContentValues values = new ContentValues();
-        values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_PRICE, expense.getValue());
-        values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_TYPE, expense.getType().toString());
-        values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_DESCRIPTION, expense.getDescription());
-        values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_DATE, DateParser.parseString(expense.getDate()));
+        values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_PRICE, expenditure.getValue());
+        values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_TYPE, expenditure.getType().toString());
+        values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_DESCRIPTION, expenditure.getDescription());
+        values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_DATE, DateParser.parseString(expenditure.getDate()));
 
         long insertId = database.insert(mode, null,
                 values);
@@ -94,17 +98,17 @@ public class DataSource {
                 allColumns, DataSQLiteOpenHelper.EXPENSE_COLUMN_ID + " = " + insertId, null,
                 null, null, null);
         cursor.moveToFirst();
-        Expense newExpense = cursorToExpense(cursor);
+        Expenditure newExpenditure = cursorToExpenditure(cursor);
         cursor.close();
-        return newExpense;
+        return newExpenditure;
     }
 
     /**
      * remove an Expense form the database
-     * @param expense Expense to be removed
+     * @param expenditure Expense to be removed
      */
-    public void deleteExpense(Expense expense) {
-        long id = expense.getId();
+    public void deleteExpenditure(Expenditure expenditure) {
+        long id = expenditure.getId();
         database.delete(mode, DataSQLiteOpenHelper.EXPENSE_COLUMN_ID + " = " + id, null);
     }
 
@@ -112,30 +116,30 @@ public class DataSource {
      * gets all Expenses from the database
      * @return a List with all Expenses
      */
-    public List<Expense> getAllExpenses() {
+    public List<Expenditure> getAllExpenditures() {
 
-        List<Expense> expenses = new ArrayList<Expense>();
+        List<Expenditure> expenditures = new ArrayList<Expenditure>();
 
         Cursor cursor = database.query(mode,
                 allColumns, null, null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            Expense expense = cursorToExpense(cursor);
-            expenses.add(expense);
+            Expenditure expenditure = cursorToExpenditure(cursor);
+            expenditures.add(expenditure);
             cursor.moveToNext();
         }
         cursor.close();
-        return expenses;
+        return expenditures;
     }
 
     /**
      * removes all the expenses from the database
      */
-    public void deleteAllExpenses() {
-        List<Expense> list = getAllExpenses();
-        for (Expense e : list) {
-            deleteExpense(e);
+    public void deleteAllExpenditures() {
+        List<Expenditure> list = getAllExpenditures();
+        for (Expenditure e : list) {
+            deleteExpenditure(e);
         }
     }
 
@@ -144,16 +148,16 @@ public class DataSource {
      * @param cursor Cursor to be converted to Expense
      * @return Expense converted
      */
-    private Expense cursorToExpense(Cursor cursor) {
+    private Expenditure cursorToExpenditure(Cursor cursor) {
         long id = cursor.getLong(0);
-        Expense expense = null;
+        Expenditure expenditure = null;
         try {
-            expense = new Expense(cursor.getDouble(1), ExpenseType.valueOf(cursor.getString(2).toUpperCase()),
+            expenditure = new Expenditure(cursor.getDouble(1), ExpenseType.valueOf(cursor.getString(2).toUpperCase()),
                     cursor.getString(3), DateParser.parseDate(cursor.getString(4)));
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        expense.setId(id);
-        return expense;
+        expenditure.setId(id);
+        return expenditure;
     }
 }

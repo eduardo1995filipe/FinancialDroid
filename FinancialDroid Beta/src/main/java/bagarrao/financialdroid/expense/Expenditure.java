@@ -34,7 +34,7 @@ public class Expenditure {
     /**
      * {@link Expenditure} value.
      */
-    public float value;
+    public double value;
 
     /**
      * {@link Expenditure} type.
@@ -54,9 +54,16 @@ public class Expenditure {
     private Date date;
 
     /**
+     * {@link Expenditure} id.
+     * Only used in local storage
+     */
+    @Exclude
+    private long id;
+
+    /**
      * {@link Expenditure} uid from the current
      * {@link com.google.firebase.auth.FirebaseUser}
-     * (or inserted in {@link #Expenditure(float, ExpenseType, String, Date, String)}
+     * (or inserted in {@link #Expenditure(double, ExpenseType, String, Date, String)}
      * constructor {@link com.google.firebase.auth.FirebaseAuth}.
      *
      * @see FirebaseManager
@@ -71,15 +78,15 @@ public class Expenditure {
     }
 
     /**
-     * {@link #Expenditure(float, ExpenseType, String, Date)}
+     * {@link #Expenditure(double, ExpenseType, String, Date)}
      * constructor for the expenditures inserted by the own user.
      *
-     * @param value float
+     * @param value double
      * @param type {@link ExpenseType}
      * @param description {@link String}
      * @param date {@link Date}
      */
-    public Expenditure(float value, ExpenseType type, String description, Date date){
+    public Expenditure(double value, ExpenseType type, String description, Date date){
         this.value = value;
         this.type = type;
         this.description = description;
@@ -88,16 +95,16 @@ public class Expenditure {
     }
 
     /**
-     * {@link #Expenditure(float, ExpenseType, String, Date, String)}
+     * {@link #Expenditure(double, ExpenseType, String, Date, String)}
      * constructor used for expenditures that are read by the user.
      *
-     * @param value float
+     * @param value double
      * @param type {@link ExpenseType}
      * @param description {@link String}
      * @param date {@link Date}
      * @param uid {@link String}
      */
-    public Expenditure(float value, ExpenseType type, String description, Date date,String uid){
+    public Expenditure(double value, ExpenseType type, String description, Date date,String uid){
         this.value = value;
         this.type = type;
         this.description = description;
@@ -107,17 +114,17 @@ public class Expenditure {
 
     /**
      * Getter for {@link #value}.
-     * @return float
+     * @return double
      */
-    public float getValue() {
+    public double getValue() {
         return value;
     }
 
     /**
      * Setter for {@link #value}.
-     * @param value float
+     * @param value double
      */
-    public void setValue(float value) {
+    public void setValue(double value) {
         this.value = value;
     }
 
@@ -175,6 +182,26 @@ public class Expenditure {
      */
     public String getUid() {
         return uid;
+    }
+
+    /**
+     * Getter of the {@link #id}.
+     * Only used for local storage.
+     * @return long
+     */
+    @Exclude
+    public long getId() {
+        return id;
+    }
+
+    /**
+     * Setter of the {@link #id}.
+     * Only used for local storage.
+     * @param id long
+     */
+    @Exclude
+    public void setId(long id) {
+        this.id = id;
     }
 
     @Override
