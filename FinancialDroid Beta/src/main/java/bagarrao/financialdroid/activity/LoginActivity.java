@@ -5,9 +5,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.UnderlineSpan;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,6 +26,7 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
     private FirebaseAuth auth = FirebaseAuth.getInstance();
     private FirebaseManager manager = FirebaseManager.getInstance();
 
+    private TextView localUseTextView;
     private EditText emailEditText;
     private EditText passwordEditText;
     private Button signInButton;
@@ -39,7 +43,12 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
         setSupportActionBar(toolbar);
         init();
 
+        SpannableString content = new SpannableString("No account(local use)");
+        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+        localUseTextView.setText(content);
+        
         auth.addAuthStateListener(this);
+        localUseTextView.setOnClickListener(l -> startActivity(intent));
         signInButton.setOnClickListener(l -> attempLogin());
         registerButton.setOnClickListener(l -> {
             startActivity(registerIntent);
@@ -69,6 +78,7 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
     }
 
     public void init() {
+        this.localUseTextView = (TextView) findViewById(R.id.localUseTextView);
         this.emailEditText = (EditText) findViewById(R.id.emailEditText);
         this.passwordEditText = (EditText) findViewById(R.id.passwordEditText);
         this.signInButton = (Button) findViewById(R.id.signInButton);
