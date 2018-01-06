@@ -11,59 +11,103 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bagarrao.financialdroid.expense.Expenditure;
-import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.expense.ExpenseType;
 import bagarrao.financialdroid.utils.DateParser;
 
 /**
  *
- *
+ * Class that handles the database of the local {@link Expenditure} objects.
+ * It's parallel to {@link bagarrao.financialdroid.firebase.FirebaseManager} and its
+ * intended to use as a local storage.
  *
  * @author Eduardo Bagarrao
  */
 public class DataSource {
 
+    /**
+     * Table used to store {@link Expenditure} objects
+     * that are more than one month old.
+     */
     public static final String ARCHIVE = DataSQLiteOpenHelper.ARCHIVE_TABLE;
+
+    /**
+     * Table used to store {@link Expenditure} objects
+     * that are less than one month old.
+     */
     public static final String CURRENT = DataSQLiteOpenHelper.EXPENSE_TABLE;
 
+    /**
+     * Columns of both {@link #ARCHIVE} and {@link #CURRENT} {@link Expenditure} objects.
+     * Both tables are equal it's just to differentiate the older
+     * {@link Expenditure} objects and the newer {@link Expenditure} objects.
+     */
     private static final String[] allColumns = {DataSQLiteOpenHelper.EXPENSE_COLUMN_ID,
             DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_PRICE, DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_TYPE,
             DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_DESCRIPTION, DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_DATE};
 
+    /**
+     * checks if the session between the database
+     * and the application is true or false.
+     */
     private boolean isOpen;
+
+    /**
+     * Have the schema tables and methods.
+     *
+     * @see android.database.sqlite.SQLiteOpenHelper
+     */
     private DataSQLiteOpenHelper dbHelper;
+
+    /**
+     * {@link SQLiteDatabase} object.
+     *
+     */
     private SQLiteDatabase database;
+
+    /**
+     * Mode means the table that is being used. Either
+     * can be {@link #CURRENT} or {@link #ARCHIVE}.
+     */
     private String mode;
 
     /**
-     * creates de ExpenseDataSource object
-     * @param context context of the current activity where the DataSouce object is created
+     * {@link DataSource} constructor.
+     *
+     * @param mode {@link String}
+     * @param context {@link Context}
      */
     public DataSource(String mode, Context context){
         this.isOpen = false;
         this.dbHelper = new DataSQLiteOpenHelper(context);
         this.mode = mode;
     }
+
     /**
-     * returns the value if the the database is already isOpen
+     * Getter of the {@link #isOpen} attribute.
      *
-     * @return the boolean value that shows that is isOpen or not
+     * @return boolean
      */
     public boolean isOpen() {
         return isOpen;
     }
 
     /**
+     * Getter of the {@link #mode} attribute.
      *
-     * @return
+     * @return String
      */
     public String getMode() {
         return mode;
     }
 
     /**
-     * opens the database in "WRITE" mode
-     * @throws SQLException if some problem occurs while access the database
+     * Opens a connection between the application and the database.
+     * {@link #dbHelper} will handle that connection.
+     * {@link #isOpen} will be turned true.
+     *
+     * @throws SQLException
+     *
+     * @see DataSQLiteOpenHelper
      */
     public void open() throws SQLException {
         database = dbHelper.getWritableDatabase();
@@ -71,7 +115,8 @@ public class DataSource {
     }
 
     /**
-     * close the database
+     * Closes the {@link #dbHelper} and
+     * turns {@link #isOpen} value to false.
      */
     public void close() {
         dbHelper.close();
@@ -79,11 +124,13 @@ public class DataSource {
     }
 
     /**
-     * add an Expense to the database
-     * @param expenditure to be added in the database
-     * @return returns the Expense created
+     * Inserts an {@link Expenditure} object into the {@link SQLiteDatabase}
+     * on the table of the current {@link #mode}.
+     *
+     * @param expenditure {@link Expenditure}
+     * @return Expenditure
      */
-    public Expenditure createExpense(Expenditure expenditure) {
+    public Expenditure createExpenditure(Expenditure expenditure) {
 
         ContentValues values = new ContentValues();
         values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_PRICE, expenditure.getValue());
@@ -104,8 +151,10 @@ public class DataSource {
     }
 
     /**
-     * remove an Expense form the database
-     * @param expenditure Expense to be removed
+     * Removes an {@link Expenditure} object into the {@link SQLiteDatabase}
+     * in the table of the current {@link #mode}.
+     *
+     * @param expenditure {@link Expenditure}
      */
     public void deleteExpenditure(Expenditure expenditure) {
         long id = expenditure.getId();
@@ -113,8 +162,10 @@ public class DataSource {
     }
 
     /**
-     * gets all Expenses from the database
-     * @return a List with all Expenses
+     * retrieves all {@link Expenditure} objects that are
+     * present in the table in the current {@link #mode}.
+     *
+     * @return Expenditure
      */
     public List<Expenditure> getAllExpenditures() {
 
@@ -134,7 +185,8 @@ public class DataSource {
     }
 
     /**
-     * removes all the expenses from the database
+     * removes all {@link Expenditure} objects that are
+     * present in the table in the current {@link #mode}.
      */
     public void deleteAllExpenditures() {
         List<Expenditure> list = getAllExpenditures();
@@ -144,9 +196,12 @@ public class DataSource {
     }
 
     /**
-     * converts the Cursor on the respective Expense
-     * @param cursor Cursor to be converted to Expense
-     * @return Expense converted
+     * Receives a {@link Cursor} and retrieves the {@link Expenditure}
+     * object that {@link Cursor} points. It will return null when the
+     * {@link Cursor doesn't point to no {@link Expenditure}}
+     *
+     * @param cursor {@link Cursor}
+     * @return Expenditure
      */
     private Expenditure cursorToExpenditure(Cursor cursor) {
         long id = cursor.getLong(0);
