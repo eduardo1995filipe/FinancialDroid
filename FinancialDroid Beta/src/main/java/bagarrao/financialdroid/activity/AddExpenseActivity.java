@@ -17,105 +17,176 @@ import bagarrao.financialdroid.R;
 import bagarrao.financialdroid.currency.CurrencyConverter;
 import bagarrao.financialdroid.database.DataSource;
 import bagarrao.financialdroid.expense.Expenditure;
+import bagarrao.financialdroid.expense.ExpenseDistributor;
 import bagarrao.financialdroid.expense.ExpenseType;
 import bagarrao.financialdroid.firebase.FirebaseManager;
 import bagarrao.financialdroid.utils.DateParser;
 
 
 /**
+ * Class that is used to add a new {@link Expenditure} object,
+ * whether on local storage ({@link #dataSource}) or with {@link #manager}
+ * insert it to online storage.
+ *
  * @author Eduardo Bagarrao
  */
 public class AddExpenseActivity extends AppCompatActivity {
 
+    /**
+     * {@link com.google.firebase.database.FirebaseDatabase} singleton instance.
+     */
     private FirebaseManager manager = FirebaseManager.getInstance();
+
+    /**
+     * {@link CurrencyConverter} singleton instance.
+     */
     private CurrencyConverter currencyConverter = CurrencyConverter.getInstance();
 
-    private Button addExpenseButton;
-    private Spinner expenseTypeSpinner;
+    /**
+     * {@link Button} to add a new {@link Expenditure} to the database,
+     * {@link com.google.firebase.database.FirebaseDatabase} or to {@link #dataSource}.
+     */
+    private Button addExpenditureButton;
+
+    /**
+     * {@link Spinner} that shows all the {@link ExpenseType}
+     * values of the {@link Expenditure} objects.
+     */
+    private Spinner expenditureTypeSpinner;
+
+    /**
+     * {@link EditText} that contains the price of the
+     * {@link Expenditure} object that will be added.
+     */
     private EditText priceEditText;
+
+    /**
+     * {@link EditText} that contains the description of the
+     * {@link Expenditure} object that will be added.
+     */
     private EditText descriptionEditText;
-    private ArrayAdapter<CharSequence> spinnerAdapter;
-    private DataSource dataSource;
-    private CalendarView dateCalendarView;
-    private Date expenseDate;
+
+    /**
+     * {@link TextView} of the price of the {@link Expenditure}
+     * object. It's called programmatically to set the text according
+     * to the current {@link bagarrao.financialdroid.currency.Currency}
+     * that's accessible in the {@link #currencyConverter}.
+     */
     private TextView priceTextView;
+
+    /**
+     * {@link CalendarView} to set's the {@link Expenditure}
+     *  date object that will be added.
+     */
+    private CalendarView dateCalendarView;
+
+    /**
+     * {@link ArrayAdapter<CharSequence>} that stores the
+     * {@link #expenditureTypeSpinner} {@link ExpenseType} values.
+     */
+    private ArrayAdapter<CharSequence> spinnerAdapter;
+
+    /**
+     * {@link DataSource} to store {@link Expenditure}
+     * objects, is the {@link #isLocal} value is true.
+     */
+    private DataSource dataSource;
+
+    /**
+     * {@link Date} that is assigned to the {@link Expenditure}
+     * object that ir being created.
+     */
+    private Date expenditureDate;
+
+    /**
+     * Value that decides whether if is used {@link #dataSource} as
+     * local storage or if the {@link Expenditure} objects are stored
+     * in the {@link com.google.firebase.database.FirebaseDatabase}.
+     */
+    private boolean isLocal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_expense);
         init();
+
+        spinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        expenditureTypeSpinner.setAdapter(spinnerAdapter);
+        priceTextView.setText("Price(" + currencyConverter.getCurrency().toString() + ")");
+
         setListeners();
     }
 
     @Override
     protected void onResume() {
-        expenseDate = new Date();
-        dataSource.open();
+        expenditureDate = new Date();
+        if (isLocal && dataSource != null)
+            dataSource.open();
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        expenseTypeSpinner.setSelection(0);
-        expenseDate = null;
-        dataSource.close();
+        expenditureTypeSpinner.setSelection(0);
+        expenditureDate = null;
+        if (isLocal && dataSource != null)
+            dataSource.close();
         super.onPause();
     }
 
     /**
-     * initializes all the elements
+     * initializes all the objects of the class. {@link #dataSource}
+     * will only be initiated if {@link #isLocal} has true value.
      */
     public void init() {
-//        this.currencyConverter.setContext(this);
+        this.isLocal = (!manager.getUid().equals(""));
+        this.dataSource = isLocal ? null : new DataSource(DataSource.CURRENT, this);
+        this.expenditureDate = new Date();
         this.priceTextView = (TextView) findViewById(R.id.priceTextView);
-        this.addExpenseButton = (Button) findViewById(R.id.addExpenseButton);
+        this.addExpenditureButton = (Button) findViewById(R.id.addExpenseButton);
         this.priceEditText = (EditText) findViewById(R.id.priceEditText);
         this.descriptionEditText = (EditText) findViewById(R.id.descriptionEditText);
-        this.expenseTypeSpinner = (Spinner) findViewById(R.id.expenseTypeSpinner);
+        this.expenditureTypeSpinner = (Spinner) findViewById(R.id.expenseTypeSpinner);
         this.dateCalendarView = (CalendarView) findViewById(R.id.dateCalendarView);
-
-        this.spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.expense_type_kind, R.layout.support_simple_spinner_dropdown_item);
-        spinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        expenseTypeSpinner.setAdapter(spinnerAdapter);
-
-        this.dataSource = new DataSource(DataSource.CURRENT, this);
-        this.expenseDate = new Date();
-
-        priceTextView.setText("Price(" + currencyConverter.getCurrency().toString() + ")");
-
+        this.spinnerAdapter = ArrayAdapter.createFromResource(this,
+                R.array.expense_type_kind, R.layout.support_simple_spinner_dropdown_item);
     }
 
     /**
-     * sets the listeners of the views
+     * Sets the listeners for the {@link #dateCalendarView} and for the {@link #addExpenditureButton}.
+     * On {@link #addExpenditureButton} the {@link Expenditure} object created will be inserted on
+     * {@link #dataSource} if the user is using the local storage, or if it will be inserted
+     * in {@link com.google.firebase.database.FirebaseDatabase} with {@link #manager}.
      */
     public void setListeners() {
         dateCalendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
             String myDate = dayOfMonth + "-" + (month + 1) + "-" + year;
             try {
-                expenseDate = DateParser.parseDate(myDate); //fazer parse de uma data que passa a ter segundos horas e minutos
+                expenditureDate = DateParser.parseDate(myDate);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         });
-        addExpenseButton.setOnClickListener(v -> {
+        addExpenditureButton.setOnClickListener(v -> {
             String price = priceEditText.getText().toString();
             String description = descriptionEditText.getText().toString();
             boolean noNullFields = !price.trim().equals("") && !description.trim().equals("");
             if (noNullFields) {
-//                Expense expense = new Expense(Double.parseDouble(priceEditText.getText().toString()),
-//                        ExpenseType.valueOf(expenseTypeSpinner.getSelectedItem().toString().toUpperCase()), descriptionEditText.getText().toString(),
-//                        expenseDate);
-                Expenditure expenditure = new Expenditure(Float.parseFloat(priceEditText.getText().toString()),
-                        ExpenseType.valueOf(expenseTypeSpinner.getSelectedItem().toString().toUpperCase()),
+                Expenditure expenditure = new Expenditure(Double.parseDouble(priceEditText.getText().toString()),
+                        ExpenseType.valueOf(expenditureTypeSpinner.getSelectedItem().toString().toUpperCase()),
                         descriptionEditText.getText().toString(),
-                        expenseDate);
-                manager.insertExpensediture(expenditure);
-//                ExpenseDistributor.addNewExpense(expense, getApplicationContext(), dataSource, new DataSource(DataSource.ARCHIVE, getApplicationContext()));
+                        expenditureDate);
+                if(isLocal)
+                    ExpenseDistributor.addNewExpense(expenditure, getApplicationContext(), dataSource,
+                        new DataSource(DataSource.ARCHIVE, getApplicationContext()));
+                else
+                    manager.insertExpenditure(expenditure);
                 Toast.makeText(getApplicationContext(), "Expense sucessefully registered!", Toast.LENGTH_SHORT).show();
                 finish();
             } else
-                Toast.makeText(getApplicationContext(), "Fill the fields that are null before register your new Expense!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),
+                        "Fill the fields that are null before register your new Expense!!", Toast.LENGTH_SHORT).show();
         });
     }
 }
