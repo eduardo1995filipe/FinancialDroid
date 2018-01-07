@@ -9,6 +9,7 @@ import java.util.List;
 
 import bagarrao.financialdroid.backup.Backup;
 import bagarrao.financialdroid.database.DataSource;
+import bagarrao.financialdroid.expense.Expenditure;
 import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.utils.DateParser;
 import bagarrao.financialdroid.utils.SharedPreferencesHelper;
@@ -105,15 +106,15 @@ public class Migrator {
 	*/
     public void run() {
         open();
-        List<Expense> expenseList = expenseDataSource.getAllExpenses();
-        for (Expense e : expenseList) {
+        List<Expenditure> expenseList = expenseDataSource.getAllExpenditures();
+        for (Expenditure e : expenseList) {
             if (DateParser.getMonth(e.getDate()) < DateParser.getMonth(date)
                     || DateParser.getYear(e.getDate()) < DateParser.getYear(date) ) {
-                archiveDataSource.createExpense(e);
-                expenseDataSource.deleteExpense(e);
+                archiveDataSource.createExpenditure(e);
+                expenseDataSource.deleteExpenditure(e);
             }
         }
         close();
-        new Backup().go();
+        new Backup(context).go();
     }
 }
