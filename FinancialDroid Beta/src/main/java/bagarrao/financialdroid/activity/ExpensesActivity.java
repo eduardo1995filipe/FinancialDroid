@@ -19,13 +19,12 @@ import com.google.android.gms.ads.MobileAds;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import bagarrao.financialdroid.R;
-import bagarrao.financialdroid.currency.CurrencyConverter;
-import bagarrao.financialdroid.database.DataSource;
+import bagarrao.financialdroid.database.DataManager;
 import bagarrao.financialdroid.expense.Expenditure;
 import bagarrao.financialdroid.expense.ExpenseOrder;
 import bagarrao.financialdroid.expense.ExpenseType;
-import bagarrao.financialdroid.firebase.FirebaseManager;
 import bagarrao.financialdroid.utils.DateParser;
 import bagarrao.financialdroid.utils.Filter;
 
@@ -40,6 +39,9 @@ import bagarrao.financialdroid.utils.Filter;
  */
 public class ExpensesActivity extends AppCompatActivity {
 
+
+//    private DataSource expenseDataSource;
+
     /**
      * Default order that the {@link Expenditure} objects are sorted.
      */
@@ -53,19 +55,12 @@ public class ExpensesActivity extends AppCompatActivity {
     /**
      * {@link com.google.firebase.database.FirebaseDatabase} singleton instance.
      */
-    private FirebaseManager manager = FirebaseManager.getInstance();
+    private DataManager manager = DataManager.getInstance();
 
     /**
      * {@link CurrencyConverter} singleton instance.
      */
-    private CurrencyConverter currencyConverter = CurrencyConverter.getInstance();
-
-    /**
-     * Value that decides whether if is used {@link #dataSource} as
-     * local storage or if the {@link Expenditure} objects are stored
-     * in the {@link com.google.firebase.database.FirebaseDatabase}.
-     */
-    private boolean isLocal;
+//    private CurrencyConverter currencyConverter = CurrencyConverter.getInstance();
 
     /**
      * View of the banner.
@@ -139,21 +134,9 @@ public class ExpensesActivity extends AppCompatActivity {
     private ArrayList<String> expenseListString;
 
     /**
-     * {@link DataSource} that is used for local storage({@link #isLocal}
-     * at true value), otherwise will be used {@link #manager} to use
-     * {@link com.google.firebase.database.FirebaseDatabase}.
-     */
-    private DataSource dataSource;
-
-    /**
      * {@link ArrayAdapter<String>} fpr {@link #expenseList}.
      */
     private ArrayAdapter<String> expenseListAdapter;
-
-    /**
-     * {@link Context} of {@link ExpensesActivity}.
-     */
-    private Context context;
 
     /**
      * {@link AdRequest} for {@link #adView}.
@@ -167,18 +150,15 @@ public class ExpensesActivity extends AppCompatActivity {
         MobileAds.initialize(this, "ca-app-pub-8899468184876323/7706665790");
         init();
         setup();
-        readDB();
         setListeners();
+        readDB();
     }
 
     /**
-     * initializes all the objects of the class. {@link #dataSource}
-     * will only be initiated if {@link #isLocal} has true value.
+     * initializes all the objects of the class. {@link bagarrao.financialdroid.database.DataSource}
+     * will only be initiated on local database.
      */
     public void init() {
-        this.isLocal = manager.getUid().equals("");
-        this.context = this;
-        this.dataSource = (!isLocal) ? null : new DataSource(DataSource.CURRENT, this);
         this.adView = (AdView) findViewById(R.id.expenseViewerAdBanner);
         this.adRequest = new AdRequest.Builder().build();
         this.currentOrder = DEFAULT_ORDER;
@@ -196,13 +176,12 @@ public class ExpensesActivity extends AppCompatActivity {
     }
 
     /**
-     * Setups some of the initialized objects. If {@link #isLocal} has
-     * a true value, {@link #dataSource} will be opened.
+     * Setups some of the initialized objects. If on a local storage,
+     * {@link bagarrao.financialdroid.database.DataSource} will be opened.
      * {@link #adView} is loaded here.
      */
     public void setup(){
-        if(isLocal && dataSource != null)
-            dataSource.open();
+
         spinnerOrderByAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         orderBySpinner.setAdapter(spinnerOrderByAdapter);
         spinnerTypeAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
@@ -224,9 +203,8 @@ public class ExpensesActivity extends AppCompatActivity {
      * @see Filter
      */
     public void setListeners() {
-        expenseListView.setOnItemClickListener((parent, view, position, id) -> showDeleteDialog(context, position));
+        expenseListView.setOnItemClickListener((parent, view, position, id) -> showDeleteDialog(this, position));
         orderBySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 try {
@@ -302,8 +280,8 @@ public class ExpensesActivity extends AppCompatActivity {
         builder.setMessage("Are you sure you want to delete this expense?");
         builder.setTitle("Delete Expense");
         builder.setPositiveButton("Yes", (dialog, which) -> {
-                removeExpense(index);
-                Toast.makeText(context, "Expense removed successfully!", Toast.LENGTH_SHORT).show();
+            removeExpense(index);
+            Toast.makeText(context, "Expense removed successfully!", Toast.LENGTH_SHORT).show();
         });
         builder.setNegativeButton("No", null);
         builder.show();
@@ -311,71 +289,64 @@ public class ExpensesActivity extends AppCompatActivity {
 
     /**
      * Removes a {@link Expenditure} object that corresponds to the given index on the parameter.
-     * Either removes the {@link Expenditure} from {@link #dataSource} or from
-     * {@link com.google.firebase.database.FirebaseDatabase} throug {@link #manager},
-     * depending of the {@link #isLocal} value.
+     * Either removes the {@link Expenditure} from {@link bagarrao.financialdroid.database.DataSource} or from
+     * {@link com.google.firebase.database.FirebaseDatabase} through,
+     * depending if his on local database or not.
      *
      * @param index int
      */
     public void removeExpense(int index) {
-            this.expenseList = (!isLocal) ? manager.getAllExpenditures() : dataSource.getAllExpenditures();
-        if (expenseList == null)
-            expenseList = new ArrayList<>();
-        else if ((expenseList.size() - 1) >= index) {
-            Expenditure e = expenseList.get(index);
-            if(isLocal)
-                dataSource.deleteExpenditure(e);
-            else
-                manager.removeExpenditure(e);
+        this.expenseList = manager.selectRecent();
+        if ((expenseList.size() - 1) >= index) {
+            manager.delete(expenseList.get(index));
             expenseList.remove(index);
         }
         expenseListString.clear();
         for (Expenditure e : expenseList) {
-            String stringExpense = e.getDescription() + " | " + e.getValue() + " " + currencyConverter.getCurrency().toString() + " | " +
-                    DateParser.parseString(e.getDate()) + " | " + e.getType().toString();
+            String stringExpense = e.getDescription() +
+                    " | " + e.getValue() + " " +
+//                    manager.getCurrency().toString() +
+                    " | " + DateParser.parseString(e.getDate()) +
+                    " | " + e.getType().toString();
             expenseListString.add(stringExpense);
         }
         expenseListAdapter.notifyDataSetChanged();
     }
 
     /**
-     * Reloads {@link #expenseList}, either from local storage ({@link #dataSource}) or
-     * to {@link com.google.firebase.database.FirebaseDatabase} ({@link #manager}), based
-     * on {@link #isLocal} value.
+//     * Reloads {@link #expenseList}, either from local storage ({@link }) or
+     * to {@link com.google.firebase.database.FirebaseDatabase} , based
+     * on the database, if is local or not.
      *
      * Assigns {@link #expenseList} values to {@link #expenseListString}, sorts and
      * filters it, and then notifies {@link #expenseListAdapter}.
      */
     public void readDB() {
-        this.expenseList = (!isLocal) ? manager.getAllExpenditures() : dataSource.getAllExpenditures();
-        if (expenseList == null)
-            expenseList = new ArrayList<>();
+        expenseList = manager.selectRecent();
         expenseListString.clear();
         currentOrder.sortByOrder(expenseList);
         expenseList = Filter.filterExpensesByType(expenseList,currentType);
         for (Expenditure e : expenseList) {
-            String stringExpense = e.getDescription() +
-                    " | " + CurrencyConverter.round(e.getValue(), 2) +
-                    " " + currencyConverter.getCurrency().toString() +  " | " +
-                    DateParser.parseString(e.getDate()) + " | " +
-                    e.getType().toString();
-            expenseListString.add(stringExpense);
+//            String stringExpense = e.getDescription() +
+////                    " | " + CurrencyConverter.round(e.getValue(), 2) +
+////                    " " + manager.getCurrency().toString() +
+//                    " | " + DateParser.parseString(e.getDate()) + " | " +
+//                    e.getType().toString();
+//            expenseListString.add(stringExpense);
+            expenseListString.add(e.toString());
+            Log.e("ExpensesActivity", "Added new Expense");
         }
         expenseListAdapter.notifyDataSetChanged();
     }
 
     @Override
     protected void onResume() {
-        if(isLocal && dataSource != null)
-            dataSource.open();
         readDB();
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        if(isLocal && dataSource != null)
-            dataSource.close();
         super.onPause();
     }
 }

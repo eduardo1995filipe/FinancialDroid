@@ -12,19 +12,18 @@ import android.widget.Toast;
 
 import bagarrao.financialdroid.R;
 import bagarrao.financialdroid.currency.Currency;
-import bagarrao.financialdroid.currency.CurrencyConverter;
+import bagarrao.financialdroid.database.DatabaseManager;
 import bagarrao.financialdroid.utils.SharedPreferencesHelper;
 
 public class SettingsActivity extends AppCompatActivity {
 
-	private CurrencyConverter currencyConverter = CurrencyConverter.getInstance();
-	
+//	private CurrencyConverter currencyConverter = CurrencyConverter.getInstance();
+
     private SharedPreferences sharedPref;
     private SharedPreferences.Editor sharedPrefEditor;
 
     private Spinner currencySpinner;
     private ArrayAdapter<CharSequence> currencyAdapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,11 +57,15 @@ public class SettingsActivity extends AppCompatActivity {
 					currentCurrency = Currency.DEFAULT_CURRENCY;
 				}
 				finally{
-					currencyConverter.setCurrency(currentCurrency);
-                    Toast.makeText(getApplicationContext(),"Current currency is now [" + currencyConverter.getCurrency().toString() + "]",Toast.LENGTH_SHORT);
+				    //TODO: call firebase  method to change currency
+//                    manager.changeCurrency(currentCurrency);
+//					currencyConverter.setCurrency(currentCurrency); call database manager
+                    Toast.makeText(getApplicationContext(),"Current currency is now ["
+//                            + currencyConverter.getCurrency().toString()
+                            + "]",Toast.LENGTH_SHORT);
                     sharedPrefEditor = sharedPref.edit();
                     sharedPrefEditor.putInt(SharedPreferencesHelper.CURRENCY_SPINNER_POSITION_KEY,position);
-                    sharedPrefEditor.commit();
+                    sharedPrefEditor.apply();
 				}
             }
             @Override

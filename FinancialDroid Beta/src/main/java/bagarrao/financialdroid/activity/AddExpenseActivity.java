@@ -13,38 +13,28 @@ import android.widget.Toast;
 import java.text.ParseException;
 import java.util.Date;
 
+import bagarrao.financialdroid.database.DataManager;
 import bagarrao.financialdroid.R;
-import bagarrao.financialdroid.currency.CurrencyConverter;
-import bagarrao.financialdroid.database.DataSource;
 import bagarrao.financialdroid.expense.Expenditure;
-import bagarrao.financialdroid.expense.ExpenseDistributor;
 import bagarrao.financialdroid.expense.ExpenseType;
-import bagarrao.financialdroid.firebase.FirebaseManager;
 import bagarrao.financialdroid.utils.DateParser;
 
 
 /**
- * Class that is used to add a new {@link Expenditure} object,
- * whether on local storage ({@link #dataSource}) or with {@link #manager}
- * insert it to online storage.
+ * Class that is used to add a new {@link Expenditure} object, whether on
+ * local storage ({@link bagarrao.financialdroid.database.DataSource}) or
+ * with  insert it to online storage.
  *
  * @author Eduardo Bagarrao
  */
 public class AddExpenseActivity extends AppCompatActivity {
 
-    /**
-     * {@link com.google.firebase.database.FirebaseDatabase} singleton instance.
-     */
-    private FirebaseManager manager = FirebaseManager.getInstance();
-
-    /**
-     * {@link CurrencyConverter} singleton instance.
-     */
-    private CurrencyConverter currencyConverter = CurrencyConverter.getInstance();
+    private DataManager manager = DataManager.getInstance();
 
     /**
      * {@link Button} to add a new {@link Expenditure} to the database,
-     * {@link com.google.firebase.database.FirebaseDatabase} or to {@link #dataSource}.
+     * {@link com.google.firebase.database.FirebaseDatabase} or to
+     * {@link bagarrao.financialdroid.database.DataSource}.
      */
     private Button addExpenditureButton;
 
@@ -69,8 +59,7 @@ public class AddExpenseActivity extends AppCompatActivity {
     /**
      * {@link TextView} of the price of the {@link Expenditure}
      * object. It's called programmatically to set the text according
-     * to the current {@link bagarrao.financialdroid.currency.Currency}
-     * that's accessible in the {@link #currencyConverter}.
+     * to the current {@link bagarrao.financialdroid.currency.Currency}.
      */
     private TextView priceTextView;
 
@@ -87,42 +76,25 @@ public class AddExpenseActivity extends AppCompatActivity {
     private ArrayAdapter<CharSequence> spinnerAdapter;
 
     /**
-     * {@link DataSource} to store {@link Expenditure}
-     * objects, is the {@link #isLocal} value is true.
-     */
-    private DataSource dataSource;
-
-    /**
      * {@link Date} that is assigned to the {@link Expenditure}
      * object that ir being created.
      */
     private Date expenditureDate;
-
-    /**
-     * Value that decides whether if is used {@link #dataSource} as
-     * local storage or if the {@link Expenditure} objects are stored
-     * in the {@link com.google.firebase.database.FirebaseDatabase}.
-     */
-    private boolean isLocal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_expense);
         init();
-
         spinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         expenditureTypeSpinner.setAdapter(spinnerAdapter);
-        priceTextView.setText("Price(" + currencyConverter.getCurrency().toString() + ")");
-
+        priceTextView.setText("Price ( " /* + manager.getCurrency().toString() */ +  " ) :");
         setListeners();
     }
 
     @Override
     protected void onResume() {
         expenditureDate = new Date();
-        if (isLocal && dataSource != null)
-            dataSource.open();
         super.onResume();
     }
 
@@ -130,18 +102,15 @@ public class AddExpenseActivity extends AppCompatActivity {
     protected void onPause() {
         expenditureTypeSpinner.setSelection(0);
         expenditureDate = null;
-        if (isLocal && dataSource != null)
-            dataSource.close();
         super.onPause();
     }
 
     /**
-     * initializes all the objects of the class. {@link #dataSource}
-     * will only be initiated if {@link #isLocal} has true value.
+     * initializes all the objects of the class.
+     * {@link bagarrao.financialdroid.database.DataSource}
+     * will only be initiated on a local database.
      */
     public void init() {
-        this.isLocal = (!manager.getUid().equals(""));
-        this.dataSource = isLocal ? null : new DataSource(DataSource.CURRENT, this);
         this.expenditureDate = new Date();
         this.priceTextView = (TextView) findViewById(R.id.priceTextView);
         this.addExpenditureButton = (Button) findViewById(R.id.addExpenseButton);
@@ -156,8 +125,8 @@ public class AddExpenseActivity extends AppCompatActivity {
     /**
      * Sets the listeners for the {@link #dateCalendarView} and for the {@link #addExpenditureButton}.
      * On {@link #addExpenditureButton} the {@link Expenditure} object created will be inserted on
-     * {@link #dataSource} if the user is using the local storage, or if it will be inserted
-     * in {@link com.google.firebase.database.FirebaseDatabase} with {@link #manager}.
+     * {@link bagarrao.financialdroid.database.DataSource} if the user is using the local storage,
+     * or if it will be inserted in {@link com.google.firebase.database.FirebaseDatabase} with
      */
     public void setListeners() {
         dateCalendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
@@ -177,12 +146,10 @@ public class AddExpenseActivity extends AppCompatActivity {
                         ExpenseType.valueOf(expenditureTypeSpinner.getSelectedItem().toString().toUpperCase()),
                         descriptionEditText.getText().toString(),
                         expenditureDate);
-                if(isLocal)
-                    ExpenseDistributor.addNewExpense(expenditure, getApplicationContext(), dataSource,
-                        new DataSource(DataSource.ARCHIVE, getApplicationContext()));
-                else
-                    manager.insertExpenditure(expenditure);
-                Toast.makeText(getApplicationContext(), "Expense sucessefully registered!", Toast.LENGTH_SHORT).show();
+                if(!manager.isLocal())
+                    expenditure.setUid(manager.getUser().getUid());
+                manager.insert(expenditure);
+                Toast.makeText(this, expenditure.toString() + "| time: " + expenditure.getTime(), Toast.LENGTH_SHORT).show();
                 finish();
             } else
                 Toast.makeText(getApplicationContext(),

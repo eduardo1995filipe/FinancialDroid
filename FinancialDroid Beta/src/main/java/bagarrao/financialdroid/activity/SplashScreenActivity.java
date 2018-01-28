@@ -6,13 +6,13 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import bagarrao.financialdroid.currency.CurrencyConverter;
+import bagarrao.financialdroid.database.Migrator;
 
 /**
  * Simple splash screen activity that shows
  * the logo and the name of the application.
  *
- * @author Eduardo Bagarrao
+ * @author Eduardo Bagarrao 2017 - 2018
  */
 public class SplashScreenActivity extends AppCompatActivity {
 
@@ -22,11 +22,6 @@ public class SplashScreenActivity extends AppCompatActivity {
      * the available internet connection.
      */
     private static final double AD_PROBABILITY = 0.35;
-
-    /**
-     * {@link CurrencyConverter} singleton instance.
-     */
-    private CurrencyConverter currencyConverter = CurrencyConverter.getInstance();
 
     /**
      * {@link Intent} that will launch {@link LoginActivity}.
@@ -41,10 +36,10 @@ public class SplashScreenActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        new Backup(this).go();
         this.loginIntent = new Intent(this, LoginActivity.class);
         this.interstitialAdIntent = new Intent(this, InterstitialAdActivity.class);
-        this.currencyConverter.init(this);
+        if(Migrator.needsMigration(getApplicationContext()))
+            new Migrator(getApplicationContext()).run();
         setup();
         finish();
     }
@@ -55,9 +50,6 @@ public class SplashScreenActivity extends AppCompatActivity {
      * will appear or if it goes to {@link LoginActivity} without showing the ad Activity.
      */
     public void setup(){
-//        if (Migrator.needsMigration(this)) { isto ja nao vai ser feito aqui
-//            new Migrator(this).run();
-//        }
         if(Math.random() < AD_PROBABILITY && isNetworkConnected())
             startActivity(interstitialAdIntent);
         else
@@ -75,4 +67,23 @@ public class SplashScreenActivity extends AppCompatActivity {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null;
     }
+
+//    public void migrateToRealm(){
+//        DataSource expenseDataSource = new DataSource(DataSource.CURRENT,getApplicationContext());
+//        DataSource archiveDataSource = new DataSource(DataSource.ARCHIVE,getApplicationContext());
+//        List<Expenditure> totalExpenseList = new LinkedList<>();
+//        archiveDataSource.open();
+//        expenseDataSource.open();
+//        totalExpenseList.addAll(archiveDataSource.getAllExpenditures());
+//        totalExpenseList.addAll(expenseDataSource.getAllExpenditures());
+//
+//        //migrate to realm database
+//        for(Expenditure e : totalExpenseList)
+//            manager.insert(e);
+//
+//        archiveDataSource.deleteAllExpenditures();
+//        expenseDataSource.deleteAllExpenditures();
+//        archiveDataSource.close();
+//        expenseDataSource.close();
+//    }
 }

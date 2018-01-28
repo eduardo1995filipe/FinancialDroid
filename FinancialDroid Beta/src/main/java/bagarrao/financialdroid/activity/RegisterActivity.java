@@ -16,12 +16,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import bagarrao.financialdroid.database.DataManager;
 import bagarrao.financialdroid.R;
-import bagarrao.financialdroid.firebase.FirebaseManager;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener, OnCompleteListener<AuthResult>{
 
-    private FirebaseManager manager = FirebaseManager.getInstance();
+    private DataManager dataManager = DataManager.getInstance();
     private FirebaseAuth auth = FirebaseAuth.getInstance();
     private Button registerButton;
 
@@ -56,7 +56,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onComplete(@NonNull Task<AuthResult> task) {
         if (task.isSuccessful()){
-            manager.setUser(auth.getCurrentUser());
+            dataManager.init(auth.getCurrentUser(), getApplicationContext());
             startActivity(intent);
             finish();
         }
@@ -75,7 +75,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         else if (TextUtils.isEmpty(passwordEditText.getText().toString()))
             Toast.makeText(this, "password field is empty", Toast.LENGTH_SHORT).show();
         else {
-            auth.createUserWithEmailAndPassword(emailEditText.getText().toString(),passwordEditText.getText().toString()).addOnCompleteListener(this);
+            auth.createUserWithEmailAndPassword(emailEditText.getText().toString(),
+                    passwordEditText.getText().toString()).addOnCompleteListener(this);
         }
     }
 

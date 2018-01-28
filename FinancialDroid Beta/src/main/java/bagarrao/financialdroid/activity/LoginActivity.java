@@ -18,9 +18,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import bagarrao.financialdroid.database.DataManager;
 import bagarrao.financialdroid.R;
-import bagarrao.financialdroid.firebase.FirebaseManager;
-import bagarrao.financialdroid.migration.Migrator;
+import bagarrao.financialdroid.database.Migrator;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Activity that is used whether to login in a account,
@@ -33,6 +35,8 @@ import bagarrao.financialdroid.migration.Migrator;
  * @since 0.1.8
  */
 public class LoginActivity extends AppCompatActivity implements OnCompleteListener<AuthResult>,FirebaseAuth.AuthStateListener{
+
+    private DataManager dataManager = DataManager.getInstance();
 
     /**
      * {@link #toolbar} title.
@@ -51,46 +55,46 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
     private FirebaseAuth auth = FirebaseAuth.getInstance();
 
     /**
-     * Singleton call that handles {@link com.google.firebase.database.FirebaseDatabase} operation.
-     * Not used in local storage mode.
-     */
-    private FirebaseManager manager = FirebaseManager.getInstance();
-
-    /**
      * text view that contains {@link #LOCAL_USE_TEXT}. When clicked
-     * it calls {@link #migrator} object to check if it's needed
+//     * it calls migrator object to check if it's needed
      * {@link bagarrao.financialdroid.expense.Expenditure} migration.
      * Also if it's clicked the app runs on local storage mode.
      */
-    private TextView localUseTextView;
+    @BindView(R.id.localUseTextView)
+    TextView localUseTextView;
 
     /**
      * {@link EditText} that contains the email of the
      * {@link com.google.firebase.auth.FirebaseUser}.
      */
-    private EditText emailEditText;
+    @BindView(R.id.emailEditText)
+    EditText emailEditText;
 
     /**
      * {@link EditText} that contains the password of the
      * {@link com.google.firebase.auth.FirebaseUser}.
      */
-    private EditText passwordEditText;
+    @BindView(R.id.passwordEditText)
+    EditText passwordEditText;
 
     /**
      * {@link Button} used to sign in the {@link com.google.firebase.auth.FirebaseUser}.
      */
-    private Button signInButton;
+    @BindView(R.id.signInButton)
+    Button signInButton;
 
     /**
      * {@link Button} that calls the {@link RegisterActivity} and
      * kills this activity({@link LoginActivity}).
      */
-    private Button registerButton;
+    @BindView(R.id.registerButton)
+    Button registerButton;
 
     /**
      * {@link Toolbar} of the {@link LoginActivity}.
      */
-    private Toolbar toolbar;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     /**
      * {@link Intent} used for login into {@link MainActivity},
@@ -114,7 +118,6 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
     /**
      * Used to migrate {@link bagarrao.financialdroid.expense.Expenditure}
      * objects, used only in local storage mode.
-     *
      */
     private Migrator migrator;
 
@@ -122,6 +125,7 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
         init();
         setup();
         setSupportActionBar(toolbar);
@@ -130,7 +134,7 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
     @Override
     public void onComplete(@NonNull Task<AuthResult> task) {
         if (task.isSuccessful()){
-            manager.setUser(auth.getCurrentUser());
+            dataManager.init(auth.getCurrentUser(),getApplicationContext());
             startActivity(loginIntent);
             finish();
         }
@@ -142,7 +146,7 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
         if(auth.getCurrentUser() != null){
-            manager.setUser(auth.getCurrentUser());
+            dataManager.init(auth.getCurrentUser(), getApplicationContext());
             startActivity(loginIntent);
             finish();
         }
@@ -156,12 +160,6 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
         this.migrator = new Migrator(this);
         this.registerIntent = new Intent(this,RegisterActivity.class);
         this.loginIntent = new Intent(this, MainActivity.class);
-        this.toolbar = (Toolbar) findViewById(R.id.toolbar);
-        this.localUseTextView = (TextView) findViewById(R.id.localUseTextView);
-        this.emailEditText = (EditText) findViewById(R.id.emailEditText);
-        this.passwordEditText = (EditText) findViewById(R.id.passwordEditText);
-        this.signInButton = (Button) findViewById(R.id.signInButton);
-        this.registerButton = (Button) findViewById(R.id.registerButton);
     }
 
     /**
@@ -171,7 +169,7 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
      * objects. Checks also if the {@link bagarrao.financialdroid.expense.Expenditure}
      * need to be migrated.
      *
-     * @see Migrator
+//     * @see Migrator
      * @see com.google.firebase.auth.FirebaseAuth.AuthStateListener
      */
     public void setup(){
@@ -183,13 +181,13 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
         localUseTextView.setOnClickListener(l -> {
             if(migrator.needsMigration(this))
                 migrator.run();
+            dataManager.init(null, getApplicationContext());
             startActivity(loginIntent);
-        });
-        signInButton.setOnClickListener(l -> attempLogin());
-        registerButton.setOnClickListener(l -> {
-            startActivity(registerIntent);
             finish();
         });
+        signInButton.setOnClickListener(l -> attempLogin());
+        registerButton.setOnClickListener(l ->
+            startActivity(registerIntent));
     }
 
     /**
@@ -216,7 +214,7 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
     /**
      * Checks if the email on {@link #emailEditText} is valid.
      * A valid email should contain a '@' char, at least for now.
-     * 
+     *
      * @return boolean
      */
     private boolean isValidEmail() {

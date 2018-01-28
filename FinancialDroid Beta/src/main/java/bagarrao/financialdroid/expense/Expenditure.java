@@ -1,13 +1,13 @@
 package bagarrao.financialdroid.expense;
 
+import android.support.annotation.Nullable;
+
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import bagarrao.financialdroid.firebase.FirebaseManager;
 import bagarrao.financialdroid.utils.DateParser;
 
 /**
@@ -20,185 +20,107 @@ import bagarrao.financialdroid.utils.DateParser;
  *
  * @since 0.1.8
  *
- * @see Expense
- *
  */
 @IgnoreExtraProperties
-public class Expenditure {
+public class Expenditure{
 
-    /**
-     * {@link FirebaseManager} singleton call.
-     */
-    private FirebaseManager manager = FirebaseManager.getInstance();
-
-    /**
-     * {@link Expenditure} value.
-     */
-    public double value;
-
-    /**
-     * {@link Expenditure} type.
-     *
-     * @see ExpenseType
-     */
-    private ExpenseType type;
-
-    /**
-     * {@link Expenditure} description.
-     */
-    private String description;
-
-    /**
-     * {@link Expenditure} date.
-     */
-    private Date date;
-
-    /**
-     * {@link Expenditure} id.
-     * Only used in local storage
-     */
     @Exclude
     private long id;
 
-    /**
-     * {@link Expenditure} uid from the current
-     * {@link com.google.firebase.auth.FirebaseUser}
-     * (or inserted in {@link #Expenditure(double, ExpenseType, String, Date, String)}
-     * constructor {@link com.google.firebase.auth.FirebaseAuth}.
-     *
-     * @see FirebaseManager
-     */
+    public double value;
+
+    private String description;
+
+    @Exclude
+    private Date date;
+
+    private ExpenseType type;
+
+    private long time;
+
+    @Nullable
     private String uid;
 
-    /**
-     * {@link #Expenditure()} Default constructor required for calls to
-     * {@link com.google.firebase.database.DataSnapshot}.getValue({@link Expenditure}.class)
-     */
     public Expenditure(){
     }
 
-    /**
-     * {@link #Expenditure(double, ExpenseType, String, Date)}
-     * constructor for the expenditures inserted by the own user.
-     *
-     * @param value double
-     * @param type {@link ExpenseType}
-     * @param description {@link String}
-     * @param date {@link Date}
-     */
     public Expenditure(double value, ExpenseType type, String description, Date date){
         this.value = value;
         this.type = type;
         this.description = description;
         this.date = date;
-        this.uid = manager.getUid();
+        this.time = date.getTime();
     }
 
-    /**
-     * {@link #Expenditure(double, ExpenseType, String, Date, String)}
-     * constructor used for expenditures that are read by the user.
-     *
-     * @param value double
-     * @param type {@link ExpenseType}
-     * @param description {@link String}
-     * @param date {@link Date}
-     * @param uid {@link String}
-     */
     public Expenditure(double value, ExpenseType type, String description, Date date,String uid){
         this.value = value;
         this.type = type;
         this.description = description;
         this.date = date;
         this.uid = uid;
+        this.time = date.getTime();
     }
 
-    /**
-     * Getter for {@link #value}.
-     * @return double
-     */
+    public Expenditure(double value, ExpenseType type, String description, long time,String uid){
+        this.value = value;
+        this.type = type;
+        this.description = description;
+        this.time = time;
+        this.date = new Date((time * 1000));
+        this.uid = uid;
+    }
+
     public double getValue() {
         return value;
     }
-
-    /**
-     * Setter for {@link #value}.
-     * @param value double
-     */
     public void setValue(double value) {
         this.value = value;
     }
 
-    /**
-     * Getter for {@link #type}.
-     * @return ExpenseType
-     */
     public ExpenseType getType() {
         return type;
     }
-
-    /**
-     * Setter for {@link #type}.
-     * @param type {@link ExpenseType}
-     */
     public void setType(ExpenseType type) {
         this.type = type;
     }
 
-    /**
-     * Getter for {@link #description}.
-     * @return String
-     */
     public String getDescription() {
         return description;
     }
-
-    /**
-     * Setter for {@link #description}.
-     * @param description {@link String}
-     */
     public void setDescription(String description) {
         this.description = description;
     }
 
-    /**
-     * Getter for {@link #date}.
-     * @return Date
-     */
+    @Exclude
     public Date getDate() {
-        return date;
+        return date != null ? date : new Date(time);
     }
-
-    /**
-     * Setter for {@link #date}.
-     * @param date {@link Date}
-     */
+    @Exclude
     public void setDate(Date date) {
         this.date = date;
+        this.time = date.getTime();
     }
 
-    /**
-     * Getter for {@link #uid}.
-     * @return String
-     */
+    public long getTime() {
+        return time;
+    }
+    public void setTime(long time) {
+        this.time = time;
+        this.date = new Date(time);
+    }
+
+    @Nullable
     public String getUid() {
-        return uid;
+        return this.uid;
+    }
+    public void setUid(@Nullable String uid) {
+        this.uid = uid;
     }
 
-    /**
-     * Getter of the {@link #id}.
-     * Only used for local storage.
-     * @return long
-     */
     @Exclude
     public long getId() {
         return id;
     }
-
-    /**
-     * Setter of the {@link #id}.
-     * Only used for local storage.
-     * @param id long
-     */
     @Exclude
     public void setId(long id) {
         this.id = id;
@@ -211,49 +133,32 @@ public class Expenditure {
                 other.description.equals(description) &&
                 other.type.equals(type) &&
                 ((int)(other.value + 0.5)) == ((int)(value + 0.5)) &&
-                other.getUid().equals(uid))
+                (other.getUid().equals(uid) || uid.equals("")))
             return true;
         return false;
     }
 
-    @Override
-    public String toString() {
-        return value + ";" + type.toString() + ";" + description + ";" + DateParser.parseString(date);
-    }
-
-    /**
-     * Export own object to a {@link HashMap<String,Object>}
-     * with the {@link Expenditure} attributes, {@link #value},
-     * {@link #type}, {@link #description}, {@link #date},
-     * {@link #uid} and his values.
-     *
-     * @return {@link HashMap<String,Object>} that contains {@link Expenditure} attributes.
-     *
-     */
     @Exclude
     public Map<String, Object> toMap(){
         Map<String, Object> map = new HashMap<>();
         map.put("value",value);
         map.put("type",type);
         map.put("description",description);
-        map.put("date",date);
+        map.put("date",time);
         map.put("uid",uid);
         return map;
     }
 
-    /**
-     * Compares the actual date and
-     * decides whether this {@link Expenditure}
-     * is a archived ecpenditure or a recent expense.
-     *
-     * @return String
-     */
     @Exclude
-    public String getNode(){
+    public boolean isOld(){
         Date currentDate = new Date();
         return ((DateParser.getMonth(getDate()) < DateParser.getMonth(currentDate) &&
-                DateParser.getYear(getDate()) < DateParser.getYear(currentDate)) ||
-                (DateParser.getYear(getDate()) < DateParser.getYear(currentDate))) ?
-                FirebaseManager.ARCHIVE_NODE : FirebaseManager.EXPENSE_NODE;
+                DateParser.getYear(getDate()) == DateParser.getYear(currentDate)) ||
+                (DateParser.getYear(getDate()) < DateParser.getYear(currentDate)));
+    }
+
+    @Override
+    public String toString() {
+        return value + ";" + type.toString() + ";" + description + ";" + (date != null ? DateParser.parseString(date) : DateParser.parseString(new Date(time)));
     }
 }

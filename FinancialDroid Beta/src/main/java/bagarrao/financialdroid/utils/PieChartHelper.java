@@ -11,12 +11,10 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import bagarrao.financialdroid.database.DataSource;
-import bagarrao.financialdroid.expense.Expense;
+import bagarrao.financialdroid.expense.Expenditure;
 import bagarrao.financialdroid.expense.ExpenseType;
 
 /**
@@ -24,51 +22,39 @@ import bagarrao.financialdroid.expense.ExpenseType;
  */
 public class PieChartHelper {
 
-    /**
-     *
-     * @param activity
-     * @param id
-     * @param entries
-     * @param labels
-     * @return
-     */
     public static PieChart generatePieChart(Activity activity, int id, List<Entry> entries, List<String> labels){
-        PieChart pieChart = (PieChart) activity.findViewById(id);
-        PieDataSet dataSet = new PieDataSet(entries, "Expense Types");
-        dataSet.setValueTextSize(dataSet.getValueTextSize() + 5);
-        PieData data = new PieData(labels, dataSet);
-        dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
-        pieChart.setDescription("");
-        pieChart.setData(data);
-        Legend legend = pieChart.getLegend();
-        legend.setWordWrapEnabled(true);
-        legend.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
-        pieChart.animateY(2500);
-        pieChart.animateX(2500);
-        return pieChart;
+//        PieChart pieChart = (PieChart) activity.findViewById(id);
+//        PieDataSet dataSet = new PieDataSet(entries, "Expense Types");
+//        dataSet.setValueTextSize(dataSet.getValueTextSize() + 5);
+//        PieData data = new PieData(labels, dataSet);
+//        dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+//        pieChart.setDescription("");
+//        pieChart.setData(data);
+//        Legend legend = pieChart.getLegend();
+//        legend.setWordWrapEnabled(true);
+//        legend.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
+//        pieChart.animateY(2500);
+//        pieChart.animateX(2500);
+//        return pieChart;
+        return null;
     }
 
-    /**
-     *
-     * @param context
-     * @param entries
-     * @param labels
-     * @return
-     */
+
     public static PieChart generatePieChart(Context context, List<Entry> entries, List<String> labels){
-        PieChart pieChart = new PieChart(context);
-        PieDataSet dataSet = new PieDataSet(entries, "Expense Types");
-        dataSet.setValueTextSize(dataSet.getValueTextSize() + 5);
-        PieData data = new PieData(labels, dataSet);
-        dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
-        pieChart.setDescription("");
-        pieChart.setData(data);
-        Legend legend = pieChart.getLegend();
-        legend.setWordWrapEnabled(true);
-        legend.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
-        pieChart.animateY(2500);
-        pieChart.animateX(2500);
-        return pieChart;
+//        PieChart pieChart = new PieChart(context);
+//        PieDataSet dataSet = new PieDataSet(entries, "Expense Types");
+//        dataSet.setValueTextSize(dataSet.getValueTextSize() + 5);
+//        PieData data = new PieData(labels, dataSet);
+//        dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+//        pieChart.setDescription("");
+//        pieChart.setData(data);
+//        Legend legend = pieChart.getLegend();
+//        legend.setWordWrapEnabled(true);
+//        legend.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
+//        pieChart.animateY(2500);
+//        pieChart.animateX(2500);
+//        return pieChart;
+        return null;
     }
 
     /**
@@ -77,21 +63,22 @@ public class PieChartHelper {
      * @return total value of the expenses of that ExpenseType
      */
     public static float getExpensesAmountByType(ExpenseType type, Context context, int month, int year){
-        DataSource expenseDataSource = new DataSource(DataSource.CURRENT,context);
-        DataSource archiveDataSource = new DataSource(DataSource.ARCHIVE,context);
-        expenseDataSource.open();
-        archiveDataSource.open();
-
-        List<Expense> totalExpenseList = new ArrayList<>();
-        totalExpenseList.addAll(expenseDataSource.getAllExpenses());
-        totalExpenseList.addAll(archiveDataSource.getAllExpenses());
-        List<Expense> expenses = Filter.filterExpensesByType(totalExpenseList,type);
-        List<Expense> expensesFiltered = Filter.filterExpensesByDate(expenses,month,year);
-
-        double amount = 0;
-        for(Expense e : expensesFiltered)
-            amount += e.getValue();
-        return (float)amount;
+//        DataSource archiveDataSource = new DataSource(DataSource.ARCHIVE,context);
+//        DataSource expenseDataSource = new DataSource(DataSource.CURRENT,context);
+//        archiveDataSource.open();
+//        expenseDataSource.open();
+//        List<Expenditure> totalExpenseList =  new LinkedList<>();
+//        totalExpenseList.addAll(archiveDataSource.getAllExpenditures());
+//        totalExpenseList.addAll(expenseDataSource.getAllExpenditures());
+//        List<Expenditure> expenses = Filter.filterExpensesByType(totalExpenseList,type);
+//        List<Expenditure> expensesFiltered = Filter.filterExpensesByDate(expenses,month,year);
+//        float amount = 0;
+//        for(Expenditure e : expensesFiltered)
+//            amount += e.getValue();
+//        archiveDataSource.close();
+//        expenseDataSource.close();
+//        return amount;
+        return 0;
     }
 
     /**
@@ -151,26 +138,26 @@ public class PieChartHelper {
      * @return
      */
     private static float getExpensesAmountByType(ExpenseType type, Context context, int yearNum) {
-        DataSource expenseDataSource = new DataSource(DataSource.CURRENT, context);
-        DataSource archiveDataSource = new DataSource(DataSource.ARCHIVE, context);
-        expenseDataSource.open();
-        archiveDataSource.open();
-
-        List<Expense> totalExpenseList = new ArrayList<>();
-        totalExpenseList.addAll(expenseDataSource.getAllExpenses());
-        totalExpenseList.addAll(archiveDataSource.getAllExpenses());
-
-        List<Expense> expenses = Filter.filterExpensesByType(totalExpenseList,type);
-        List<Expense> newList = new LinkedList<>();
-
-        for(Expense e : expenses){
-            if(DateParser.getYear(e.getDate()) == yearNum)
-                newList.add(e);
-        }
-
-        double amount = 0;
-        for(Expense e : newList)
-            amount += e.getValue();
-        return (float)amount;
+//
+//        DataSource archiveDataSource = new DataSource(DataSource.ARCHIVE,context);
+//        DataSource expenseDataSource = new DataSource(DataSource.CURRENT,context);
+//        archiveDataSource.open();
+//        expenseDataSource.open();
+//        List<Expenditure> totalExpenseList =  new LinkedList<>();
+//        totalExpenseList.addAll(archiveDataSource.getAllExpenditures());
+//        totalExpenseList.addAll(expenseDataSource.getAllExpenditures());
+//        List<Expenditure> expenses = Filter.filterExpensesByType(totalExpenseList,type);
+//        List<Expenditure> newList = new LinkedList<>();
+//        for(Expenditure e : expenses){
+//            if(DateParser.getYear(e.getDate()) == yearNum)
+//                newList.add(e);
+//        }
+//        float amount = 0;
+//        for(Expenditure e : newList)
+//            amount += e.getValue();
+//        archiveDataSource.close();
+//        expenseDataSource.close();
+//        return amount;
+        return 0;
     }
 }

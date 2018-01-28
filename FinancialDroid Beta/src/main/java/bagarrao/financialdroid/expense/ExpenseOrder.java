@@ -19,7 +19,7 @@ public enum ExpenseOrder {
      * @param listToSort List to be sorted
      * @return Sorted list
      */
-    public List<Expense> sortByOrder(List<Expense> listToSort) {
+    public List<Expenditure> sortByOrder(List<Expenditure> listToSort) {
         switch (this) {
             case DATE_ASCENDING:
                 listToSort = Sorter.sorterByDateCre(listToSort);

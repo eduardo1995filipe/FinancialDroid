@@ -8,12 +8,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
 import bagarrao.financialdroid.R;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * @author Eduardo Bagarrao
@@ -29,15 +32,23 @@ public class MainActivity extends AppCompatActivity {
 
     private Intent[] optionsIntent;
     private ImageView[] optionImages;
-    private AppBarLayout appBarLayout;
-    private Toolbar toolbar;
+
+    @BindView(R.id.appBarMainMenu)
+    AppBarLayout appBarLayout;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.adView)
+    AdView adView;
+
     private AdRequest adRequest;
-    private AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         init();
         setup();
@@ -47,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
      * initializes all the elements
      */
     public void init() {
-
         this.optionImages = new ImageView[NUM_OPTIONS];
         this.optionsIntent = new Intent[NUM_OPTIONS];
 
@@ -59,11 +69,6 @@ public class MainActivity extends AppCompatActivity {
             optionImages[i] = (ImageView) findViewById(IMAGE_ID_ARRAY[i]);
             optionImages[i].setOnClickListener(v -> startActivity(optionsIntent[index]));
         }
-
-        this.appBarLayout = (AppBarLayout) findViewById(R.id.appBarMainMenu);
-        this.toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        this.adView = (AdView) findViewById(R.id.adView);
         this.adRequest = new AdRequest.Builder().build();
     }
 
@@ -80,4 +85,5 @@ public class MainActivity extends AppCompatActivity {
 
         appBarLayout.setBackgroundColor(Color.WHITE);
     }
+
 }

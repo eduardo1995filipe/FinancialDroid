@@ -3,7 +3,6 @@ package bagarrao.financialdroid.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.Button;
 
 import com.github.mikephil.charting.charts.PieChart;
@@ -27,13 +26,15 @@ public class AnalyticsActivity extends AppCompatActivity {
 
     private AdView adView;
     private AdRequest adRequest;
+    private Pair<List<Entry>, List<String>> pair;
+
+    private Date date;
 
     private PieChart pieChart;
-
     private Intent monthAnalyticsIntent;
     private Intent yearAnalyticsIntent;
-
     private Button monthAnalyticsButton;
+
     private Button yearAnalyticsButton;
 
     @Override
@@ -41,14 +42,17 @@ public class AnalyticsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analytics);
         init();
-        setup();
+        loadChart();
+        adView.loadAd(adRequest);
+        pieChart.animateY(2500);
+        monthAnalyticsButton.setOnClickListener(v -> startActivity(monthAnalyticsIntent));
+        yearAnalyticsButton.setOnClickListener(v -> startActivity(yearAnalyticsIntent));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Date date = new Date();
-        PieChartHelper.setExpensesAmount(getApplicationContext(), DateParser.getMonth(date), DateParser.getYear(date));
+        loadChart();
         pieChart.notifyDataSetChanged();
         pieChart.invalidate();
     }
@@ -58,41 +62,20 @@ public class AnalyticsActivity extends AppCompatActivity {
      */
     private void init(){
         MobileAds.initialize(this, "ca-app-pub-8899468184876323/9793116541");
-
         this.adView = (AdView) findViewById(R.id.analyticsAdBanner);
         this.adRequest = new AdRequest.Builder().build();
-
         this.monthAnalyticsButton = (Button) findViewById(R.id.monthAnalyticsButton);
         this.yearAnalyticsButton = (Button) findViewById(R.id.yearAnalyticsButton);
-
         this.monthAnalyticsIntent = new Intent(this,MonthAnalyticsActivity.class);
         this.yearAnalyticsIntent = new Intent(this,YearAnalyticsActivity.class);
     }
 
     /**
-     * setups all the  class objects
+     *
      */
-    private void setup(){
-        this.adView.loadAd(adRequest);
-        Date date = new Date();
-        Pair<List<Entry>, List<String>> pair =
-                PieChartHelper.setExpensesAmount(getApplicationContext(),DateParser.getMonth(date),DateParser.getYear(date));
+    public void loadChart(){
+        this.date = new Date();
+        this.pair = PieChartHelper.setExpensesAmount(getApplicationContext(),DateParser.getMonth(date),DateParser.getYear(date));
         this.pieChart = PieChartHelper.generatePieChart(this, R.id.lastMonthPieChart, pair.getKey(), pair.getValue());
-
-        this.pieChart.animateY(2500);
-
-        monthAnalyticsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(monthAnalyticsIntent);
-            }
-        });
-
-        yearAnalyticsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(yearAnalyticsIntent);
-            }
-        });
     }
 }

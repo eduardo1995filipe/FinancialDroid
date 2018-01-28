@@ -1,4 +1,4 @@
-package bagarrao.financialdroid.migration;
+package bagarrao.financialdroid.database;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,10 +7,8 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import bagarrao.financialdroid.backup.Backup;
-import bagarrao.financialdroid.database.DataSource;
+
 import bagarrao.financialdroid.expense.Expenditure;
-import bagarrao.financialdroid.expense.Expense;
 import bagarrao.financialdroid.utils.DateParser;
 import bagarrao.financialdroid.utils.SharedPreferencesHelper;
 
@@ -19,20 +17,16 @@ import bagarrao.financialdroid.utils.SharedPreferencesHelper;
  */
 public class Migrator {
 
-    private static final String ACCESS_DATE = "accessDate";
-    private static final String NULL_DATE = "nullValue";
-    private static final String OLD_DATE = "oldDate";
-
-    private Context context;
     private DataSource expenseDataSource;
     private DataSource archiveDataSource;
+
     private Date date;
+
 
     /**
      * @param context
      */
     public Migrator(Context context) {
-        this.context = context;
         this.date = new Date();
         this.expenseDataSource = new DataSource(DataSource.CURRENT, context);
         this.archiveDataSource = new DataSource(DataSource.ARCHIVE, context);
@@ -55,7 +49,7 @@ public class Migrator {
             } else {
                 Date lastDate = DateParser.parseDate(
                         (sharedPreferences.getString(SharedPreferencesHelper.OLD_DATE_VALUE,
-                        SharedPreferencesHelper.OLD_DATE_DEFAULT_VALUE)));
+                                SharedPreferencesHelper.OLD_DATE_DEFAULT_VALUE)));
                 if ((DateParser.getMonth(lastDate) < DateParser.getMonth(currentDate) &&
                         DateParser.getYear(lastDate) < DateParser.getYear(currentDate)) ||
                         (DateParser.getYear(lastDate) < DateParser.getYear(currentDate))) {
@@ -86,35 +80,23 @@ public class Migrator {
     }
 
     /**
-     * inits the Expense Viewer database and the also the Archive Viewer Database
-     */
-    private void open() {
-        expenseDataSource.open();
-        archiveDataSource.open();
-    }
-
-    /**
      *
      */
-    private void close() {
-        expenseDataSource.close();
-        archiveDataSource.close();
-    }
-
-	/**
-	*
-	*/
     public void run() {
-        open();
-        List<Expenditure> expenseList = expenseDataSource.getAllExpenditures();
-        for (Expenditure e : expenseList) {
+        if (!expenseDataSource.isOpen())
+            expenseDataSource.open();
+        if (!archiveDataSource.isOpen())
+            archiveDataSource.open();
+        List<Expenditure> list = expenseDataSource.getAllExpenditures();
+        expenseDataSource.deleteAllExpenditures();
+        for (Expenditure e : list)
             if (DateParser.getMonth(e.getDate()) < DateParser.getMonth(date)
-                    || DateParser.getYear(e.getDate()) < DateParser.getYear(date) ) {
+                    || DateParser.getYear(e.getDate()) < DateParser.getYear(date)) {
                 archiveDataSource.createExpenditure(e);
-                expenseDataSource.deleteExpenditure(e);
-            }
         }
-        close();
-        new Backup(context).go();
+        if (expenseDataSource.isOpen())
+            expenseDataSource.close();
+        if (archiveDataSource.isOpen())
+            archiveDataSource.close();
     }
 }

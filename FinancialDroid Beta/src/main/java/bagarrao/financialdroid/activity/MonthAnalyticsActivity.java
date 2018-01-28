@@ -17,8 +17,9 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import bagarrao.financialdroid.database.DataSource;
-import bagarrao.financialdroid.expense.Expense;
+import bagarrao.financialdroid.database.DataManager;
+//import bagarrao.financialdroid.database.DataSource;
+import bagarrao.financialdroid.expense.Expenditure;
 import bagarrao.financialdroid.utils.DateParser;
 import bagarrao.financialdroid.utils.Filter;
 import bagarrao.financialdroid.utils.Pair;
@@ -29,13 +30,15 @@ import bagarrao.financialdroid.utils.PieChartHelper;
  */
 public class MonthAnalyticsActivity extends AppCompatActivity {
 
+    private DataManager dataManager = DataManager.getInstance();
+
+//    private DataSource archiveDataSource;
+
     private ScrollView scrollView;
     private LinearLayout mainLayout;
 
-    private DataSource dataSource;
-
     private List<LinearLayout> pieChartLayoutList;
-    private List<Expense> totalExpenseList;
+    private List<Expenditure> totalExpenseList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,19 +54,12 @@ public class MonthAnalyticsActivity extends AppCompatActivity {
         loadCharts();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        dataSource.close();
-    }
-
     /**
      *
      */
     public void init() {
         this.scrollView = new ScrollView(this);
         this.mainLayout = new LinearLayout(this);
-        this.dataSource = new DataSource( DataSource.ARCHIVE,this);
         this.pieChartLayoutList = new LinkedList<>();
         this.totalExpenseList = new ArrayList<>();
         mainLayout.setOrientation(LinearLayout.VERTICAL);
@@ -74,9 +70,9 @@ public class MonthAnalyticsActivity extends AppCompatActivity {
      */
     public void readDB() {
         totalExpenseList.clear();
-        totalExpenseList.addAll(dataSource.getAllExpenses());
-        totalExpenseList.addAll(Filter.filterExpensesByYear(totalExpenseList, DateParser.getYear(new Date()))); //critico
-    }
+        //TODO: retirar o mes atual
+        totalExpenseList = Filter.filterExpensesByYear(dataManager.selectAllOlder(), DateParser.getYear(new Date())); //critico
+        }
 
     /**
      *
@@ -86,12 +82,10 @@ public class MonthAnalyticsActivity extends AppCompatActivity {
         mainLayout.removeAllViews();
         pieChartLayoutList.clear();
 
-        if(!dataSource.isOpen())
-            dataSource.open();
         readDB();
         Date date = new Date();
         for(int i = 0;i < DateParser.getMonth(date); i++){
-            List<Expense> list = Filter.filterExpensesByMonth(totalExpenseList,i);
+            List<Expenditure> list = Filter.filterExpensesByMonth(totalExpenseList,i);
             if(!list.isEmpty())
                 pieChartLayoutList.add(getChartLayout(i, DateParser.getYear(date),list));
         }
@@ -114,7 +108,7 @@ public class MonthAnalyticsActivity extends AppCompatActivity {
      * @param list
      * @return
      */
-    public LinearLayout getChartLayout(int monthNum,int yearNum, List<Expense> list) {
+    public LinearLayout getChartLayout(int monthNum,int yearNum, List<Expenditure> list) {
         LinearLayout layout = new LinearLayout(this);
         layout.setWeightSum(1);
         layout.setOrientation(LinearLayout.VERTICAL);

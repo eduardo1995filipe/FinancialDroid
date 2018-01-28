@@ -1,7 +1,6 @@
 package bagarrao.financialdroid.activity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -17,11 +16,9 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import bagarrao.financialdroid.database.DataManager;
 import bagarrao.financialdroid.R;
-import bagarrao.financialdroid.backup.Backup;
-import bagarrao.financialdroid.currency.CurrencyConverter;
-import bagarrao.financialdroid.database.DataSource;
-import bagarrao.financialdroid.expense.Expense;
+import bagarrao.financialdroid.expense.Expenditure;
 import bagarrao.financialdroid.expense.ExpenseOrder;
 import bagarrao.financialdroid.expense.ExpenseType;
 import bagarrao.financialdroid.utils.DateParser;
@@ -29,7 +26,12 @@ import bagarrao.financialdroid.utils.Filter;
 
 public class ArchiveActivity extends AppCompatActivity {
 
-    private CurrencyConverter currencyConverter = CurrencyConverter.getInstance();
+//    private CurrencyConverter currencyConverter = CurrencyConverter.getInstance();
+
+    /**
+     * {@link com.google.firebase.database.FirebaseDatabase} singleton instance.
+     */
+    private DataManager dataManager = DataManager.getInstance();
 
     public static final ExpenseOrder DEFAULT_ORDER = ExpenseOrder.DATE_DESCENDING;
     public static final ExpenseType DEFAULT_EXPENSE_TYPE = null;
@@ -44,12 +46,9 @@ public class ArchiveActivity extends AppCompatActivity {
     private ArrayAdapter<CharSequence> spinnerTypeAdapter;
 
     private ListView archiveListView;
-    private List<Expense> archiveList;
+    private List<Expenditure> archiveList;
     private ArrayList<String> archiveListString;
-    private DataSource dataSource;
     private ArrayAdapter<String> archiveListAdapter;
-
-    private Context context;
 
     private Button resetButton;
 
@@ -66,14 +65,10 @@ public class ArchiveActivity extends AppCompatActivity {
      * initializes all the elements
      */
     public void init() {
-        this.context = this;
-//        this.currencyConverter.setContext(this);
         this.currentOrder = DEFAULT_ORDER;
         this.currentType = DEFAULT_EXPENSE_TYPE;
 
         this.archiveListString = new ArrayList<>();
-        this.dataSource = new DataSource(DataSource.ARCHIVE,this);
-        this.dataSource.open();
         this.archiveListView = (ListView) findViewById(R.id.archiveExpensesListView);
 
         this.resetButton = (Button) findViewById(R.id.resetArchiveButton);
@@ -95,17 +90,9 @@ public class ArchiveActivity extends AppCompatActivity {
         archiveListView.setAdapter(archiveListAdapter);
     }
 
-    /**
-     * Creates the necessary listeners to the activity
-     */
     public void setListeners() {
 
-        archiveListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                showDeleteDialog(context, position);
-            }
-        });
+        archiveListView.setOnItemClickListener((parent, view, position, id) -> showDeleteDialog(this, position));
 
         orderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -141,12 +128,7 @@ public class ArchiveActivity extends AppCompatActivity {
             }
         });
 
-        resetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showResetDialog(context);
-            }
-        });
+        resetButton.setOnClickListener(v -> showResetDialog(this));
     }
 
     /**
@@ -187,13 +169,9 @@ public class ArchiveActivity extends AppCompatActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage("Are you sure you want to delete this expense?");
         builder.setTitle("Delete Expense");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                removeExpense(index);
-                new Backup().go();
-                Toast.makeText(context, "Expense removed successfully!", Toast.LENGTH_SHORT).show();
-            }
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            removeExpense(index);
+            Toast.makeText(context, "Expense removed successfully!", Toast.LENGTH_SHORT).show();
         });
         builder.setNegativeButton("No", null);
         builder.show();
@@ -203,14 +181,10 @@ public class ArchiveActivity extends AppCompatActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage("Are you sure you want to reset your archive?");
         builder.setTitle("Reset Archive");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dataSource.deleteAllExpenses();
-                readDB();
-                Toast.makeText(context, "Archive was reset successfully!", Toast.LENGTH_SHORT).show();
-                new Backup().go();
-            }
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            dataManager.deleteAllOlder();
+            readDB();
+            Toast.makeText(context, "Archive was reset successfully!", Toast.LENGTH_SHORT).show();
         });
         builder.setNegativeButton("No", null);
         builder.show();
@@ -223,17 +197,17 @@ public class ArchiveActivity extends AppCompatActivity {
      * @param index variable to get the Expense that is pretended to remove
      */
     public void removeExpense(int index) {
-        this.archiveList = dataSource.getAllExpenses();
-        if (archiveList == null)
-            archiveList = new ArrayList<>();
-        else if ((archiveList.size() - 1) >= index) {
-            Expense e = archiveList.get(index);
-            dataSource.deleteExpense(e);
+        this.archiveList = dataManager.selectAllOlder();
+
+        if ((archiveList.size() - 1) >= index) {
+            dataManager.delete(archiveList.get(index));
             archiveList.remove(index);
         }
         archiveListString.clear();
-        for (Expense e : archiveList) {
-            String stringExpense = e.getDescription() + " | " + CurrencyConverter.round(e.getValue(), 2) + " " + currencyConverter.getCurrency().toString() + " | " +
+        for (Expenditure e : archiveList) {
+            String stringExpense = e.getDescription() + " | "
+//                    + CurrencyConverter.round(e.getValue(), 2) + " " + currencyConverter.getCurrency().toString()
+                    + " | " +
                     DateParser.parseString(e.getDate()) + " | " + e.getType().toString();
             archiveListString.add(stringExpense);
         }
@@ -244,31 +218,28 @@ public class ArchiveActivity extends AppCompatActivity {
      * reads and converts the database to an ArrayList, and Updates the ListView View
      */
     public void readDB() {
-//        this.archiveList = dataSource.getAllExpenses();
-//        if (archiveList == null)
-//            archiveList = new ArrayList<>();
-//        archiveListString.clear();
-//        currentOrder.sortByOrder(archiveList);
-//        archiveList = Filter.filterExpensesByType(archiveList,currentType);
-//        for (Expense e : archiveList) {
-//            String stringExpense = e.getDescription() +
-//                    " | " + e.getValue() + " " + currencyConverter.getCurrency().toString() +
-//                    " | " + DateParser.parseString(e.getDate()) + " | " + e.getType().toString();
-//            archiveListString.add(stringExpense);
-//        }
-//        archiveListAdapter.notifyDataSetChanged();
+        this.archiveList = dataManager.selectAllOlder();
+        archiveListString.clear();
+        currentOrder.sortByOrder(archiveList);
+        archiveList = Filter.filterExpensesByType(archiveList,currentType);
+        for (Expenditure e : archiveList) {
+            String stringExpense = e.getDescription() +
+                    " | " + e.getValue() + " " +
+//                    currencyConverter.getCurrency().toString() +
+                    " | " + DateParser.parseString(e.getDate()) + " | " + e.getType().toString();
+            archiveListString.add(stringExpense);
+        }
+        archiveListAdapter.notifyDataSetChanged();
     }
 
     @Override
     protected void onResume() {
-        dataSource.open();
         readDB();
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        dataSource.close();
         super.onPause();
     }
 }

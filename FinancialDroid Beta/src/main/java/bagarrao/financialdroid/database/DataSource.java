@@ -17,24 +17,24 @@ import bagarrao.financialdroid.utils.DateParser;
 /**
  *
  * Class that handles the database of the local {@link Expenditure} objects.
- * It's parallel to {@link bagarrao.financialdroid.firebase.FirebaseManager} and its
+ * It's parallel to {@link DatabaseManager} and its
  * intended to use as a local storage.
  *
  * @author Eduardo Bagarrao
  */
-public class DataSource {
+class DataSource {
 
     /**
      * Table used to store {@link Expenditure} objects
      * that are more than one month old.
      */
-    public static final String ARCHIVE = DataSQLiteOpenHelper.ARCHIVE_TABLE;
+    static final String ARCHIVE = DataSQLiteOpenHelper.ARCHIVE_TABLE;
 
     /**
      * Table used to store {@link Expenditure} objects
      * that are less than one month old.
      */
-    public static final String CURRENT = DataSQLiteOpenHelper.EXPENSE_TABLE;
+    static final String CURRENT = DataSQLiteOpenHelper.EXPENSE_TABLE;
 
     /**
      * Columns of both {@link #ARCHIVE} and {@link #CURRENT} {@link Expenditure} objects.
@@ -76,7 +76,7 @@ public class DataSource {
      * @param mode {@link String}
      * @param context {@link Context}
      */
-    public DataSource(String mode, Context context){
+    protected DataSource(String mode, Context context){
         this.isOpen = false;
         this.dbHelper = new DataSQLiteOpenHelper(context);
         this.mode = mode;
@@ -87,7 +87,7 @@ public class DataSource {
      *
      * @return boolean
      */
-    public boolean isOpen() {
+    boolean isOpen() {
         return isOpen;
     }
 
@@ -96,7 +96,7 @@ public class DataSource {
      *
      * @return String
      */
-    public String getMode() {
+    String getMode() {
         return mode;
     }
 
@@ -109,7 +109,7 @@ public class DataSource {
      *
      * @see DataSQLiteOpenHelper
      */
-    public void open() throws SQLException {
+    void open() throws SQLException {
         database = dbHelper.getWritableDatabase();
         isOpen = true;
     }
@@ -118,7 +118,7 @@ public class DataSource {
      * Closes the {@link #dbHelper} and
      * turns {@link #isOpen} value to false.
      */
-    public void close() {
+    void close() {
         dbHelper.close();
         isOpen = false;
     }
@@ -130,7 +130,7 @@ public class DataSource {
      * @param expenditure {@link Expenditure}
      * @return Expenditure
      */
-    public Expenditure createExpenditure(Expenditure expenditure) {
+    Expenditure createExpenditure(Expenditure expenditure) {
 
         ContentValues values = new ContentValues();
         values.put(DataSQLiteOpenHelper.EXPENSE_COLUMN_NAME_PRICE, expenditure.getValue());
@@ -156,7 +156,7 @@ public class DataSource {
      *
      * @param expenditure {@link Expenditure}
      */
-    public void deleteExpenditure(Expenditure expenditure) {
+    void deleteExpenditure(Expenditure expenditure) {
         long id = expenditure.getId();
         database.delete(mode, DataSQLiteOpenHelper.EXPENSE_COLUMN_ID + " = " + id, null);
     }
@@ -167,9 +167,9 @@ public class DataSource {
      *
      * @return Expenditure
      */
-    public List<Expenditure> getAllExpenditures() {
+    List<Expenditure> getAllExpenditures() {
 
-        List<Expenditure> expenditures = new ArrayList<Expenditure>();
+        List<Expenditure> expenditures = new ArrayList<>();
 
         Cursor cursor = database.query(mode,
                 allColumns, null, null, null, null, null);
@@ -188,7 +188,7 @@ public class DataSource {
      * removes all {@link Expenditure} objects that are
      * present in the table in the current {@link #mode}.
      */
-    public void deleteAllExpenditures() {
+    void deleteAllExpenditures() {
         List<Expenditure> list = getAllExpenditures();
         for (Expenditure e : list) {
             deleteExpenditure(e);

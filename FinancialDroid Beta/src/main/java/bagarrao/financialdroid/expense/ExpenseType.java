@@ -34,6 +34,5 @@ public enum ExpenseType {
                 break;
         }
         return type;
-
     }
 }

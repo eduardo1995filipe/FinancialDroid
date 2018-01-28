@@ -15,8 +15,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import bagarrao.financialdroid.database.DataSource;
-import bagarrao.financialdroid.expense.Expense;
+import bagarrao.financialdroid.database.DataManager;
+import bagarrao.financialdroid.expense.Expenditure;
 import bagarrao.financialdroid.utils.DateParser;
 import bagarrao.financialdroid.utils.Filter;
 import bagarrao.financialdroid.utils.Pair;
@@ -27,14 +27,18 @@ import bagarrao.financialdroid.utils.PieChartHelper;
  */
 public class YearAnalyticsActivity extends AppCompatActivity {
 
+    private DataManager dataManager = DataManager.getInstance();
+
+//    private boolean isLocal;
+
     private ScrollView scrollView;
     private LinearLayout mainLayout;
-
-    private DataSource archiveDataSource;
-    private DataSource expenseDataSource;
+//
+//    private DataSource archiveDataSource;
+//    private DataSource expenseDataSource;
 
     private List<LinearLayout> pieChartLayoutList;
-    private List<Expense> totalExpenseList;
+    private List<Expenditure> totalExpenseList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +57,10 @@ public class YearAnalyticsActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        archiveDataSource.close();
-        expenseDataSource.close();
+//        if(isLocal && expenseDataSource != null && archiveDataSource != null){
+//            archiveDataSource.close();
+//            expenseDataSource.close();
+//        }
     }
 
     /**
@@ -63,11 +69,8 @@ public class YearAnalyticsActivity extends AppCompatActivity {
     public void init() {
         this.scrollView = new ScrollView(this);
         this.mainLayout = new LinearLayout(this);
-        this.expenseDataSource = new DataSource(DataSource.CURRENT, this);
-        this.archiveDataSource = new DataSource(DataSource.ARCHIVE, this);
         this.pieChartLayoutList = new LinkedList<>();
         this.totalExpenseList = new ArrayList<>();
-
         mainLayout.setOrientation(LinearLayout.VERTICAL);
     }
 
@@ -76,8 +79,7 @@ public class YearAnalyticsActivity extends AppCompatActivity {
      */
     public void readDB() {
         totalExpenseList.clear();
-        totalExpenseList.addAll(expenseDataSource.getAllExpenses());
-        totalExpenseList.addAll(archiveDataSource.getAllExpenses());
+        totalExpenseList = dataManager.selectAll();
     }
 
     /**
@@ -87,21 +89,21 @@ public class YearAnalyticsActivity extends AppCompatActivity {
         scrollView.removeAllViews();
         mainLayout.removeAllViews();
         pieChartLayoutList.clear();
-
-        if(!archiveDataSource.isOpen())
-            archiveDataSource.open();
-        if(!expenseDataSource.isOpen())
-            expenseDataSource.open();
+//
+//        if(archiveDataSource != null && isLocal)
+//            archiveDataSource.open();
+//        if(archiveDataSource != null && isLocal)
+//            expenseDataSource.open();
         readDB();
 
         HashSet<Integer> set = new HashSet<>();
 
-        for(Expense e : totalExpenseList){
+        for(Expenditure e : totalExpenseList){
             set.add(DateParser.getYear(e.getDate()));
         }
 
         for(Integer year : set){
-            List<Expense> list = Filter.filterExpensesByYear(totalExpenseList,year);
+            List<Expenditure> list = Filter.filterExpensesByYear(totalExpenseList,year);
             pieChartLayoutList.add(getChartLayout(year,list));
         }
 
@@ -122,7 +124,7 @@ public class YearAnalyticsActivity extends AppCompatActivity {
      * @param list
      * @return
      */
-    public LinearLayout getChartLayout(int yearNum, List<Expense> list) {
+    public LinearLayout getChartLayout(int yearNum, List<Expenditure> list) {
 
         LinearLayout layout = new LinearLayout(this);
         layout.setWeightSum(1);
