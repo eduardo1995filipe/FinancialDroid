@@ -33,22 +33,6 @@ public class FirebaseDatabase implements Database<Expenditure>, ChildEventListen
             expenditureVector.clear();
         else
             expenditureVector = new Vector<>();
-//        mainReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot snapshot) {
-//                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-//                    Expenditure expenditure = postSnapshot.getValue(Expenditure.class);
-//                    if (expenditure.getUid().equals(user.getUid())) {
-//                        expenditureVector.add(expenditure);
-//                        Log.d("FirebaseDatabase","New Expense added!!! -> " + expenditure.toString());
-//                    }
-//                }
-//            }
-//            @Override
-//            public void onCancelled(DatabaseError firebaseError) {
-//                Log.e("The read failed: ", firebaseError.getMessage());
-//            }
-//        });
         mainReference.addChildEventListener(this);
     }
 
@@ -60,7 +44,6 @@ public class FirebaseDatabase implements Database<Expenditure>, ChildEventListen
 
     @Override
     public void delete(Expenditure expenditure) {
-        //TODO: elimina as despesas todas
         mainReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
@@ -73,7 +56,6 @@ public class FirebaseDatabase implements Database<Expenditure>, ChildEventListen
                     }
                     if (toRemove != null)
                         toRemove.removeValue();
-//                        mainReference.removeValue();
                 }
 
                 @Override

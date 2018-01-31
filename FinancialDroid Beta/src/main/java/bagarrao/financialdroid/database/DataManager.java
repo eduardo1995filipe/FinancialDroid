@@ -18,6 +18,7 @@ public class DataManager{
     private FirebaseUser user;
     private Database<Expenditure> database;
     private boolean isLocal;
+    private Context applicationContext;
 
     public static synchronized DataManager getInstance() {
         return (INSTANCE != null) ? INSTANCE : new DataManager();
@@ -29,8 +30,9 @@ public class DataManager{
     }
 
     public void init(FirebaseUser user,Context context){
+        this.applicationContext = context;
         this.isLocal = (this.user = user) == null;
-        this.database = isLocal ? new SQLiteDatabase(context) : new FirebaseDatabase(user);
+        this.database = isLocal ? new SQLiteDatabase(applicationContext) : new FirebaseDatabase(user);
     }
 
     public FirebaseUser getUser() {
@@ -86,5 +88,9 @@ public class DataManager{
         for(Expenditure e : selectRecent()){
             delete(e);
         }
+    }
+
+    public Context getApplicationContext() {
+        return applicationContext;
     }
 }
