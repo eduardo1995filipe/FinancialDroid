@@ -9,8 +9,13 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.PieChart;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import bagarrao.financialdroid.R;
 import bagarrao.financialdroid.database.DataManager;
@@ -58,6 +63,7 @@ public class YearAnalyticsActivity extends AppCompatActivity {
             set.add(DateParser.getYear(e.getDate()));
         }
         int layoutCount = 0;
+
         for (Integer year : set) {
             Log.d("YearAnalyticsActivity","Integer used --> " + year);
             List<Expenditure> list = Filter.filterExpensesByYear(totalExpenseList, year);

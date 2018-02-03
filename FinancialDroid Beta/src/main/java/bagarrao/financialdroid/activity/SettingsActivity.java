@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import bagarrao.financialdroid.R;
 import bagarrao.financialdroid.currency.Currency;
-import bagarrao.financialdroid.database.DatabaseManager;
 import bagarrao.financialdroid.utils.SharedPreferencesHelper;
 
 public class SettingsActivity extends AppCompatActivity {

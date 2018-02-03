@@ -12,6 +12,39 @@ public enum Currency {
      */
     public static final Currency DEFAULT_CURRENCY = EUR;
 
+    public double convertToEuro(double value) {
+        double euroValue = 0.0;
+        switch (this) {
+            case USD:
+                euroValue = 0.802407222;
+                break;
+            case AUD:
+                euroValue = 0.636228686;
+                break;
+            case BRL:
+                euroValue = 0.249315948;
+                break;
+            case JPY:
+                euroValue = 0.00728585757;
+                break;
+            case KRW:
+                euroValue = 0.000736609829;
+                break;
+            case CNY:
+                euroValue = 0.127301906;
+                break;
+            case GBP:
+                euroValue = 1.1332317;
+                break;
+            case EUR:
+                euroValue = 1;
+                break;
+            default:
+                break;
+        }
+        return euroValue * value;
+    }
+
     public static double getDifference(Currency currency){
         double difference = 1;
         switch (currency){

@@ -18,9 +18,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import bagarrao.financialdroid.currency.Currency;
+import bagarrao.financialdroid.currency.CurrencyConverter;
 import bagarrao.financialdroid.database.DataManager;
 import bagarrao.financialdroid.R;
 import bagarrao.financialdroid.database.Migrator;
+import bagarrao.financialdroid.expense.Expenditure;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -36,6 +42,7 @@ import butterknife.ButterKnife;
  */
 public class LoginActivity extends AppCompatActivity implements OnCompleteListener<AuthResult>,FirebaseAuth.AuthStateListener{
 
+    private CurrencyConverter cm = CurrencyConverter.getInstance();
     private DataManager dataManager = DataManager.getInstance();
 
     /**
@@ -182,6 +189,14 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
             if(migrator.needsMigration(this))
                 migrator.run();
             dataManager.init(null, getApplicationContext());
+
+            //TODO: nulify currency here!!!
+            cm.init(getApplicationContext());
+            for(Expenditure e : dataManager.selectAll()){
+                e.setValue(cm.getCurrency().convertToEuro(e.getValue()));
+            }
+            cm.setCurrency(Currency.EUR);
+
             startActivity(loginIntent);
             finish();
         });

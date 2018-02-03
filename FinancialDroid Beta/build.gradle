@@ -55,6 +55,10 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+
+    compile group: 'org.joda', name: 'joda-money', version: '0.9.1'
+
+    compile 'com.github.midorikocak:currency-picker-android:1.1.9'
 }
 
 apply plugin: 'com.google.gms.google-services'
