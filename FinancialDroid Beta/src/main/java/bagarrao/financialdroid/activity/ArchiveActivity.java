@@ -205,10 +205,10 @@ public class ArchiveActivity extends AppCompatActivity {
         }
         archiveListString.clear();
         for (Expenditure e : archiveList) {
-            String stringExpense = e.getDescription() + " | "
-//                    + CurrencyConverter.round(e.getValue(), 2) + " " + currencyConverter.getCurrency().toString()
-                    + " | " +
-                    DateParser.parseString(e.getDate()) + " | " + e.getType().toString();
+            String stringExpense = e.getDescription() +
+                    " | " + e.getValue() + " € " +
+                    " | " + DateParser.parseString(e.getDate()) +
+                    " | " + e.getType().toString();
             archiveListString.add(stringExpense);
         }
         archiveListAdapter.notifyDataSetChanged();
@@ -224,9 +224,9 @@ public class ArchiveActivity extends AppCompatActivity {
         archiveList = Filter.filterExpensesByType(archiveList,currentType);
         for (Expenditure e : archiveList) {
             String stringExpense = e.getDescription() +
-                    " | " + e.getValue() + " " +
-//                    currencyConverter.getCurrency().toString() +
-                    " | " + DateParser.parseString(e.getDate()) + " | " + e.getType().toString();
+                    " | " + e.getValue() +
+                    " | " + DateParser.parseString(e.getDate()) +
+                    " | " + e.getType().toString();
             archiveListString.add(stringExpense);
         }
         archiveListAdapter.notifyDataSetChanged();

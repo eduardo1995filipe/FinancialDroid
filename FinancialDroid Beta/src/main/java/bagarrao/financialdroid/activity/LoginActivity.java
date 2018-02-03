@@ -46,11 +46,6 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
     private DataManager dataManager = DataManager.getInstance();
 
     /**
-     * {@link #toolbar} title.
-     */
-    private static final String TOOLBAR_TITLE = "Sign in";
-
-    /**
      * {@link #localUseTextView} text.
      */
     private static final String LOCAL_USE_TEXT = "No account(local use)";
@@ -97,11 +92,7 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
     @BindView(R.id.registerButton)
     Button registerButton;
 
-    /**
-     * {@link Toolbar} of the {@link LoginActivity}.
-     */
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+
 
     /**
      * {@link Intent} used for login into {@link MainActivity},
@@ -135,7 +126,7 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
         ButterKnife.bind(this);
         init();
         setup();
-        setSupportActionBar(toolbar);
+//        setSupportActionBar(toolbar);
     }
 
     @Override
@@ -169,18 +160,8 @@ public class LoginActivity extends AppCompatActivity implements OnCompleteListen
         this.loginIntent = new Intent(this, MainActivity.class);
     }
 
-    /**
-     * Used to setup all the objects that {@link LoginActivity} contains.
-     * Sets the {@link #toolbar} title, the {@link #localUseTextView}
-     * underlined text and inits the {@link android.net.sip.SipSession.Listener}
-     * objects. Checks also if the {@link bagarrao.financialdroid.expense.Expenditure}
-     * need to be migrated.
-     *
-//     * @see Migrator
-     * @see com.google.firebase.auth.FirebaseAuth.AuthStateListener
-     */
+
     public void setup(){
-        toolbar.setTitle(TOOLBAR_TITLE);
         content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
         localUseTextView.setText(content);
 

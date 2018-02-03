@@ -327,12 +327,11 @@ public class ExpensesActivity extends AppCompatActivity {
         currentOrder.sortByOrder(expenseList);
         expenseList = Filter.filterExpensesByType(expenseList,currentType);
         for (Expenditure e : expenseList) {
-//            String stringExpense = e.getDescription() +
-////                    " | " + CurrencyConverter.round(e.getValue(), 2) +
-////                    " " + manager.getCurrency().toString() +
-//                    " | " + DateParser.parseString(e.getDate()) + " | " +
-//                    e.getType().toString();
-//            expenseListString.add(stringExpense);
+            String stringExpense = e.getDescription() +
+                    " | " + e.getValue() + " € " +
+                    " | " + DateParser.parseString(e.getDate()) +
+                    " | " + e.getType().toString();
+            expenseListString.add(stringExpense);
             expenseListString.add(e.toString());
             Log.e("ExpensesActivity", "Added new Expense");
         }

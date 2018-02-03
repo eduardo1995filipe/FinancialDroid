@@ -88,7 +88,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         init();
         spinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         expenditureTypeSpinner.setAdapter(spinnerAdapter);
-        priceTextView.setText("Price ( " /* + manager.getCurrency().toString() */ +  " ) :");
+        priceTextView.setText("Price ( € ):");
         setListeners();
     }
 

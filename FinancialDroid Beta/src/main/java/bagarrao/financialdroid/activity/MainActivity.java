@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         MobileAds.initialize(this, "ca-app-pub-8899468184876323/4720328233");
         adView.loadAd(adRequest);
 
-        toolbar.setTitle(ACTIVITY_TITLE);
+//        toolbar.setTitle(ACTIVITY_TITLE);
         toolbar.setBackgroundColor(Color.WHITE);
         toolbar.setTitleTextColor(Color.BLACK);
 
