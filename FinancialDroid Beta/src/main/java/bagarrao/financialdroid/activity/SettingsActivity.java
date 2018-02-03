@@ -18,11 +18,11 @@ public class SettingsActivity extends AppCompatActivity {
 
 //	private CurrencyConverter currencyConverter = CurrencyConverter.getInstance();
 
-    private SharedPreferences sharedPref;
-    private SharedPreferences.Editor sharedPrefEditor;
-
-    private Spinner currencySpinner;
-    private ArrayAdapter<CharSequence> currencyAdapter;
+//    private SharedPreferences sharedPref;
+//    private SharedPreferences.Editor sharedPrefEditor;
+//
+//    private Spinner currencySpinner;
+//    private ArrayAdapter<CharSequence> currencyAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,44 +33,44 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void init(){
-        this.sharedPref = getSharedPreferences(SharedPreferencesHelper.CURRENCY_SPINNER_PREFERENCES_FILE,MODE_PRIVATE);
-        this.currencySpinner = (Spinner)findViewById(R.id.currencyTypeSpinner);
-        this.currencyAdapter = ArrayAdapter.createFromResource(this, R.array.currency_type,
-                R.layout.support_simple_spinner_dropdown_item);
-        currencyAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        currencySpinner.setAdapter(currencyAdapter);
-        int startPosition = sharedPref.getInt(SharedPreferencesHelper.CURRENCY_SPINNER_POSITION_KEY,SharedPreferencesHelper.CURRENCY_SPINNER_POSITION_DEFAULT_VALUE);
-        currencySpinner.setSelection(startPosition);
+//        this.sharedPref = getSharedPreferences(SharedPreferencesHelper.CURRENCY_SPINNER_PREFERENCES_FILE,MODE_PRIVATE);
+//        this.currencySpinner = (Spinner)findViewById(R.id.currencyTypeSpinner);
+//        this.currencyAdapter = ArrayAdapter.createFromResource(this, R.array.currency_type,
+//                R.layout.support_simple_spinner_dropdown_item);
+//        currencyAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+//        currencySpinner.setAdapter(currencyAdapter);
+//        int startPosition = sharedPref.getInt(SharedPreferencesHelper.CURRENCY_SPINNER_POSITION_KEY,SharedPreferencesHelper.CURRENCY_SPINNER_POSITION_DEFAULT_VALUE);
+//        currencySpinner.setSelection(startPosition);
     }
 
     public void setListeners(){
-        currencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            Currency currentCurrency = null;
-
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                try{
-				 currentCurrency = getCurrencyOrder(position);
-				}catch(NullPointerException e){
-					currentCurrency = Currency.DEFAULT_CURRENCY;
-				}
-				finally{
-				    //TODO: call firebase  method to change currency
+//        currencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//
+//            Currency currentCurrency = null;
+//
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                try{
+//				 currentCurrency = getCurrencyOrder(position);
+//				}catch(NullPointerException e){
+//					currentCurrency = Currency.DEFAULT_CURRENCY;
+//				}
+//				finally{
+//				    //TODO: call firebase  method to change currency
 //                    manager.changeCurrency(currentCurrency);
 //					currencyConverter.setCurrency(currentCurrency); call database manager
-                    Toast.makeText(getApplicationContext(),"Current currency is now ["
+//                    Toast.makeText(getApplicationContext(),"Current currency is now ["
 //                            + currencyConverter.getCurrency().toString()
-                            + "]",Toast.LENGTH_SHORT);
-                    sharedPrefEditor = sharedPref.edit();
-                    sharedPrefEditor.putInt(SharedPreferencesHelper.CURRENCY_SPINNER_POSITION_KEY,position);
-                    sharedPrefEditor.apply();
-				}
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+//                            + "]",Toast.LENGTH_SHORT);
+//                    sharedPrefEditor = sharedPref.edit();
+//                    sharedPrefEditor.putInt(SharedPreferencesHelper.CURRENCY_SPINNER_POSITION_KEY,position);
+//                    sharedPrefEditor.apply();
+//				}
+//            }
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//            }
+//        });
     }
 
     public Currency getCurrencyOrder(int index) {

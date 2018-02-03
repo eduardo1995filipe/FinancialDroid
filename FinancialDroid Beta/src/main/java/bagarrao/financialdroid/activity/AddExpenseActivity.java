@@ -149,7 +149,7 @@ public class AddExpenseActivity extends AppCompatActivity {
                 if(!manager.isLocal())
                     expenditure.setUid(manager.getUser().getUid());
                 manager.insert(expenditure);
-                Toast.makeText(this, expenditure.toString() + "| time: " + expenditure.getTime(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Expense added successfully!!", Toast.LENGTH_SHORT).show();
                 finish();
             } else
                 Toast.makeText(getApplicationContext(),
