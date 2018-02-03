@@ -4,14 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/scrollView"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="bagarrao.financialdroid.activity.MonthAnalyticsActivity"
     tools:showIn="@layout/activity_month_analytics">
     <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:id="@+id/linearLayout">
+        android:id="@+id/monthAnalyticsMainLayout">
     </LinearLayout>
 </ScrollView>

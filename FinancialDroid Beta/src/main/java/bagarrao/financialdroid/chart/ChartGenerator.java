@@ -1,8 +1,9 @@
-package bagarrao.financialdroid.utils;
+package bagarrao.financialdroid.chart;
 
 import android.content.Context;
 
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
@@ -15,10 +16,7 @@ import java.util.List;
 import bagarrao.financialdroid.database.DataManager;
 import bagarrao.financialdroid.expense.Expenditure;
 import bagarrao.financialdroid.expense.ExpenseType;
-
-/**
- * Created by eduar on 30/01/2018.
- */
+import bagarrao.financialdroid.utils.Filter;
 
 public class ChartGenerator {
 
@@ -40,7 +38,16 @@ public class ChartGenerator {
         colors.add(ColorTemplate.getHoloBlue());
         dataSet.setColors(colors);
         PieData data = new PieData(dataSet);
+        data.setValueFormatter(new UnitFormatter());
         pieChart.setData(data);
+        Legend l = pieChart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        l.setOrientation(Legend.LegendOrientation.VERTICAL);
+        l.setWordWrapEnabled(true);
+        pieChart.getDescription().setEnabled(false);
+        pieChart.setDrawSliceText(false);
+        pieChart.invalidate();
         return pieChart;
     }
 
@@ -62,7 +69,20 @@ public class ChartGenerator {
         colors.add(ColorTemplate.getHoloBlue());
         dataSet.setColors(colors);
         PieData data = new PieData(dataSet);
+        data.setValueFormatter(new UnitFormatter());
         pieChart.setData(data);
+        Legend l = pieChart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        l.setOrientation(Legend.LegendOrientation.VERTICAL);
+//        l.setDrawInside(false);
+//        l.setXEntrySpace(7f);
+//        l.setYEntrySpace(0f);
+//        l.setYOffset(0f);
+        l.setWordWrapEnabled(true);
+        pieChart.getDescription().setEnabled(false);
+        pieChart.setDrawSliceText(false);
+        pieChart.invalidate();
         return pieChart;
     }
 
